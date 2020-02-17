@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spec name="Photos" version="PUC/2.1">
+  <labels>
+    <label>Photo Browser</label>
+    <label>Photos</label>
+  </labels>
+  <groupings>
+    <group name="Browser">
+      <list-group name="List" is-a="image-list">
+        <state name="Image" access="read-only" is-a="image">
+          <type>
+            <binary>
+              <arbitrary-scaling />
+            </binary>
+          </type>
+        </state>
+        <state name="Title">
+          <type>
+            <string>
+              <min>
+                <static value="0" />
+              </min>
+              <average>
+                <static value="30" />
+              </average>
+              <max>
+                <static value="80" />
+              </max>
+            </string>
+          </type>
+          <labels>
+            <label>Title</label>
+          </labels>
+        </state>
+        <state name="Date" access="read-only" is-a="date">
+          <type>
+            <string />
+          </type>
+          <labels>
+            <label>Date</label>
+          </labels>
+        </state>
+        <group name="Move">
+          <labels>
+            <label>Move</label>
+          </labels>
+          <command name="MoveDown">
+            <labels>
+              <label>Previous</label>
+            </labels>
+            <active-if>
+              <defined state="Photos.Browser.List.Selection" />
+              <less-than state="Photos.Browser.List.Selection">
+                <refvalue state="Photos.Browser.List.Length" />
+              </less-than>
+            </active-if>
+          </command>
+          <command name="MoveUp">
+            <labels>
+              <label>Next</label>
+            </labels>
+            <active-if>
+              <defined state="Photos.Browser.List.Selection" />
+              <greater-than state="Photos.Browser.List.Selection">1</greater-than>
+            </active-if>
+          </command>
+        </group>
+      </list-group>
+    </group>
+  </groupings>
+</spec>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Note: This file is best viewed in Internet Explorer. --> 
+
+<!-- This file is *NOT* written in the PUC specification language. 
+     Rather, it is written in a custom language that was developed for
+     configuring the X10Proxy (see
+     edu.cmu.hcii.puc.devices.X10Proxy).  The X10Proxy generates a PUC
+     specification file, and forwards that to the controller. -->
+     
+<x10spec name="Pebbles Lab">
+
+  <comport>2</comport>
+
+  <object>
+    <house>B</house>
+    <device>3</device>
+    <name>TV Lamp</name>
+    <commands>
+      <command>ONSTATE</command>
+      <command>DIM</command>
+      <command>BRIGHT</command>
+    </commands>
+  </object>
+  <object>
+    <house>B</house>
+    <device>4</device>
+    <name>Silver Lamp</name>
+    <commands>
+      <command>ON</command>
+      <command>OFF</command>
+      <command>DIM</command>
+      <command>BRIGHT</command>
+    </commands>
+  </object>
+</x10spec>

@@ -1,0 +1,9 @@
+; wmppucplugin.def : Declares the module parameters.
+
+LIBRARY      "WMPPUCPLUGIN.DLL"
+
+EXPORTS
+	DllCanUnloadNow     PRIVATE
+	DllGetClassObject   PRIVATE
+	DllRegisterServer   PRIVATE
+	DllUnregisterServer	PRIVATE

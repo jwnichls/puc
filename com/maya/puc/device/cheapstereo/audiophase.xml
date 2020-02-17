@@ -1,0 +1,939 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE spec SYSTEM "http://www.cs.cmu.edu/~jeffreyn/controller/pucspec.dtd">
+
+<!-- Note: This file is best viewed in Internet Explorer. --> 
+
+<!-- This is specification of the Audiophase home stereo that was used
+     for the PDG annual meeting on 02/15/2002. -->
+<spec name="Audiophase 5 CD Stereo">
+
+  <groupings>
+
+<!--
+List of States
+
+PowerState:         boolean {Off,On}
+
+XBassState:	    boolean
+
+ModeState:          enumerated (4) {Tuner,Tape,CD,AUX}
+
+RadioBandState:	    boolean {AM,FM}
+AMStation:	    integer (530,1710,10) (READONLY)
+AMPresets:	    enumerated (choose some values to put in here)
+FMStation:          fixedpt (1,88.5,108.0,0.1) (READONLY)
+FMPresets:          enumerated (choose some values to put in here)
+
+CDPlayMode:	    enumerated (3) {Stopped,Playing,Paused}
+CDDiscActive:	    enumerated (5) (1,2,3,4,5)
+Disc1Avail:         boolean (READONLY)
+Disc2Avail:	    boolean (READONLY)
+Disc3Avail:	    boolean (READONLY)
+Disc4Avail:         boolean (READONLY)
+Disc5Avail:	    boolean (READONLY)
+CDTrackState:	    string  (READONLY)
+CDRandomState:	    boolean
+CDRepeatState:	    enumerated (4) {Off,One,One Disc,All Disc}
+
+
+List of Commands
+
+VolumeUp
+VolumeDown
+
+SeekForward
+SeekReverse
+
+CDNextTrack
+CDPrevTrack
+
+-->
+  <group>
+    <state name="PowerState" priority="10">
+      <type name="OnOffType">
+        <valueSpace>
+          <boolean/>
+        </valueSpace>
+        <valueLabels>
+          <map index="false">
+            <label>Off</label>
+          </map>
+          <map index="true">
+            <label>On</label>
+	  </map>
+	</valueLabels>
+      </type>
+
+      <labels>
+        <label>Stereo Power</label>
+        <label>Power</label>
+	<label>Powr</label>
+	<label>Pwr</label>
+      </labels>
+    </state>
+
+    <group>
+
+      <active-if>
+	<equals state="PowerState">true</equals>
+      </active-if>
+
+      <labels>
+        <label>Volume</label>
+	<label>Vol</label>
+      </labels>
+
+      <command name="VolumeUp" priority="10">
+        <labels>
+          <label>Volume Up</label>
+          <label>Vol. Up</label>
+	  <label>^</label>
+        </labels>
+      </command>
+
+      <command name="VolumeDn" priority="10">
+        <labels>
+	  <label>Volume Down</label>
+	  <label>Vol. Down</label>
+	  <label>Down</label>
+	  <label>v</label>
+        </labels>
+      </command>
+    </group>
+
+    <state name="XBassState" priority="5">
+      <type>
+        <valueSpace>
+	  <boolean/>
+	</valueSpace>
+      </type>
+
+      <labels>
+        <label>X-Bass</label>
+      </labels>
+
+      <active-if>
+	<equals state="PowerState">true</equals>
+      </active-if>
+    </state>
+
+<group>
+      <active-if>
+	<equals state="PowerState">true</equals>
+      </active-if>
+
+<state name="ModeState">
+  <type>
+    <valueSpace>
+      <enumerated>
+        <items>4</items>
+      </enumerated>
+    </valueSpace>
+    <valueLabels>
+      <map index="1">
+        <label>Tape</label>
+      </map>
+      <map index="2">
+        <label>CD</label>
+      </map>
+      <map index="3">
+        <label>AUX</label>
+      </map>
+      <map index="4">
+        <label>Tuner</label>
+      </map>
+    </valueLabels>
+  </type>
+
+  <labels>
+    <label>Output Mode</label>
+    <label>Mode</label>
+  </labels>
+</state>
+
+<group>
+  <active-if>
+    <equals state="ModeState">1</equals>
+  </active-if>
+
+  <explanation name="TapeExpl">
+    <labels>
+      <label>Tape not controllable.</label>
+    </labels>
+  </explanation>
+</group>
+
+<group>
+  <active-if>
+    <equals state="ModeState">3</equals>
+  </active-if>
+
+  <explanation name="AUXExpl">
+    <labels>
+      <label>AUX not controllable.</label>
+    </labels>
+  </explanation>
+</group>
+
+<group>
+  <active-if>
+    <equals state="ModeState">4</equals>
+  </active-if>
+
+  <labels>
+    <label>Tuner</label>
+  </labels>
+
+  <state name="RadioBandState">
+    <type>
+      <valueSpace>
+        <boolean/>
+      </valueSpace>
+      <valueLabels>
+        <map index="true">
+	  <label>FM</label>
+	</map>
+	<map index="false">
+	  <label>AM</label>
+	</map>
+      </valueLabels>
+    </type>
+
+    <labels>
+      <label>Radio Band</label>
+      <label>Band</label>
+    </labels>
+  </state>
+
+  <group>
+    <command name="SeekForward">
+      <labels>
+        <label>Seek Forward</label>
+	<label>Seek -&gt;</label>
+	<label>&gt;&gt;</label>
+      </labels>
+    </command>
+
+    <command name="SeekReverse">
+      <labels>
+        <label>Seek Reverse</label>
+	<label>&lt;-Seek</label>
+	<label>&lt;&lt;</label>
+      </labels>
+    </command>
+  </group>
+
+  <group>
+    <active-if>
+      <equals state="RadioBandState">true</equals>
+    </active-if>
+
+    <state name="FMStation">
+      <type name="FMType">
+        <valueSpace>
+	  <custom>radio/station-fm</custom>
+	</valueSpace>
+      </type>
+      
+      <labels>
+        <label>Radio Station</label>
+	<label>Station</label>
+      </labels>
+    </state>
+
+    <state name="FMPresetNumber">
+      <type name="FMPresetType">
+        <valueSpace>
+	  <enumerated>
+	    <items>20</items>
+	  </enumerated>
+	</valueSpace>
+        <valueLabels>
+          <map index="1">
+	    <refstring state="FMPresetValue1"/>
+	  </map>
+	  <map index="2">
+	    <refstring state="FMPresetValue2"/>
+	  </map>
+	  <map index="3">
+	    <refstring state="FMPresetValue3"/>
+	  </map>	
+          <map index="4">
+	    <refstring state="FMPresetValue4"/>
+	  </map>
+	  <map index="5">
+	    <refstring state="FMPresetValue5"/>
+	  </map>
+	  <map index="6">
+	    <refstring state="FMPresetValue6"/>
+	  </map>	
+          <map index="7">
+	    <refstring state="FMPresetValue7"/>
+	  </map>
+	  <map index="8">
+	    <refstring state="FMPresetValue8"/>
+	  </map>
+	  <map index="9">
+	    <refstring state="FMPresetValue9"/>
+	  </map>	
+          <map index="10">
+	    <refstring state="FMPresetValue10"/>
+	  </map>
+	  <map index="11">
+	    <refstring state="FMPresetValue11"/>
+	  </map>
+	  <map index="12">
+	    <refstring state="FMPresetValue12"/>
+	  </map>	
+          <map index="13">
+	    <refstring state="FMPresetValue13"/>
+	  </map>
+	  <map index="14">
+	    <refstring state="FMPresetValue14"/>
+	  </map>
+	  <map index="15">
+	    <refstring state="FMPresetValue15"/>
+	  </map>	
+          <map index="16">
+	    <refstring state="FMPresetValue16"/>
+	  </map>
+	  <map index="17">
+	    <refstring state="FMPresetValue17"/>
+	  </map>
+	  <map index="18">
+	    <refstring state="FMPresetValue18"/>
+	  </map>	
+          <map index="19">
+	    <refstring state="FMPresetValue19"/>
+	  </map>
+	  <map index="20">
+	    <refstring state="FMPresetValue20"/>
+	  </map>
+        </valueLabels>
+      </type>
+      
+      <labels>
+        <label>Presets</label>
+      </labels>
+    </state>
+    
+    <state name="FMPresetValue1" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue2" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue3" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue4" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue5" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue6" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue7" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue8" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue9" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue10" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue11" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue12" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue13" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue14" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue15" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue16" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue17" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue18" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue19" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="FMPresetValue20" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+  </group>
+
+  <group>
+    <active-if>
+      <equals state="RadioBandState">false</equals>
+    </active-if>
+
+    <state name="AMStation">
+      <type name="AMType">
+        <valueSpace>
+	  <custom>radio/station-am</custom>
+        </valueSpace>
+      </type>
+
+      <labels>
+        <label>Radio Station</label>
+        <label>Station</label>
+      </labels>
+    </state>
+
+    <state name="AMPresetNumber">
+      <type name="AMPresetType">
+        <valueSpace>
+	  <enumerated>
+	    <items>20</items>
+	  </enumerated>
+	</valueSpace>
+	<valueLabels>
+          <map index="1">
+	    <refstring state="AMPresetValue1"/>
+	  </map>
+	  <map index="2">
+	    <refstring state="AMPresetValue2"/>
+	  </map>
+	  <map index="3">
+	    <refstring state="AMPresetValue3"/>
+	  </map>	
+          <map index="4">
+	    <refstring state="AMPresetValue4"/>
+	  </map>
+	  <map index="5">
+	    <refstring state="AMPresetValue5"/>
+	  </map>
+	  <map index="6">
+	    <refstring state="AMPresetValue6"/>
+	  </map>	
+          <map index="7">
+	    <refstring state="AMPresetValue7"/>
+	  </map>
+	  <map index="8">
+	    <refstring state="AMPresetValue8"/>
+	  </map>
+	  <map index="9">
+	    <refstring state="AMPresetValue9"/>
+	  </map>	
+          <map index="10">
+	    <refstring state="AMPresetValue10"/>
+	  </map>
+	  <map index="11">
+	    <refstring state="AMPresetValue11"/>
+	  </map>
+	  <map index="12">
+	    <refstring state="AMPresetValue12"/>
+	  </map>	
+          <map index="13">
+	    <refstring state="AMPresetValue13"/>
+	  </map>
+	  <map index="14">
+	    <refstring state="AMPresetValue14"/>
+	  </map>
+	  <map index="15">
+	    <refstring state="AMPresetValue15"/>
+	  </map>	
+          <map index="16">
+	    <refstring state="AMPresetValue16"/>
+	  </map>
+	  <map index="17">
+	    <refstring state="AMPresetValue17"/>
+	  </map>
+	  <map index="18">
+	    <refstring state="AMPresetValue18"/>
+	  </map>	
+          <map index="19">
+	    <refstring state="AMPresetValue19"/>
+	  </map>
+	  <map index="20">
+	    <refstring state="AMPresetValue20"/>
+	  </map>
+        </valueLabels>
+      </type>
+      
+      <labels>
+        <label>Presets</label>
+      </labels>
+    </state>
+
+    <state name="AMPresetValue1" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue2" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue3" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue4" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue5" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue6" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue7" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue8" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue9" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue10" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue11" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue12" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue13" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue14" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue15" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue16" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue17" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue18" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue19" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+
+    <state name="AMPresetValue20" access="ReadOnly">
+      <type>
+        <valueSpace>
+	  <string/>
+	</valueSpace>
+      </type>
+    </state>
+  </group>
+</group>
+
+<group>
+  <active-if>
+    <equals state="ModeState">2</equals>
+  </active-if>
+
+  <labels>
+    <label>CD</label>
+  </labels>
+
+  <state name="CDPlayMode">
+    <type>
+      <valueSpace>
+        <custom>playcontrol</custom>
+      </valueSpace>
+    </type>
+
+    <labels>
+      <label>CD Status</label>
+      <label>Status</label>
+    </labels>
+  </state>
+
+  <group>
+    <labels>
+      <label>Discs</label>
+    </labels>
+
+    <state name="CDDiscActive">
+      <type>
+        <valueSpace>
+	  <enumerated>
+	    <items>5</items>
+	  </enumerated>
+	</valueSpace>
+	<valueLabels>
+	  <map index="1" enable="Disc1Avail">
+	    <label>1</label>
+	  </map>
+	  <map index="2" enable="Disc2Avail">
+	    <label>2</label>
+	  </map>
+	  <map index="3" enable="Disc3Avail">
+	    <label>3</label>
+	  </map>
+	  <map index="4" enable="Disc4Avail">
+	    <label>4</label>
+	  </map>
+	  <map index="5" enable="Disc5Avail">
+	    <label>5</label>
+	  </map>
+	</valueLabels>
+      </type>
+
+      <labels>
+        <label>Disc</label>
+      </labels>
+    </state>
+
+    <state name="Disc1Avail" access="ReadOnly">
+      <type name="DiscType">
+        <valueSpace>
+	  <boolean/>
+	</valueSpace>
+	<valueLabels>
+	  <map index="true">
+	    <label>Active</label>
+	  </map>
+	  <map index="false">
+	    <label>Not Active</label>
+	  </map>
+	</valueLabels>
+      </type>
+
+      <labels>
+        <label>Disc 1</label>
+	<label>1</label>
+      </labels>
+    </state>
+
+    <state name="Disc2Avail" access="ReadOnly">
+      <apply-type name="DiscType"/>
+
+      <labels>
+        <label>Disc 2</label>
+	<label>2</label>
+      </labels>
+    </state>
+
+    <state name="Disc3Avail" access="ReadOnly">
+      <apply-type name="DiscType"/>
+
+      <labels>
+        <label>Disc 3</label>
+	<label>3</label>
+      </labels>
+    </state>
+
+    <state name="Disc4Avail" access="ReadOnly">
+      <apply-type name="DiscType"/>
+
+      <labels>
+        <label>Disc 4</label>
+	<label>4</label>
+      </labels>
+    </state>
+
+    <state name="Disc5Avail" access="ReadOnly">
+      <apply-type name="DiscType"/>
+
+      <labels>
+        <label>Disc 5</label>
+	<label>5</label>
+      </labels>
+    </state>
+  </group>
+
+  <group>
+
+
+    <command name="CDPrevTrack">
+      <labels>
+        <label>Prev</label>
+        <label>&lt;</label>
+      </labels>
+    </command>
+
+    <state name="CDTrackState" access="ReadOnly">
+      <type>
+        <valueSpace>
+          <string/>
+	</valueSpace>
+      </type>
+
+      <labels>
+        <label>Track</label>
+      </labels>
+    </state>
+
+    <command name="CDNextTrack">
+      <labels>
+        <label>Next</label>
+        <label>&gt;</label>
+      </labels>
+    </command>
+  </group>
+
+  <state name="CDRandomState">
+    <type>
+      <valueSpace>
+        <boolean/>
+      </valueSpace>
+    </type>
+
+    <labels>
+      <label>Random</label>
+    </labels>
+
+    <active-if>
+      <equals state="CDPlayMode">1</equals>
+    </active-if>
+  </state>
+
+  <state name="CDRepeatState">
+    <type>
+      <valueSpace>
+        <enumerated>
+	  <items>5</items>
+	</enumerated>
+      </valueSpace>
+      <valueLabels>
+        <map index="1">
+	  <label>Off</label>
+	</map>
+        <map index="2">
+	  <label>One Track</label>
+	  <label>One</label>
+	</map>
+	<map index="3" enable="CDRandomState">
+	  <label>All Tracks</label>
+	  <label>All</label>
+	</map>
+        <map index="4" enable="!CDRandomState">
+	  <label>One Disc</label>
+	  <label>1 Disc</label>
+	</map>
+        <map index="5" enable="!CDRandomState">
+	  <label>All Discs</label>
+	  <label>All</label>
+	</map>
+      </valueLabels>
+    </type>
+
+    <labels>
+      <label>Repeat</label>
+    </labels>
+  </state>
+
+</group>
+</group>
+</group>
+  </groupings>
+
+</spec>

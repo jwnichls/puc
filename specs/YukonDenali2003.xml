@@ -1,0 +1,739 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<spec name="Denali" version="PUC/2.0">
+
+  <labels>
+	  <label>GMC Yukon Denali 2003</label>
+	</labels>
+
+	<groupings>
+		
+		<group name="Ignition"> <!--Ignition-->
+			<state name="IgnitionState">
+      			<type name="OnOff">
+       				<boolean/>
+        			<valueLabels>
+          				<map index="false">
+            				<label>Off</label>
+          				</map>
+          				<map index="true">
+            				<label>On</label>
+	  					</map>
+					</valueLabels>
+      			</type>
+				<labels>
+					<label>Ignition</label>
+     			</labels>
+          	</state>
+			
+			<group name="AirBag"> <!--Passenger Air Bag Indicator-->
+				<active-if>
+					<equals state="IgnitionState">true</equals>
+				</active-if>
+				<labels> 
+					<label>Passenger Air Bag Indicator</label>
+					<label>Passenger Bag Indicator</label>
+				</labels>
+				<state name="BagIndicatorState" access="ReadOnly">
+					<type>
+						<boolean/>
+						<valueLabels>
+							<map index="false">
+								<label>Off</label>
+							</map>
+							<map index="true">
+								<label>On</label>
+							</map>
+						</valueLabels>
+					</type>
+					<labels>
+						<label>Passenger Air Bag Indicator</label>
+						<label>Passenger Bag Indicator</label>
+					</labels>
+				</state>
+			</group> <!--End Passenger Air Bag Indicator-->
+			
+			<group name="SeatControls"> <!--Vehicle Personalization-->
+				<active-if>
+					<equals state="IgnitionState">true</equals>
+				</active-if>
+				<labels>
+					<label>Vehicle Personalization</label>
+					<label>Personalization</label>
+				</labels>
+				<group name="Memory">
+					<labels>
+						<label>Memory Seat</label>
+					</labels>
+					<command name="MemorySeatDriver1">
+						<labels>
+							<label>Memory Seat Driver 1</label>
+						</labels>
+					</command>
+					<command name="MemorySeatDriver2">
+						<labels>
+							<label>Memory Seat Driver 2</label>
+						</labels>
+					</command>
+				</group>
+				
+				<group name="EastExit">
+					<labels>
+						<label>Easy Exit Seat</label>
+					</labels>
+					<command name="EasyExitDriver1">
+						<labels>
+							<label>Easy Exit Driver 1</label>
+						</labels>
+					</command>
+					<command name="EasyExitDriver2">
+						<labels>
+							<label>Easy Exit Driver 2</label>
+						</labels>
+					</command>
+				</group>
+			</group> <!--End Vehicle Personalization-->
+			
+			<group name="DIC"> <!--Driver Information Center-->
+				<active-if>
+					<equals state="IgnitionState">true</equals>
+				</active-if>
+				<labels>
+					<label>Driver Information Center</label>
+					<label>Driver Info. Center</label>
+					<label>DIC</label>
+				</labels>
+				
+				<group name="Trip"> <!--Trip Information-->
+					<labels>
+						<label>Trip Information</label>
+					</labels>
+					<group name="PersonalTrip"> <!-- Personal Trip-->
+						<state name="PersonalTripState">
+      						<apply-type name="OnOff"/>
+							<labels>
+								<label>Personal Trip</label>
+     						</labels>
+          				</state>
+						
+						<state name="PCurrentDistanceTravelledState" access="ReadOnly">
+							<active-if>
+								<equals state="PersonalTripState">true</equals>
+							</active-if>
+							<type>
+								<string/>
+							</type>	
+							<labels>
+								<label>Current Distance Travelled</label>
+								<label>Current Distance</label>
+							</labels>	
+						</state>
+						
+						<state name="PFuelUsedState" access="ReadOnly">
+							<active-if>
+								<equals state="PersonalTripState">true</equals>
+							</active-if>
+							<type>
+								<string/>
+							</type>
+							<labels>
+								<label>Amount of fuel used</label>
+								<label>Fuel used</label>
+							</labels>
+						</state>
+						
+						<state name="PAverageEconomyState" access="ReadOnly">
+							<active-if>
+								<equals state="PersonalTripState">true</equals>
+							</active-if>
+							<type>
+								<string/>
+							</type>
+							<labels>
+								<label>Average Economy</label>
+							</labels>
+						</state>
+						
+						<state name="PAverageSpeedState" access="ReadOnly">
+							<active-if>
+								<equals state="PersonalTripState">true</equals>
+							</active-if>
+							<type>
+								<string/>
+							</type>
+							<labels>
+								<label>Average Speed in MPH</label>
+							</labels>
+						</state>
+						
+						<state name="PTripToAnnualTripMilesRatioState" access="ReadOnly">
+							<active-if>
+								<equals state="PersonalTripState">true</equals>
+							</active-if>
+							<type>
+								<string/>
+							</type>
+							<labels>
+								<label>Ratio Trip to Annual miles</label>
+								<label>Trip to Annual miles</label>
+							</labels>
+						</state>
+						
+					</group> <!--End Personal Trip-->
+					
+					<group name="BusinessTrip"> <!--Business Trip-->
+						<state name="BusinessTripState">
+      						<apply-type name="OnOff"/>
+							<labels>
+								<label>Business Trip</label>
+     						</labels>
+          				</state>
+						
+						<state name="BCurrentDistanceTravelledState" access="ReadOnly">
+							<active-if>
+								<equals state="BusinessTripState">true</equals>
+							</active-if>
+							<type>
+								<string/>
+							</type>	
+							<labels>
+								<label>Current Distance Travelled</label>
+								<label>Current Distance</label>
+							</labels>	
+						</state>
+						
+						<state name="BFuelUsedState" access="ReadOnly">
+							<active-if>
+								<equals state="BusinessTripState">true</equals>
+							</active-if>
+							<type>
+								<string/>
+							</type>
+							<labels>
+								<label>Amount of fuel used</label>
+								<label>Fuel used</label>
+							</labels>
+						</state>
+						
+						<state name="BAverageEconomyState" access="ReadOnly">
+							<active-if>
+								<equals state="BusinessTripState">true</equals>
+							</active-if>
+							<type>
+								<string/>
+							</type>
+							<labels>
+								<label>Average Economy</label>
+							</labels>
+						</state>
+						
+						<state name="BAverageSpeedState" access="ReadOnly">
+							<active-if>
+								<equals state="BusinessTripState">true</equals>
+							</active-if>
+							<type>
+								<string/>
+							</type>
+							<labels>
+								<label>Average Speed in MPH</label>
+							</labels>
+						</state>
+						
+						<state name="BTripToAnnualTripMilesRatioState" access="ReadOnly">
+							<active-if>
+								<equals state="BusinessTripState">true</equals>
+							</active-if>
+							<type>
+								<string/>
+							</type>
+							<labels>
+								<label>Ratio Trip to Annual miles</label>
+								<label>Trip to Annual miles</label>
+							</labels>
+						</state>
+						
+					</group> <!--End Business Trip-->
+					
+					<group name="Odometer"> <!--Season Odometer-->
+						<labels>
+							<label>Season Odometer</label>
+						</labels>
+						<state name="SeasonOdometerState" access="ReadOnly">
+							<type>
+								<string/>
+							</type>
+							<labels>
+								<label>Total Distance Driven</label>
+								<label>Season Odometer</label>
+							</labels>
+						</state>
+					</group> <!--End Season Odometer-->
+					
+					<group name="Hourmeter"> <!--Hourmeter-->
+						<labels>
+							<label>Hourmeter</label>
+						</labels>
+						<state name="HourmeterState" access="ReadOnly">
+							<type>
+								<string/>
+							</type>
+							<labels>
+								<label>Total hours engine ran</label>
+								<label>Hourmeter</label>
+							</labels>
+						</state>
+					</group> <!--End Hourmeter-->
+					
+					<group name="AnnualLog"> <!--Annual Log-->
+						<labels>
+							<label>Annual Log</label>
+						</labels>
+						<state name="AnnualLogState" access="ReadOnly">
+							<type>
+								<string/>
+							</type>
+							<labels>
+								<label>Annual Mileage</label>
+							</labels>
+						</state>
+					</group> <!--End Annual Log-->
+					
+					<group name="Timer"> <!--Timer-->
+						<labels>
+							<label>Timer</label>
+						</labels>
+						<state name="TimerState" access="ReadOnly">
+							<type>
+								<string/>
+							</type>
+							<labels>
+								<label>Stopwatch</label>
+								<label>Timer</label>
+							</labels>
+						</state>
+					</group> <!--End Timer-->
+					
+				</group> <!--End Trip Information-->
+				
+				<group name="Fuel"> <!--Fuel Information-->
+					<labels>
+						<label>Fuel Information</label>
+					</labels>
+					
+					<group name="Range"> <!--Fuel Range-->
+						<labels>
+							<label>Fuel Range</label>
+						</labels>
+						<state name="FuelRangeState" access="ReadOnly">
+							<type>
+								<string/>
+							</type>
+							<labels>
+								<label>Drive without Refuel</label>
+							</labels>
+						</state>
+					</group> <!--End Fuel Range-->
+					
+					<group name="AveEconomy"> <!--Average Fuel Economy-->
+						<labels>
+							<label>Average Fuel Economy</label>
+							<label>Avg. Fuel Economy</label>
+						</labels>
+						<state name="AverageFuelEconomyState" access="ReadOnly">
+							<type>
+								<string/>
+							</type>
+							<labels>
+								<label>Average Fuel Economy</label>
+							</labels>
+						</state>
+					</group> <!--End Average Fuel Economy-->
+					
+					<group name="InstantEconomy"> <!--Instant Fuel Economy-->
+						<labels>
+							<label>Instant Fuel Economy</label>
+							<label>Inst. Fuel Economy</label>
+						</labels>
+						<state name="InstantFuelEconomyState" access="ReadOnly">
+							<type>
+								<string/>
+							</type>
+							<labels>
+								<label>Instant Fuel Economy</label>
+							</labels>
+						</state>
+					</group> <!--End Instant Fuel Economy-->
+					
+					<group name="OilLife"> <!--GM Oil Life System-->
+						<labels>
+							<label>GM Oil Life</label>
+							<label>Oil Life</label>
+						</labels>
+						<state name="OilLifeState" access="ReadOnly">
+							<type>
+								<string/>
+							</type>
+							<labels>
+								<label>Oil life</label>
+							</labels>
+						</state>
+					</group> <!--End GM Oil Life System-->
+									
+				</group> <!--End Fuel Information-->
+				
+				<group name="Personalization"> <!--Personalization-->
+					<labels>
+						<label>Personalization Settings</label>
+						<label>Personalization</label>
+					</labels>
+					
+					<state name="AlarmWarningTypeState">
+						<type>
+							<enumerated>
+								<item-count>4</item-count>
+							</enumerated>
+							
+							<valueLabels>
+								<map index="1">
+									<label>Headlamps and Horn</label>
+									<label>Both</label>
+								</map>
+								<map index="2">
+									<label>Alarm off</label>
+									<label>off</label>
+								</map>
+								<map index="3">
+									<label>Horn</label>
+								</map>
+								<map index="4">
+									<label>Lamps</label>
+								</map>
+							</valueLabels>						
+						</type>
+						
+						<labels>
+							<label>Alarm Warning Settings</label>
+							<label>Alarm Warning</label>
+						</labels>
+					</state>
+					
+					<state name="AutomaticLockingState">
+						<type>
+							<enumerated>
+								<item-count>3</item-count>
+							</enumerated>
+							
+							<valueLabels>
+								<map index="1">
+									<label>Lock Doors Out of Park</label>
+								</map>
+								<map index="2">
+									<label>Lock Doors Manually</label>
+									<label>Manually</label>
+								</map>
+								<map index="3">
+									<label>Lock Doors at 8mph</label>
+								</map>
+							</valueLabels>
+						</type>
+						
+						<labels>
+							<label>Automatic Locking</label>
+							<label>Automatic Lock</label>
+						</labels>
+					</state>
+					
+					<state name="AutomaticUnlockingState">
+						<type>
+							<enumerated>
+								<item-count>4</item-count>
+							</enumerated>
+							
+							<valueLabels>
+								<map index="1">
+									<label>Unlock All in Park</label>
+									<label>Unlock All</label>
+								</map>
+								<map index="2">
+									<label>Unlock all at Key out</label>
+									<label>Unlock at Key out</label>
+								</map>
+								<map index="3">
+									<label>Unlock Doors Manually</label>
+									<label>Unlock Manually</label>
+								</map>
+								<map index="4">
+									<label>Unlock Driver in Park</label>
+								</map>
+							</valueLabels>
+						</type>
+						
+						<labels>
+							<label>Automatic Unlocking</label>
+							<label>Automatic Unlock</label>
+						</labels>
+					</state>
+					
+					<state name="SeatPositionRecallState">
+						<type>
+							<enumerated>
+								<item-count>3</item-count>
+							</enumerated>
+							
+							<valueLabels>
+								<map index="1">
+									<label>Seat Position Recall Off</label>
+									<label>Recall off</label>
+								</map>
+								<map index="2">
+									<label>Seat Position Recall at Key in</label>
+									<label>Recall at Key in</label>
+								</map>
+								<map index="3">
+									<label>Seat Position Recall On Remote</label>
+									<label>Recall On Remote</label>
+								</map>
+							</valueLabels>
+						</type>
+						
+						<labels>
+							<label>Seat Position Recall</label>
+						</labels>
+					</state>
+					
+					<state name="PerimeterLightingState">
+						<type>
+							<enumerated>
+								<item-count>2</item-count>
+							</enumerated>
+							
+							<valueLabels>
+								<map index="1">
+									<label>Perimeter Lighting On</label>
+									<label>Ligting On</label>
+								</map>
+								<map index="2">
+									<label>Perimeter Lighting Off</label>
+									<label>Lighting Off</label>
+								</map>
+							</valueLabels>
+						</type>
+						
+						<labels>
+							<label>Perimeter Lighting</label>
+						</labels>
+					</state>
+					
+					<state name="RemoteLockFeedbackState">
+						<type>
+							<enumerated>
+								<item-count>4</item-count>
+							</enumerated>
+							
+							<valueLabels>
+								<map index="1">
+									<label>Lamp and Horn</label>
+									<label>Both</label>
+								</map>
+								<map index="2">
+									<label>Lock Feedback off</label>
+									<label>No Feedback</label>
+								</map>
+								<map index="3">
+									<label>Lock Feedback Horn</label>
+									<label>Feedback Horn</label>
+								</map>
+								<map index="4">
+									<label>Lock Feedback Lamps</label>
+									<label>Feedback Lamps</label>
+								</map>
+							</valueLabels>
+						</type>
+						
+						<labels>
+							<label>Remote Lock Feedback</label>
+						</labels>
+					</state>
+					
+					<state name="RemoteUnlockFeedbackState">
+						<type>
+							<enumerated>
+								<item-count>4</item-count>
+							</enumerated>
+							
+							<valueLabels>
+								<map index="1">
+									<label>Unlock Feedback Lamps</label>
+									<label>Lamps</label>
+								</map>
+								<map index="2">
+									<label>Unlock Feedback Both</label>
+									<label>Lamps and Horn</label>
+								</map>
+								<map index="3">
+									<label>Unlock Feedback Off</label>
+									<label>off</label>
+								</map>
+								<map index="4">
+									<label>Unlock Feedback Horn</label>
+									<label>Horn</label>
+								</map>
+							</valueLabels>
+						</type>
+						
+						<labels>
+							<label>Remote Unlock Feedback</label>
+						</labels>
+					</state>
+					
+					<state name="HeadlampsOnatExitState">
+						<type>
+							<enumerated>
+								<item-count>7</item-count>
+							</enumerated>
+							
+							<valueLabels>
+								<map index="1">
+									<label>Headlamp Delay 10 seconds</label>
+									<label>Delay 10 seconds</label>
+								</map>
+								<map index="2">
+									<label>Headlamp Delay 20 seconds</label>
+									<label>Delay 20 seconds</label>
+								</map>
+								<map index="3">
+									<label>Headlamp Delay 40 seconds</label>
+									<label>Delay 40 seconds</label>
+								</map>
+								<map index="4">
+									<label>Headlamp Delay 60 seconds</label>
+									<label>Delay 60 seconds</label>
+								</map>
+								<map index="5">
+									<label>Headlamp Delay 120 seconds</label>
+									<label>Delay 120 seconds</label>
+								</map>
+								<map index="6">
+									<label>Headlamp Delay 180 seconds</label>
+									<label>Delay 180 seconds</label>
+								</map>
+								<map index="7">
+									<label>Headlamp Delay off</label>
+									<label>Delay off</label>
+								</map>
+							</valueLabels>
+						</type>
+						
+						<labels>
+							<label>Headlamps On at Exit</label>
+						</labels>
+					</state>
+					
+					<state name="CurbViewAssistState">
+						<type>
+							<enumerated>
+								<item-count>4</item-count>
+							</enumerated>
+							
+							<valueLabels>
+								<map index="1">
+									<label>Curb View off</label>
+									<label>off</label>
+								</map>
+								<map index="2">
+									<label>Curb View Passenger</label>
+									<label>Passenger</label>
+								</map>
+								<map index="3">
+									<label>Curb View Driver</label>
+									<label>Driver</label>
+								</map>
+								<map index="4">
+									<label>Curb View Both</label>
+									<label>Passenger and Driver</label>
+								</map>
+							</valueLabels>
+						</type>
+						
+						<labels>
+							<label>Curb View Assist</label>
+						</labels>
+					</state>
+					
+					<state name="EasyExitSeatState">
+						<type>
+							<enumerated>
+								<item-count>2</item-count>
+							</enumerated>
+							
+							<valueLabels>
+								<map index="1">
+									<label>Seat Position Exit Off</label>
+									<label>No Seat Exit</label>
+								</map>
+								<map index="2">
+									<label>Seat Position Exit On</label>
+									<label>Seat Exit On</label>
+								</map>
+							</valueLabels>
+						</type>
+						
+						<labels>
+							<label>Easy Exit Seat</label>
+						</labels>
+					</state>
+					
+					<state name="DisplayUnitsState">
+						<type>
+							<enumerated>
+								<item-count>2</item-count>
+							</enumerated>
+							
+							<valueLabels>
+								<map index="1">
+									<label>English</label>
+								</map>
+								<map index="2">
+									<label>Metric</label>
+								</map>
+							</valueLabels>
+						</type>
+						
+						<labels>
+							<label>Display Units</label>
+						</labels>
+					</state>
+					
+					<state name="DisplayLanguageState">
+						<type>
+							<enumerated>
+								<item-count>3</item-count>
+							</enumerated>
+							
+							<valueLabels>
+								<map index="1">
+									<label>English</label>
+								</map>
+								<map index="2">
+									<label>French</label>
+								</map>
+								<map index="3">
+									<label>Spanish</label>
+								</map>
+							</valueLabels>
+						</type>
+						
+						<labels>
+							<label>Display Language</label>
+						</labels>
+					</state>
+					
+				</group> <!--End Personalization-->
+				
+			</group> <!--End Driver Information Center-->
+			
+		</group> <!--End Ignition-->
+		
+	</groupings>
+	
+</spec>

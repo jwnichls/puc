@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Note: This	file is	best viewed in Internet Explorer.	-->
+<!-- This	is specification of	the	Audiophase home	stereo that	was	used
+for	the	PDG	annual meeting on	02/15/2002.	-->
+<spec name="Audiophase5CDStereo" xmlns="d:\My Documents\research\controller\puc\specs\pucspec.dtd" version="PUC/2.0">
+	<groupings>
+		<!--
+List of	States
+
+PowerState:	boolean	{Off,On}
+
+XBassState:	boolean
+
+ModeState: enumerated	(4)	{Tuner,Tape,CD,AUX}
+
+RadioBandState:	boolean	{AM,FM}
+AMStation: integer (530,1710,10) (READONLY)
+AMPresets: enumerated	(choose	some values	to put in	here)
+FMStation: fixedpt (1,88.5,108.0,0.1)	(READONLY)
+FMPresets: enumerated	(choose	some values	to put in	here)
+
+CDPlayMode:	enumerated (3) {Stopped,Playing,Paused}
+CDDiscActive:	enumerated (5) (1,2,3,4,5)
+Disc1Avail:	boolean	(READONLY)
+Disc2Avail:	boolean	(READONLY)
+Disc3Avail:	boolean	(READONLY)
+Disc4Avail:	boolean	(READONLY)
+Disc5Avail:	boolean	(READONLY)
+CDTrackState:	string (READONLY)
+CDRandomState: boolean
+CDRepeatState: enumerated	(4)	{Off,One,One Disc,All	Disc}
+
+
+List of	Commands
+
+VolumeUp
+VolumeDown
+
+SeekForward
+SeekReverse
+
+CDNextTrack
+CDPrevTrack
+
+-->
+		<group name="Base">
+			<state name="PowerState" priority="10">
+				<type name="OnOffType">
+					<boolean />
+					<valueLabels>
+						<map index="false">
+							<label>Off</label>
+						</map>
+						<map index="true">
+							<label>On</label>
+						</map>
+					</valueLabels>
+				</type>
+				<labels>
+					<label>Stereo	Power</label>
+					<label>Power</label>
+					<label>Powr</label>
+					<label>Pwr</label>
+				</labels>
+			</state> <!-- End Base.PowerState -->
+			<group name="Volume" template="volume">
+				<active-if>
+					<equals state="PowerState">true</equals>
+				</active-if>
+				<labels>
+					<label>Volume</label>
+					<label>Vol</label>
+				</labels>
+				<command name="Up" priority="10">
+					<labels>
+						<label>Up</label>
+						<label>^</label>
+					</labels>
+				</command> <!-- End Base.Volume.Up -->
+				<command name="Down" priority="10">
+					<labels>
+						<label>Down</label>
+						<label>v</label>
+					</labels>
+				</command> <!-- End Base.Volume.Down -->
+			</group> <!-- End Base.Volume -->
+			<state name="XBassState" priority="5">
+				<apply-type name="OnOffType"/>
+				<labels>
+					<label>X-Bass</label>
+				</labels>
+				<active-if>
+					<equals state="PowerState">true</equals>
+				</active-if>
+			</state> <!-- End Base.XBassState -->
+			<group name="Mode">
+				<active-if>
+					<equals state="PowerState">true</equals>
+				</active-if>
+				<state name="ModeState">
+					<type>
+						<enumerated>
+							<itemCount>4</itemCount>
+						</enumerated>
+						<valueLabels>
+							<map index="1">
+								<label>Tape</label>
+							</map>
+							<map index="2">
+								<label>CD</label>
+							</map>
+							<map index="3">
+								<label>AUX</label>
+							</map>
+							<map index="4">
+								<label>Tuner</label>
+							</map>
+						</valueLabels>
+					</type>
+					<labels>
+						<label>Output	Mode</label>
+						<label>Mode</label>
+					</labels>
+				</state> <!-- End Base.Mode.ModeState -->
+				<group name="Tape">
+					<active-if>
+						<equals state="ModeState">1</equals>
+					</active-if>
+					<explanation name="TapeExpl">
+						<labels>
+							<label>Tape	not	controllable.</label>
+						</labels>
+					</explanation> <!-- End Base.Mode.Tape.TapeExpl -->
+				</group> <!-- End Base.Mode.Tape -->
+				<group name="AUX">
+					<active-if>
+						<equals state="ModeState">3</equals>
+					</active-if>
+					<explanation name="AUXExpl">
+						<labels>
+							<label>AUX not controllable.</label>
+						</labels>
+					</explanation> <!-- End Base.Mode.AUX.AUXExpl -->
+				</group> <!-- End Base.Mode.AUX -->
+				<group name="Radio">
+					<active-if>
+						<equals state="ModeState">4</equals>
+					</active-if>
+					<labels>
+						<label>Tuner</label>
+					</labels>
+					<state name="RadioBandState">
+						<type>
+							<boolean />
+							<valueLabels>
+								<map index="true">
+									<label>FM</label>
+								</map>
+								<map index="false">
+									<label>AM</label>
+								</map>
+							</valueLabels>
+						</type>
+						<labels>
+							<label>Radio Band</label>
+							<label>Band</label>
+						</labels>
+					</state> <!-- End Base.Mode.Radio.RadioBandState -->
+					<group name="Commands">
+						<labels>
+							<label>Seek</label>
+						</labels>
+						<command name="SeekReverse">
+							<labels>
+								<label>Seek	Reverse</label>
+								<label>&lt;-Seek</label>
+								<label>&lt;&lt;</label>
+							</labels>
+						</command> <!-- End Base.Mode.Radio.Commands.SeekReverse -->
+						<command name="SeekForward">
+							<labels>
+								<label>Seek	Forward</label>
+								<label>Seek	-&gt;</label>
+								<label>&gt;&gt;</label>
+							</labels>
+						</command> <!-- End Base.Mode.Radio.Commands.SeekForward -->
+					</group> <!-- End Base.Mode.Radio.Commands -->
+					<group name="FM">
+						<active-if>
+							<equals state="RadioBandState">true</equals>
+						</active-if>
+						<state name="FMStation">
+							<type name="FMType">
+								<string />
+							</type>
+							<labels>
+								<label>Radio Station</label>
+								<label>Station</label>
+							</labels>
+						</state> <!-- End Base.Mode.Radio.FM.FMStation -->
+						
+						<list-group name="PresetList">
+						
+							<selectionType typeName="one"/>
+						
+							<state name="PresetValue" access="ReadOnly">
+								<type>
+									<string/>
+								</type>
+								<labels>
+									<label>FM Preset</label>
+								</labels>
+							</state> <!-- End Base.Mode.Radio.FM.PresetList.PresetValue -->
+						
+						</list-group> <!-- End Base.Mode.Radio.FM.PresetList -->
+						
+					</group> <!-- End Base.Mode.Radio.FM -->
+					<group name="AM">
+						<active-if>
+							<equals state="RadioBandState">false</equals>
+						</active-if>
+						<state name="AMStation">
+							<type name="AMType">
+								<string />
+							</type>
+							<labels>
+								<label>Radio Station</label>
+								<label>Station</label>
+							</labels>
+						</state> <!-- End Base.Mode.Radio.AM.RadioBandState -->
+						
+						<list-group name="PresetList">
+						
+							<selectionType typeName="one"/>
+						
+							<state name="PresetValue" access="ReadOnly">
+								<type>
+									<string/>
+								</type>
+								<labels>
+									<label>FM Preset</label>
+								</labels>
+							</state> <!-- End Base.Mode.Radio.AM.PresetList.PresetValue -->
+						
+						</list-group> <!-- End Base.Mode.Radio.AM.PresetList -->
+
+					</group> <!-- End Base.Mode.Radio.FM -->
+				</group> <!-- End Base.Mode.Radio -->
+				<group name="CD">
+					<active-if>
+						<equals state="ModeState">2</equals>
+					</active-if>
+					<labels>
+						<label>CD</label>
+					</labels>
+					
+					
+					<group name="Controls" template="media-controls">
+						<labels>
+							<label>Play	Control</label>
+							<label>Control</label>
+						</labels>
+						<command name="PrevTrack">
+							<labels>
+								<label>Prev</label>
+							</labels>
+						</command> <!-- End Base.Mode.CD.Controls.PrevTrack -->
+						<command name="Play">
+							<labels>
+								<label>Play</label>
+							</labels>
+						</command> <!-- End Base.Mode.CD.Controls.Play -->
+						<command name="Pause">
+							<labels>
+								<label>Pause</label>
+								<label>"</label>
+							</labels>
+						</command> <!-- End Base.Mode.CD.Controls.Pause -->
+						<command name="Stop">
+							<labels>
+								<label>Stop</label>
+								<label>[]</label>
+							</labels>
+						</command> <!-- End Base.Mode.CD.Controls.Stop -->
+						<command name="NextTrack">
+							<labels>
+								<label>Next</label>
+							</labels>
+						</command> <!-- End Base.Mode.CD.Controls.NextTrack -->
+						<state name="Status" access="ReadOnly">
+							<type>
+								<enumeration>
+									<itemCount>3</itemCount>
+									<valueLabels>
+										<map index="1">
+											<label>Play</label>
+										</map>
+										<map index="2">
+											<label>Pause</label>
+										</map>
+										<map index="3">
+											<label>Stop</label>
+										</map>
+									</valueLabels>
+								</enumeration>
+							</type>
+							<labels>
+								<label>Status</label>
+							</labels>
+						</state> <!-- End Base.Mode.CD.Controls.Status -->
+					</group> <!-- End Base.Mode.CD.Controls -->
+					
+					<state name="TrackState" access="ReadOnly">
+						<type>
+							<string />
+						</type>
+						<labels>
+							<label>Track</label>
+						</labels>
+					</state> <!-- End Base.Mode.CD.TrackState -->
+					
+					<group name="Discs">
+						<labels>
+							<label>Discs</label>
+						</labels>
+						<state name="DiscActive">
+							<type>
+								<enumerated>
+									<itemCount>5</itemCount>
+								</enumerated>
+								<valueLabels>
+									<map index="1" enable="Disc1Avail">
+										<label>1</label>
+									</map>
+									<map index="2" enable="Disc2Avail">
+										<label>2</label>
+									</map>
+									<map index="3" enable="Disc3Avail">
+										<label>3</label>
+									</map>
+									<map index="4" enable="Disc4Avail">
+										<label>4</label>
+									</map>
+									<map index="5" enable="Disc5Avail">
+										<label>5</label>
+									</map>
+								</valueLabels>
+							</type>
+							<labels>
+								<label>Disc</label>
+							</labels>
+						</state> <!-- End Base.Mode.CD.Discs.DiscActive -->
+						<state name="Disc1Avail" access="ReadOnly">
+							<type name="DiscType">
+								<boolean />
+								<valueLabels>
+									<map index="true">
+										<label>Active</label>
+									</map>
+									<map index="false">
+										<label>Not Active</label>
+									</map>
+								</valueLabels>
+							</type>
+							<labels>
+								<label>Disc	1</label>
+								<label>1</label>
+							</labels>
+						</state> <!-- End Base.Mode.CD.Discs.Disc1Avail -->
+						<state name="Disc2Avail" access="ReadOnly">
+							<apply-type name="DiscType" />
+							<labels>
+								<label>Disc	2</label>
+								<label>2</label>
+							</labels>
+						</state> <!-- End Base.Mode.CD.Discs.Disc2Avail -->
+						<state name="Disc3Avail" access="ReadOnly">
+							<apply-type name="DiscType" />
+							<labels>
+								<label>Disc	3</label>
+								<label>3</label>
+							</labels>
+						</state> <!-- End Base.Mode.CD.Discs.Disc3Avail -->
+						<state name="Disc4Avail" access="ReadOnly">
+							<apply-type name="DiscType" />
+							<labels>
+								<label>Disc	4</label>
+								<label>4</label>
+							</labels>
+						</state> <!-- End Base.Mode.CD.Discs.Disc4Avail -->
+						<state name="Disc5Avail" access="ReadOnly">
+							<apply-type name="DiscType" />
+							<labels>
+								<label>Disc	5</label>
+								<label>5</label>
+							</labels>
+						</state> <!-- End Base.Mode.CD.Discs.Disc5Avail -->
+					</group> <!-- End Base.Mode.CD.Discs -->
+
+					<state name="RandomState">
+						<type>
+							<boolean />
+						</type>
+						<labels>
+							<label>Random</label>
+						</labels>
+						<active-if>
+							<equals state="Status">1</equals>
+						</active-if>
+					</state> <!-- End Base.Mode.CD.RandomState -->
+					<state name="RepeatState">
+						<type>
+							<enumerated>
+								<itemCount>5</itemCount>
+							</enumerated>
+							<valueLabels>
+								<map index="1">
+									<label>Off</label>
+								</map>
+								<map index="2">
+									<label>One Track</label>
+									<label>One</label>
+								</map>
+								<map index="3" enable="RandomState">
+									<label>All Tracks</label>
+									<label>All</label>
+								</map>
+								<map index="4" enable="!RandomState">
+									<label>One Disc</label>
+									<label>1 Disc</label>
+								</map>
+								<map index="5" enable="!RandomState">
+									<label>All Discs</label>
+									<label>All</label>
+								</map>
+							</valueLabels>
+						</type>
+						<labels>
+							<label>Repeat</label>
+						</labels>
+					</state> <!-- End Base.Mode.CD.RepeatState -->
+				</group> <!-- End Base.Mode.CD -->
+			</group> <!-- End Base.Mode -->
+		</group> <!-- End Base -->
+	</groupings>
+</spec>

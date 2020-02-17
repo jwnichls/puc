@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<spec name="TAPIPhoneVoiceMail" version="PUC/2.0">
+	<groupings>
+		<group name="Phone">
+			<!-- Phone Functions -->
+			<labels>
+				<label>Dialing</label>
+				<label>Phone</label>
+			</labels>
+			<state name="OffHook">
+				<type>
+					<boolean />
+					<valueLabels>
+						<map index="true">
+							<label>Off Hook</label>
+						</map>
+						<map index="false">
+							<label>On	Hook</label>
+						</map>
+					</valueLabels>
+				</type>
+				<labels>
+					<label>Line	Status</label>
+					<label>Status</label>
+					<label>Line</label>
+				</labels>
+			</state> <!-- End Phone.OffHook -->
+			<state name="SpeakerPhone">
+				<type name="OnOff">
+					<boolean />
+					<valueLabels>
+						<map index="true">
+							<label>On</label>
+						</map>
+						<map index="false">
+							<label>Off</label>
+						</map>
+					</valueLabels>
+				</type>
+				<labels>
+					<label>Speaker Phone</label>
+					<label>Speaker</label>
+				</labels>
+			</state> <!-- End Phone.SpeakerPhone -->
+			<group name="Dialpad" template="telephone-dialpad"> <!--	dial pad commands	-->
+				<active-if>
+					<equals state="OffHook">true</equals>
+				</active-if>
+				<command name="DialKey1">
+					<labels>
+						<label>1</label>
+					</labels>
+				</command>
+				<command name="DialKey2">
+					<labels>
+						<label>2 abc</label>
+						<label>2</label>
+					</labels>
+				</command>
+				<command name="DialKey3">
+					<labels>
+						<label>3 def</label>
+						<label>3</label>
+					</labels>
+				</command>
+				<command name="DialKey4">
+					<labels>
+						<label>4 ghi</label>
+						<label>4</label>
+					</labels>
+				</command>
+				<command name="DialKey5">
+					<labels>
+						<label>5 jkl</label>
+						<label>5</label>
+					</labels>
+				</command>
+				<command name="DialKey6">
+					<labels>
+						<label>6 mno</label>
+						<label>6</label>
+					</labels>
+				</command>
+				<command name="DialKey7">
+					<labels>
+						<label>7 pqrs</label>
+						<label>7</label>
+					</labels>
+				</command>
+				<command name="DialKey8">
+					<labels>
+						<label>8 tuv</label>
+						<label>8</label>
+					</labels>
+				</command>
+				<command name="DialKey9">
+					<labels>
+						<label>9 wxyz</label>
+						<label>9</label>
+					</labels>
+				</command>
+				<command name="DialKey0">
+					<labels>
+						<label>0</label>
+					</labels>
+				</command>
+				<command name="DialKeyStar">
+					<labels>
+						<label>*</label>
+					</labels>
+				</command>
+				<command name="DialKeyPound">
+					<labels>
+						<label>#</label>
+					</labels>
+				</command>
+			</group> <!-- End Phone.Dialpad -->
+			<group name="Call"> <!-- Functions used	while	in call	-->
+				<active-if>
+					<equals state="OffHook">true</equals>
+				</active-if>
+
+				<state name="HoldState">
+					<apply-type name="OnOff" />
+					<labels>
+						<label>Hold</label>
+					</labels>
+				</state> <!-- End Phone.Call.HoldState -->
+
+				<state name="MuteMicrophone">
+					<apply-type name="OnOff" />
+					<labels>
+						<label>Mute</label>
+					</labels>
+				</state> <!-- End Phone.Call.MuteMicrophone -->
+				
+				<command name="FlashButton">
+					<labels>
+						<label>Flash</label>
+					</labels>
+				</command> <!-- End Phone.Call.FlashButton -->
+			</group> <!-- End Phone.Call -->
+			<group name="SpeedDial"> <!-- Speed Dial Functions	-->
+		
+				<list-group name="StoredNumbers">
+					<selectionType typeName="one"/> <!-- Default selectionType, included for clarity -->
+					<state name="Number">
+						<type>
+							<string/>
+						</type>
+						<labels>
+							<label>Number</label>
+						</labels>
+					</state> <!-- End Phone.SpeedDial.StoredNumbers.Number -->
+				</list-group> <!-- End Phone.SpeedDial.StoredNumbers -->
+		
+				<command name="DialSpeedNumber">
+					<labels>
+						<label>Dial	Selected Number</label>
+						<label>Dial</label>
+					</labels>
+					<active-if>
+						<apply-over list="StoredNumbers.selection" trueIf="any"> <!-- "any" and "all" are equivalent here -->
+							<defined state="Number"/>
+						</apply-over>
+					</active-if>
+				</command> <!-- End Phone.SpeedDial.DialSpeedNumber -->
+			</group> <!-- End Phone.SpeedDial -->
+		</group> <!-- End Phone -->
+	
+		<group name="AnsweringMachine"> <!-- Answering Machine Functions -->
+	
+			<group name="Messages"> <!-- Message-Related Functions -->
+		
+				<labels>
+					<label>Messages</label>
+				</labels>
+				
+				<list-group name="MailboxList">
+					<selectionType typeName="one"/>
+					
+					<list-group name="MessageList">
+						<selectionType typeName="multiple"/>
+						<state name="MessageID" access="ReadOnly">
+							<type>
+								<string/>
+							</type>
+							<labels>
+								<label>Message ID</label>
+								<label>ID</label>
+							</labels>
+						</state> <!-- End AnsweringMachine.Messages.MailboxList.MessageList.MessageID -->
+						<state name="IsNew" access="ReadOnly">
+							<type>
+								<boolean/>
+							</type>
+						</state> <!-- End AnsweringMachine.Messages.MailboxList.MessageList.IsNew -->
+					
+					</list-group> <!-- End AnsweringMachine.Messages.MailboxList.MessageList -->
+					
+					<state name="Enabled" access="ReadOnly">
+						<type>
+							<boolean/>
+						</type>
+					</state>
+					
+				</list-group> <!-- End AnsweringMachine.Messages.MailboxList -->
+					
+				<group name="MailboxControls">
+					<active-if>
+						<greaterThan state="MailboxList.length">0</greaterThan>
+					</active-if>
+					<group name="Play">
+						<active-if>
+							<greaterThan state="MailboxList.selection.MessageList.length">0</greaterThan>
+						</active-if>
+						<command name="PlayAllMsgs">
+							<labels>
+								<label>Play	All</label>
+							</labels>
+						</command>
+						<command name="PlayNewMsgs">
+							<active-if>
+								<apply-over list="MailboxList.selection.MessageList" trueIf="any">
+									<equals state="isNew">true</equals>
+								</apply-over>
+							</active-if>
+							<labels>
+								<label>Play	New</label>
+							</labels>
+						</command>
+					</group> <!-- End AnsweringMachine.Messages.MailboxControls.Play -->
+					<command name="DeleteAllMsgs">
+						<labels>
+							<label>Delete	All</label>
+						</labels>
+					</command>
+				</group> <!-- End AnsweringMachine.Messages.MailboxControls -->
+
+				<group name="MessageControls">
+					<!-- Message Playback	Functions	-->
+					<group name="Play">
+						<state name="MsgPlayState">
+							<type>
+								<enumerated>
+									<itemCount>2</itemCount>
+								</enumerated>
+								<valueLabels>
+									<map index="1">
+										<label>Stop</label>
+									</map>
+									<map index="2">
+										<label>Play</label>
+									</map>
+								</valueLabels>
+							</type>
+							<active-if>
+								<defined state="MailboxList.selection.MessageList.selection"/>
+							</active-if>
+						</state> <!-- End AnsweringMachine.Messages.MessageControls.Play.MsgPlayState -->
+						
+						<!-- 
+						***
+						Is a navigation group really necessary, given that direct selection of messages is possible? 
+						***
+						-->
+						
+						<group name="Navigate">
+							<active-if>
+								<equals state="MsgPlayState">1</equals>
+								<!-- What happens if MsgPlayState is inactive? Does its value still get used for this dependency?
+								Also, we may want to use the following instead:
+								<and>
+									<equals state="MsgPlayState">1</equals>
+									<equals state="MailboxList.selection.MessageList.selection.length">1</equals>
+								</and>
+								-->
+							</active-if>
+							<command name="PrevMsg">
+								<labels>
+									<label>Play</label>
+								</labels>
+							</command>
+							<command name="NextMsg">
+								<labels>
+									<label>Next</label>
+								</labels>
+							</command>
+						</group> <!-- End AnsweringMachine.Messages.MessageControls.Play.Navigate -->
+						
+						
+					</group> <!-- End AnsweringMachine.Messages.MessageControls.Play -->
+					<group name="Storage">
+						<active-if>
+							<defined state="MailboxList.selection.MessageList.selection"/>
+							<!-- Is this how we wanted to do this dependency?
+							Or did we want to use:
+							<equals state="MailboxList.selection.MessageList.selection.length">1</equals>
+							-->
+						</active-if>
+						<command name="DeleteMsgs">
+							<labels>
+								<label>Delete</label>
+							</labels>
+						</command>
+						<group name="Move">
+							<list-group name="PossibleBoxes">
+								<state name="BoxName">
+									<type>
+										<string/>
+									</type>
+								</state>
+							</list-group> <!-- End AnsweringMachine.Messages.MessageControls.Storage.Move.PossibleBoxes -->
+							<command name="MoveMsgs">
+								<active-if>
+									<defined state="PossibleBoxes.selection" />
+								</active-if>
+							</command>
+						</group> <!-- End AnsweringMachine.Messages.MessageControls.Storage.Move -->
+					</group> <!-- End AnsweringMachine.Messages.MessageControls.Storage -->
+				</group> <!-- End AnsweringMachine.Messages.MessageControls -->
+			</group> <!-- End AnsweringMachine.Messages -->
+			<group name="Setup">
+				<state name="AnswerOn">
+					<apply-type name="OnOff"/>
+					<labels>
+						<label>Answer	Phone?</label>
+					</labels>
+				</state> <!-- End AnsweringMachine.Setup.AnswerOn -->
+				<state name="RingNumber">
+					<type>
+						<integer>
+							<min>3</min>
+							<max>6</max>
+						</integer>
+					</type>
+					<labels>
+						<label>Number	of Rings Before	Answer</label>
+						<label>Rings Before	Answer</label>
+						<label>Answer	Rings</label>
+					</labels>
+				</state> <!-- End AnsweringMachine.Setup.RingNumber -->
+				<group name="Announcement">
+					<state name="AnnouncementState">
+						<type>
+							<enumerated>
+								<itemCount>3</itemCount>
+							</enumerated>
+							<valueLabels>
+								<map index="1">
+									<label>Answer	#1</label>
+								</map>
+								<map index="2">
+									<label>Answer	#2</label>
+								</map>
+								<map index="3">
+									<label>No	Answer</label>
+								</map>
+							</valueLabels>
+						</type>
+						<labels>
+							<label>Announcement</label>
+							<label>Anncment</label>
+						</labels>
+					</state> <!-- End AnsweringMachine.Setup.Announcements.AnnouncementState -->
+					<group name="Controls">
+						<active-if>
+							<defined state="AnnouncementState" />
+						</active-if>
+						<command name="RecordAnnc">
+							<labels>
+								<label>Record</label>
+							</labels>
+						</command>
+						<command name="PlayAnnc">
+							<labels>
+								<label>Play</label>
+							</labels>
+						</command>
+					</group> <!-- End AnsweringMachine.Setup.Announcements.Controls -->
+				</group> <!-- End AnsweringMachine.Setup.Announcements -->
+			</group> <!-- End AnsweringMachine.Setup -->
+		</group> <!-- End AnsweringMachine -->
+	</groupings>
+</spec>

@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spec name="Defined" version="PUC/2.1" xmlns="http://www.cs.cmu.edu/~pebbles/puc">
+  <labels>
+	<label>Defined Value Test</label>
+  </labels>
+  <groupings>
+    <group name="Test">
+      <state name="WizardLine1">
+        <type>
+          <string />
+        </type>
+        <labels>
+          <label>Line1</label>
+        </labels>
+      </state>
+      <state name="WizardLine2">
+        <type>
+          <string />
+        </type>
+        <labels>
+          <label>Line2</label>
+        </labels>
+        <active-if>
+          <defined state="WizardLine1" />
+        </active-if>
+      </state>
+      <state name="WizardLine2a">
+        <type>
+          <boolean />
+        </type>
+        <labels>
+          <label>Optional Step</label>
+        </labels>
+        <active-if>
+          <defined state="WizardLine1" />
+        </active-if>
+      </state>
+      <state name="WizardLine3">
+        <type>
+          <enumerated>
+            <item-count>3</item-count>
+          </enumerated>
+          <value-labels>
+            <map index="1">
+              <labels>
+                <label>Red</label>
+              </labels>
+            </map>
+            <map index="2">
+              <labels>
+                <label>Blue</label>
+              </labels>
+            </map>
+            <map index="3">
+              <labels>
+                <label>Green</label>
+              </labels>
+            </map>
+          </value-labels>
+        </type>
+        <labels>
+          <label>Color</label>
+        </labels>
+        <active-if>
+          <defined state="WizardLine2" />
+        </active-if>
+      </state>
+      <command name="StartWizard">
+        <labels>
+          <label>Engage</label>
+        </labels>
+        <active-if>
+          <defined state="WizardLine3" />
+        </active-if>
+      </command>
+    </group>
+  </groupings>
+</spec>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE spec SYSTEM "gadget.dtd">
+<!-- This is a specification of the Alarm Clock -->
+<gadget>
+    <node>
+      <label>
+        <canonical>alarm clock</canonical>
+        <response>alarm clock here</response>
+      </label>
+
+      <node>
+        <label>
+          <canonical>clock time</canonical>
+	  <alias>time</alias>
+        </label>
+
+	<node>
+	  <action name="TimeState">
+	    <basic type="Time-Of-Day"/>
+	  </action>
+	</node>
+      </node> <!-- clock time -->
+
+      <node>
+        <label>
+          <canonical>day of week</canonical>
+	  <alias>day of the week</alias>
+	  <alias>today</alias>
+        </label>
+
+        <node>
+          <action name="DayOfWeekState" readonly="false">
+	    <label>
+	      <canonical>sunday</canonical>
+	    </label>
+	    <var>Sunday</var>
+	  </action>
+        </node>
+
+        <node>
+          <action name="DayOfWeekState" readonly="false">
+	    <label>
+	      <canonical>monday</canonical>
+	    </label>
+	    <var>Monday</var>
+	  </action>
+        </node>
+
+        <node>
+          <action name="DayOfWeekState" readonly="false">
+	    <label>
+	      <canonical>tuesday</canonical>
+	    </label>
+	    <var>Tuesday</var>
+	  </action>
+        </node>
+
+        <node>
+          <action name="DayOfWeekState" readonly="false">
+	    <label>
+	      <canonical>wednesday</canonical>
+	    </label>
+	    <var>Wednesday</var>
+	  </action>
+        </node>
+
+        <node>
+          <action name="DayOfWeekState" readonly="false">
+	    <label>
+	      <canonical>thursday</canonical>
+	    </label>
+	    <var>Thursday</var>
+	  </action>
+        </node>
+
+        <node>
+          <action name="DayOfWeekState" readonly="false">
+	    <label>
+	      <canonical>friday</canonical>
+	    </label>
+	    <var>Friday</var>
+	  </action>
+        </node>
+
+        <node>
+          <action name="DayOfWeekState" readonly="false">
+	    <label>
+	      <canonical>saturday</canonical>
+	    </label>
+	    <var>Saturday</var>
+	  </action>
+        </node>
+      </node> <!-- day of week -->
+
+      <node>
+        <label>
+	  <canonical>alarm</canonical>
+	</label>
+      <node> <!-- AlarmState -->
+        <node>
+          <action name="AlarmState">
+	    <label>
+	      <canonical>enable alarm</canonical>
+	      <alias>set alarm</alias>
+	      <alias>enable</alias>
+	      <response>enabling alarm</response>
+	      <state>alarm is enabled</state>
+	      <explanation>to set the alarm to ring at the alarm time</explanation>
+	    </label>
+	    <var>true</var>
+	  </action>
+        </node>
+	
+        <node>
+          <action name="AlarmState">
+	    <label>
+	      <canonical>disable alarm</canonical>
+	      <alias>unset alarm</alias>
+	      <alias>disable</alias>
+	      <response>disabling alarm</response>
+	      <state>alarm is disabled</state>
+	      <explanation>to prevent the alarm from ringing at the alarm time</explanation>
+	    </label>
+	    <var>false</var>
+	  </action>
+        </node>
+      </node> <!-- AlarmState -->
+
+      <node>
+        <label>
+	  <canonical>alarm time</canonical>
+	  <alias>time</alias>
+	</label>
+
+	<node>
+	  <action name="AlarmTimeState">
+	    <basic type="Time-Of-Day"/>
+	  </action>
+	</node>
+      </node> <!-- alarm time -->
+
+      <node>
+        <action name="StopAlarm">
+          <label>
+	    <canonical>stop alarm</canonical>
+	    <alias>stop</alias>
+	    <alias>turn alarm off</alias>
+	    <response>stopping alarm</response>
+	    <explanation>to quiet a ringing alarm</explanation>
+	  </label>
+	</action>
+      </node>
+    </node> <!-- alarm -->
+    </node> <!-- alarm clock -->
+</gadget>
+

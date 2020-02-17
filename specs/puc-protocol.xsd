@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema targetNamespace="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol" elementFormDefault="qualified"
+	xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol" xmlns:mstns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<!--
+		The PUC protocol consists of an eight-byte header, XML content, and 
+		optional format-independent binary content. 
+		
+		The header is divided into two four-byte chunks.  The first chunk is an
+		integer giving the full length of the message (not including the header).  
+		The second chunk is an integer giving the length of the XML portion of 
+		the message.  Both of these integers are sent using the network byte 
+		order.
+		
+		The XML content is described by this Schema.
+		
+		The binary content may be in any arbitrary format.  The format is usually
+		defined within an element of the accompanying XML message.
+	  -->
+	<xs:element name="message">
+		<xs:complexType>
+			<xs:choice minOccurs="1" maxOccurs="1">
+				<xs:element name="state-change-notification" type="PUCDataType" />
+				<xs:element name="state-change-request" type="PUCDataType" />
+				<xs:element name="binary-state-change-notification" type="BinaryStateChangeNotifyType" />
+				<xs:element name="state-value-request" type="StateValueRequestType" />
+				<xs:element name="command-invoke-request" type="CommandInvokeRequestType" />
+				<xs:element name="spec-request" />
+				<xs:element name="device-spec" type="DeviceSpecType" />
+				<xs:element name="full-state-request" />
+				<xs:element name="server-information-request" />
+				<xs:element name="server-information" type="ServerInformationType" />
+				<xs:element name="alert-information" type="xs:string" />
+				<xs:element name="register-device" type="DeviceType" />
+				<xs:element name="unregister-device" type="UnregisterDeviceType" />
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="BinaryStateChangeNotifyType">
+		<xs:sequence>
+			<xs:element name="state" type="StateWithContentAttribType" minOccurs="1" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StateWithContentAttribType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="content-type" type="xs:string" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="StateValueRequestType">
+		<xs:sequence>
+			<xs:element name="state" type="xs:string" minOccurs="1" maxOccurs="1" />
+			<xs:any minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CommandInvokeRequestType">
+		<xs:sequence>
+			<xs:element name="command" type="xs:string" minOccurs="1" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DeviceSpecType">
+		<xs:sequence>
+			<xs:element name="spec" type="xs:string" minOccurs="1" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ServerInformationType">
+		<xs:sequence>
+			<xs:element name="server-name" type="xs:string" minOccurs="1" maxOccurs="1" />
+			<xs:element name="device" type="DeviceType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DeviceType">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+			<xs:element name="port" type="xs:integer" minOccurs="1" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="UnregisterDeviceType">
+		<xs:sequence>
+			<xs:element name="port" type="xs:integer" minOccurs="1" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PUCDataType">
+		<xs:choice minOccurs="1" maxOccurs="1">
+			<xs:sequence>
+				<xs:element name="state" type="xs:string" />
+				<xs:element name="value" type="OldValueType" />
+			</xs:sequence>
+			<xs:element name="data" type="ListDataType" />
+			<xs:element name="change" type="ChangeDataType" />
+			<xs:element name="insert" type="InsertType" />
+			<xs:element name="delete" type="DeleteType" />
+			<xs:element name="replace" type="ReplaceType" />
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="OldValueType" mixed="true">
+		<xs:sequence>
+			<xs:element name="undefined" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NewValueType" mixed="true">
+		<xs:sequence>
+			<xs:element name="undefined" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="state" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="AnyListContentType">
+		<xs:choice>
+			<xs:element name="data" type="ListDataType" />
+			<xs:element name="change" type="ChangeDataType" />
+			<xs:element name="insert" type="InsertType" />
+			<xs:element name="delete" type="DeleteType" />
+			<xs:element name="replace" type="ReplaceType" />
+			<xs:sequence>
+				<xs:element name="value" type="NewValueType" minOccurs="1" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="AfterChangeOpListType">
+		<xs:choice>
+			<xs:element name="data" type="ListDataType" />
+			<xs:sequence>
+				<xs:element name="value" type="NewValueType" minOccurs="1" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:choice>	
+	</xs:complexType>
+	<xs:complexType name="ListDataType">
+		<xs:sequence>
+			<xs:element name="el" type="AfterChangeOpListType" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="state" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType name="ChangeDataType">
+		<xs:sequence>
+			<xs:element name="el" type="AnyListContentType" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="state" type="xs:string" use="required" />
+		<xs:attribute name="index" type="xs:integer" use="required" />
+	</xs:complexType>
+	<xs:complexType name="DeleteType">
+		<xs:attribute name="state" type="xs:string" use="required" />
+		<xs:attribute name="begin" type="xs:integer" use="required" />
+		<xs:attribute name="length" type="xs:integer" use="required" />
+	</xs:complexType>
+	<xs:complexType name="InsertType">
+		<xs:sequence>
+			<xs:element name="el" type="AfterChangeOpListType" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="state" type="xs:string" use="required" />
+		<xs:attribute name="after" type="xs:integer" use="required" />
+	</xs:complexType>
+	<xs:complexType name="ReplaceType">
+		<xs:sequence>
+			<xs:element name="el" type="AfterChangeOpListType" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="state" type="xs:string" use="required" />
+		<xs:attribute name="begin" type="xs:integer" use="required" />
+		<xs:attribute name="length" type="xs:integer" use="required" />
+	</xs:complexType>
+</xs:schema>

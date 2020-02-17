@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{20D4826A-C6FA-45DB-90F4-C717570B9F32}") = "PhonePUC", "PhonePUC.csdproj", "{1374BCE2-F9D6-4D5C-AEF3-4AA9A8916F4F}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{1374BCE2-F9D6-4D5C-AEF3-4AA9A8916F4F}.Debug.ActiveCfg = Debug|Smartphone
+		{1374BCE2-F9D6-4D5C-AEF3-4AA9A8916F4F}.Debug.Build.0 = Debug|Smartphone
+		{1374BCE2-F9D6-4D5C-AEF3-4AA9A8916F4F}.Debug.Deploy.0 = Debug|Smartphone
+		{1374BCE2-F9D6-4D5C-AEF3-4AA9A8916F4F}.Release.ActiveCfg = Release|Smartphone
+		{1374BCE2-F9D6-4D5C-AEF3-4AA9A8916F4F}.Release.Build.0 = Release|Smartphone
+		{1374BCE2-F9D6-4D5C-AEF3-4AA9A8916F4F}.Release.Deploy.0 = Release|Smartphone
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

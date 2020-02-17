@@ -1,0 +1,32 @@
+<!-- This is version 0.1 of the Personal Universal Controller -->
+<!-- Protocol Specification Document Type Definition -->
+
+<!ELEMENT message (state-change-request | spec-request | full-state-request | state-change-notification | device-spec | command-invoke-request)>
+
+<!ELEMENT state-change-request (state, value)>
+
+<!ELEMENT command-invoke-request (command)>
+
+<!ELEMENT spec-request EMPTY>
+
+<!ELEMENT full-state-request EMPTY>
+
+<!ELEMENT state-change-notification (state, value)>
+
+<!ELEMENT device-spec (spec)>
+
+<!ELEMENT state (#PCDATA)>
+
+<!ELEMENT command (#PCDATA)>
+
+<!ELEMENT server-information (device)>
+
+<!ELEMENT value (#PCDATA)>
+
+<!-- Include the DTD for the appliance specification language, -->
+<!-- which forms the contents of the device-spec element -->
+
+<!ENTITY % pucspec SYSTEM "http://www.cs.cmu.edu/~pebbles/puc/pucspec.dtd">
+
+%pucspec;
+      

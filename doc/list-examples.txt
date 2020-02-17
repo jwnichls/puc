@@ -1,0 +1,80 @@
+This file contains a number of XML examples that I have used to
+test the PUC list feature.  The examples were pasted into the 
+GUI window associated with the ListTestDevice.  That device uses
+the simple_list.xml spec and inserts five items into the list by
+default.
+
+<insert state="Test.List" after="0">
+  <el>
+    <value state="Playing">false</value>
+    <value state="Title">Call Me Calmly</value>
+    <value state="Time">2:52</value>
+  </el>
+</insert>
+
+<insert state="Test.List" after="3">
+  <el>
+    <value state="Playing">false</value>
+    <value state="Title">Call Me Calmly</value>
+    <value state="Time">2:52</value>
+  </el>
+</insert>
+
+<insert state="Test.List" after="5">
+  <el>
+    <value state="Playing">false</value>
+    <value state="Title">Call Me Calmly</value>
+    <value state="Time">2:52</value>
+  </el>
+</insert>
+
+<insert state="Test.List" after="5">
+  <el>
+    <value state="Playing">false</value>
+    <value state="Title">Call Me Calmly</value>
+    <value state="Time">2:52</value>
+  </el>
+  <el>
+    <value state="Playing">false</value>
+    <value state="Title">Maria</value>
+    <value state="Time">2:47</value>
+  </el>
+</insert>
+
+<delete state="Test.List" begin="1" length="2"/> 
+
+<delete state="Test.List" begin="5" length="2"/> 
+
+<replace state="Test.List" begin="1" length="1">
+  <el>
+    <value state="Playing">false</value>
+    <value state="Title">Everyday</value>
+    <value state="Time">4:43</value>
+  </el>
+  <el>
+    <value state="Playing">false</value>
+    <value state="Title">Ants Marching</value>
+    <value state="Time">5:26</value>
+  </el>
+</replace>
+
+<replace state="Test.List" begin="2" length="3">
+  <el>
+    <value state="Playing">false</value>
+    <value state="Title">Maria</value>
+    <value state="Time">2:47</value>
+  </el>
+</replace>
+
+<replace state="Test.List" begin="4" length="2">
+  <el>
+    <value state="Playing">false</value>
+    <value state="Title">Everyday</value>
+    <value state="Time">4:43</value>
+  </el>
+  <el>
+    <value state="Playing">false</value>
+    <value state="Title">Ants Marching</value>
+    <value state="Time">5:26</value>
+  </el>
+</replace>

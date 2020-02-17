@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spec name="Sharing" version="PUC/2.1">
+  <labels>
+    <label>Sharing Service</label>
+    <label>Sharing</label>
+  </labels>
+  <groupings>
+    <group name="Server">
+      <list-group name="Connected">
+        <state name="ClientName" access="read-only">
+          <type>
+            <string>
+              <min>
+                <static value="8" />
+              </min>
+              <average>
+                <static value="20" />
+              </average>
+              <max>
+                <static value="32" />
+              </max>
+            </string>
+          </type>
+          <labels>
+            <label>Client</label>
+          </labels>
+        </state>
+        <state name="ConnectionTime" access="read-only" is-a="absolute-time">
+          <type>
+            <string />
+          </type>
+          <labels>
+            <label>Connection Time</label>
+            <label>On Since</label>
+            <label>At</label>
+          </labels>
+        </state>
+      </list-group>
+      <command name="Kick">
+        <labels>
+          <label>Disconnect</label>
+          <label>Kick</label>
+        </labels>
+        <active-if>
+          <defined state="Sharing.Server.Connected.Selection" />
+        </active-if>
+      </command>
+    </group>
+    <group name="Client">
+      <list-group name="Servers">
+        <labels>
+          <label>Available Servers</label>
+        </labels>
+        <state name="Connected">
+          <type>
+            <boolean />
+          </type>
+          <labels>
+            <label>Connected</label>
+          </labels>
+        </state>
+        <state name="Name">
+          <type>
+            <string>
+              <min>
+                <static value="8" />
+              </min>
+              <average>
+                <static value="20" />
+              </average>
+              <max>
+                <static value="32" />
+              </max>
+            </string>
+          </type>
+          <labels>
+            <label>Server Name</label>
+            <label>Name</label>
+          </labels>
+        </state>
+        <command name="Connect">
+          <labels>
+            <label>Connect</label>
+          </labels>
+          <active-if>
+            <equals state="Sharing.Client.Servers.Connected">
+              <static value="false" />
+            </equals>
+          </active-if>
+        </command>
+        <command name="Disconnect">
+          <labels>
+            <label>Connect</label>
+          </labels>
+          <active-if>
+            <equals state="Sharing.Client.Servers.Connected">
+              <static value="true" />
+            </equals>
+          </active-if>
+        </command>
+      </list-group>
+      <group name="Shared">
+        <labels>
+          <label>Accessible Files</label>
+          <label>Shared Files</label>
+        </labels>
+        <active-if>
+          <apply-over list="Photos.Client.Servers" true-if="any">
+            <equals state="Connected">
+              <static value="true" />
+            </equals>
+          </apply-over>
+        </active-if>
+        <list-group name="Files">
+          <state name="Downloaded">
+            <type>
+              <boolean />
+            </type>
+            <labels>
+              <label>Downloaded</label>
+            </labels>
+          </state>
+          <state name="Name">
+            <type>
+              <string>
+                <min>
+                  <static value="1" />
+                </min>
+                <average>
+                  <static value="35" />
+                </average>
+                <max>
+                  <static value="128" />
+                </max>
+              </string>
+            </type>
+            <labels>
+              <label>Filename</label>
+              <label>Name</label>
+            </labels>
+          </state>
+          <command name="Get">
+            <labels>
+              <label>Download</label>
+            </labels>
+            <active-if>
+              <equals state="Downloaded">
+                <static value="false" />
+              </equals>
+            </active-if>
+          </command>
+        </list-group>
+        <command name="DownloadAll">
+          <labels>
+            <label>Download All</label>
+          </labels>
+          <active-if>
+            <greater-than state="Photos.Client.Shared.Files.Length">0</greater-than>
+            <apply-over state="Photos.Client.Shared.Files" true-if="any">
+              <equals state="Downloaded">
+                <static value="false" />
+              </equals>
+            </apply-over>
+          </active-if>
+        </command>
+      </group>
+    </group>
+  </groupings>
+</spec>

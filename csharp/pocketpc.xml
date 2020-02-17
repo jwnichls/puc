@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This is a preliminary attempt to build a "widget repository" XML
+     file for specifying what widgets are available and when they
+     should be chosen by the interface generator. -->
+
+<widget-registry name="Preliminary PocketPC" default-package="edu.cmu.hcii.puc.cio">
+
+  <decision-library>
+    <type>edu.cmu.hcii.puc.registry.ObjectDecision</type>
+    <type>edu.cmu.hcii.puc.registry.ValueSpaceDecision</type>
+    <type>edu.cmu.hcii.puc.registry.ReadOnlyDecision</type>
+    <type>edu.cmu.hcii.puc.registry.ConstraintDecision</type>
+    <type>edu.cmu.hcii.puc.registry.InternalControlDecision</type>
+    <type>edu.cmu.hcii.puc.registry.AllLabelsDecision</type>
+    <type>edu.cmu.hcii.puc.registry.BoundedNumberDecision</type>
+    <type>edu.cmu.hcii.puc.registry.DependedUponOnceDecision</type>
+  </decision-library>
+
+  <decision type="list">
+	<condition value="true">
+<!--
+	  <decision type="dimension">
+		<condition value="1">
+		  <decision type="readonly-elements">
+			<condition value="true">
+			  <widget>OneDimCategoricalListCIO</widget>
+			</condition>
+		  </decision>
+		</condition>
+	  </decision>
+-->
+          <widget>DataGridListCIO</widget>
+	</condition>
+	<condition value="false">
+		<decision type="object">
+			<condition value="command">
+			<widget>ButtonLinkedCIO</widget>
+			</condition>
+			<condition value="explanation">
+			<widget>ExplanationCIO</widget>
+			</condition>
+			<condition value="state">
+			<decision type="valuespace">
+			<!-- <condition value="radio/station-fm">
+			<widget>RadioStationCIO</widget>
+			</condition>
+			<condition value="radio/station-am">
+			<widget>RadioStationCIO</widget>
+			</condition>
+			<condition value="playcontrol">
+			<widget>PlayControlCIO</widget>
+			</condition> -->
+				<condition value="default">
+				<decision type="readonly">
+					<condition value="true">
+				<decision type="constraint">
+					<condition value="false">
+				<decision type="valuespace">
+					<condition value="boolean">
+					<decision type="depended-upon-once">
+						<condition value="false">
+						<widget>LabelLinkedCIO</widget>
+					</condition>
+					</decision>
+					</condition>
+					<condition value="default">
+					<widget>LabelLinkedCIO</widget>
+					</condition>
+						</decision>
+				</condition>
+				</decision>
+    				</condition>
+				<condition value="false">
+  				<decision type="valuespace">
+						<condition value="boolean">
+				<decision type="internalcontroller">
+					<condition value="false">
+					<decision type="alllabels">
+						<condition value="false">
+						<widget>CheckboxLinkedCIO</widget>
+						</condition>
+						<condition value="true">
+						<widget>SelectionListLinkedCIO</widget>
+						</condition>
+					</decision>
+					</condition>
+					<condition value="true">
+					<widget>ButtonLinkedCIO</widget>
+					</condition>
+				</decision>
+				</condition>
+					<condition value="integer">
+						<decision type="boundednumber">
+							<condition value="true">
+						<widget>ScrollbarLinkedCIO</widget>
+					</condition>
+							<condition value="false">
+					<widget>TextFieldLinkedCIO</widget>
+					</condition>
+				</decision>
+					</condition>
+					<condition value="fixed point">
+						<decision type="boundednumber">
+							<condition value="true">
+						<widget>ScrollbarLinkedCIO</widget>
+					</condition>
+							<condition value="false">
+					<widget>TextFieldLinkedCIO</widget>
+					</condition>
+				</decision>
+					</condition>
+					<condition value="enumerated">
+					<widget>SelectionListLinkedCIO</widget>
+					</condition>
+					<condition value="default">
+					<widget>TextFieldLinkedCIO</widget>
+					</condition>
+				</decision>
+				</condition>	    
+				</decision>
+				</condition>
+			</decision>
+			</condition>
+		</decision>
+	</condition>
+  </decision>
+
+</widget-registry>

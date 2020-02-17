@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE spec SYSTEM "gadget.dtd">
+<!-- This is a specification of the TV Stub.
+     It is purposely stubbed for the purposes of a tutorial -->
+<gadget>
+  <node>
+    <node>
+      <label>
+        <canonical>television</canonical>
+	<alias>t v</alias>
+	<response>television here</response>
+      </label>
+      <node>
+        <label>
+	  <canonical>channel</canonical>
+	  <alias>station</alias>
+	</label>
+
+	<node>
+	  <action name="Channel">
+	    <basic type="Num-100"/>
+	  </action>
+	</node>
+
+	<node><action name="Bogus"><label><canonical>m t v</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the weather channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical tts="k ey d iy k ey ey">k d k a</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>w q e d</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the movie channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>q v c</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>fox</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical tts="aa n k ow er">encore</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>c span</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>home and garden</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the history channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>starz</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical tts="ey b iy s iy f ae m ah l iy">a b c family</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>e s p n</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>cable n b c</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>home box office</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>disney</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the food channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>n b c shopping channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the learning channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>pittsburgh cable news</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>government access</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>t n n</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the cartoon network</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>showtime</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>fox news</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>american movie classics</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>u s a</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>nickelodeon</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>lifetime</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>turner broadcasting</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>v h one</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the discovery channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>cable news network</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>pittsburgh cable television</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>w q e x</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the hallmark channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the christian news channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>black entertainment television</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>c span 2</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>horse racing t v</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>home shopping network</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>f x</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>e w t n</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>f s n</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>t n t</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>court t v</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>arts and entertainment</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>headline news</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>pax t v</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>e</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the comedy channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>sci fi</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>t v land</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>country music television</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>cinemax</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the travel channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the oxygen network</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>national oceanagraphic and atmospheric administration</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>w t a e</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the w b</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>christian broadcasting</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>pittsburgh public access</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>religious access</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>w p x i</canonical></label><var>bogus</var></action></node>
+      </node> <!-- channel -->
+      <node>
+        <label>
+	  <canonical>volume</canonical>
+	</label>
+
+	<node>
+	  <action name="Bogus">
+	    <label>
+	      <canonical>volume up</canonical>
+	      <alias>up</alias>
+	      <alias>louder</alias>
+	      <explanation>to raise the stereo volume</explanation>
+	    </label>
+	  </action>
+	</node>
+
+        <node>
+	  <action name="Bogus">
+	    <label>
+	      <canonical>volume down</canonical>
+	      <alias>down</alias>
+	      <alias>softer</alias>
+	      <explanation>to lower the stereo volume</explanation>
+	    </label>
+	  </action>
+	</node>
+      </node> <!-- volume -->
+      <node><action name="Bogus"><label><off/></label><var>bogus</var></action></node>
+      <node>
+        <label><canonical>mute</canonical></label>
+	<node><action name="Bogus"><label><on/></label><var>bogus</var></action></node>
+        <node><action name="Bogus"><label><off/></label><var>bogus</var></action></node>
+      </node>	
+      <node>
+        <label>
+	  <canonical>input device</canonical>
+	</label>
+
+	<node><action name="Bogus"><label><canonical>antenna</canonical></label><var>bogus</var></action></node>
+        <node><action name="Bogus"><label><canonical>cable</canonical></label><var>bogus</var></action></node>
+      </node>
+      <node>
+        <label>
+	  <canonical>picture in picture</canonical>
+	</label>
+
+        <node>
+          <label>
+  	    <canonical>channel</canonical>
+	    <alias>station</alias>
+  	  </label>
+  
+	<node>
+	  <action name="PipChannel">
+	    <basic type="Num-100"/>
+	  </action>
+	</node>
+
+	<node><action name="Bogus"><label><canonical>m t v</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the weather channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical tts="k ey d iy k ey ey">k d k a</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>w q e d</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the movie channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>q v c</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>fox</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical tts="aa n k ow er">encore</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>c span</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>home and garden</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the history channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>starz</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical tts="ey b iy s iy f ae m ah l iy">a b c family</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>e s p n</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>cable n b c</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>home box office</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>disney</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the food channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>n b c shopping channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the learning channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>pittsburgh cable news</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>government access</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>t n n</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the cartoon network</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>showtime</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>fox news</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>american movie classics</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>u s a</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>nickelodeon</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>lifetime</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>turner broadcasting</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>v h one</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the discovery channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>cable news network</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>pittsburgh cable television</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>w q e x</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the hallmark channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the christian news channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>black entertainment television</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>c span 2</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>horse racing t v</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>home shopping network</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>f x</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>e w t n</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>f s n</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>t n t</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>court t v</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>arts and entertainment</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>headline news</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>pax t v</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>e</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the comedy channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>sci fi</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>t v land</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>country music television</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>cinemax</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the travel channel</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the oxygen network</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>national oceanagraphic and atmospheric administration</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>w t a e</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>the w b</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>christian broadcasting</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>pittsburgh public access</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>religious access</canonical></label><var>bogus</var></action></node>
+	<node><action name="Bogus"><label><canonical>w p x i</canonical></label><var>bogus</var></action></node>
+      </node> <!-- station -->
+      <node>
+        <action name="Bogus">
+	  <label>
+	    <canonical>swap</canonical>
+	    <explanation>to switch the picture in picture channel and the main channel</explanation>
+	  </label>
+	</action>
+      </node>
+      <node><action name="Bogus"><label><off/></label><var>bogus</var></action></node>	  
+      </node> <!-- pip -->
+      <node>
+        <label>
+	  <canonical>sleep timer</canonical>
+	</label>
+
+	<node>
+	  <action name="bogus">
+	    <basic type="Time-Of-Day"/>
+	  </action>
+	</node>
+
+        <node><action name="Bogus"><label><off/></label><var>bogus</var></action></node>
+      </node> <!-- sleep timer -->
+      <node>
+        <label>
+	  <canonical>audio setup</canonical>
+	</label>
+
+	<node>
+	  <label><canonical>surround sound</canonical></label>
+	  <node><action name="Bogus"><label><on/></label><var>bogus</var></action></node>
+	  <node><action name="Bogus"><label><off/></label><var>bogus</var></action></node>
+	</node>
+	<node>
+	  <label><canonical>dolby</canonical></label>
+	  <node><action name="Bogus"><label><on/></label><var>bogus</var></action></node>
+	  <node><action name="Bogus"><label><off/></label><var>bogus</var></action></node>
+	</node>
+      </node>
+      <node>
+        <label>
+	  <canonical>video setup</canonical>
+	</label>
+
+	<node>
+	  <label>
+	    <canonical>picture format</canonical>
+	  </label>
+
+	  <node>
+	    <action name="Bogus">
+	      <label>
+	        <canonical>standard</canonical>
+	      </label>
+	      <var>bogus</var>
+	    </action>
+	  </node>
+
+	  <node>
+	    <action name="Bogus">
+	      <label>
+	        <canonical>letter box</canonical>
+	      </label>
+	      <var>bogus</var>
+	    </action>
+	  </node>
+	</node> <!-- picture format -->
+      </node> <!-- video setup -->
+    </node> <!-- tv -->
+    <node>
+      <label>
+        <canonical>v c r</canonical>
+      </label>
+      <node>
+        <node>
+	  <action name="PlayState">
+	    <label>
+	      <canonical>play v c r</canonical>
+	      <alias>play</alias>
+	      <response>playing v c r</response>
+	      <state>v c r is playing</state>
+	      <explanation>to play the v c r</explanation>
+	    </label>
+	    <var>play</var>
+	  </action>
+	</node>
+        <node>
+	  <action name="PlayState">
+	    <label>
+	      <canonical>stop v c r</canonical>
+	      <alias>stop</alias>
+	      <response>stopping v c r</response>
+	      <state>v c r is stopped</state>
+	      <explanation>to stop the v c r</explanation>
+	    </label>
+	    <var>stop</var>
+	  </action>
+	</node>
+        <node>
+	  <action name="PlayState">
+	    <label>
+	      <canonical>pause v c r</canonical>
+	      <alias>pause</alias>
+	      <response>pausing v c r</response>
+	      <state>v c r is paused</state>
+	      <explanation>to pause the v c r from either play or record</explanation>
+	    </label>
+	    <var>pause</var>
+	  </action>
+	</node>
+        <node>
+	  <action name="PlayState">
+	    <label>
+	      <canonical>rewind v c r</canonical>
+	      <alias>rewind</alias>
+	      <response>rewinding v c r</response>
+	      <state>v c r is rewinding</state>
+	      <explanation>to rewind the v c r</explanation>
+	    </label>
+	    <var>rewind</var>
+	  </action>
+	</node>
+        <node>
+	  <action name="PlayState">
+	    <label>
+	      <canonical>fast forward v c r</canonical>
+	      <alias>fast forward</alias>
+	      <response>fast forwarding v c r</response>
+	      <state>v c r is fast forwarding</state>
+	    </label>
+	    <var>fast forward</var>
+	  </action>
+	</node>
+        <node>
+	  <action name="PlayState">
+	    <label>
+	      <canonical>record to v c r</canonical>
+	      <alias>record v c r</alias>
+	      <alias>record</alias>
+	      <response>recording to v c r</response>
+	      <state>v c r is recording</state>
+	      <explanation>to record onto the v c r</explanation>
+	    </label>
+	    <var>record</var>
+	  </action>
+	</node>
+      </node> <!-- vcr transport state -->
+    </node> <!-- vcr -->
+  </node> <!-- tv/vcr -->
+</gadget>

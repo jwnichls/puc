@@ -1,0 +1,863 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+  <html>
+    <head>
+      <title>Personal Universal Controller Communications Protocol</title>
+    </head>
+
+    <body>
+      <h1>Personal Universal Controller Communications Protocol</h1>
+
+      <p>Documentation originally by Michael Higgins, later updated by
+      Jeffrey Nichols.</p> 
+
+      <p>Protocol design by the Personal Universal Controller working group:
+	Michael Higgins, Joe Hughes, Peter Lucas, Brad A. Myers, Jeffrey
+	Nichols, and Mathilde Pignol.
+      </p>
+
+      <h2>Table of Contents</h2>
+
+      <ol>
+	<li><a href="#intro">Introduction</a></li>
+	<li><a href="#rev">Revision History</a></li>
+      <li><a href="#concept">Conceptual Basis</a></li>
+      <li><a href="#listdata">List Data</a></li>
+      <li><a href="#messages">Message Enumeration</a>
+	<ol>
+	  <li><a href="#messages-controller">Controller Generated Messages</a></li>
+	  <li><a href="#messages-appliance">Appliance Generated Messages</a></li>
+	</ol>
+      </li>
+      <li><a href="#servicediscovery">Service Discovery</a>
+        <ol>
+	  <li><a href="#servicemessages">Discovery Messages</a></li>
+	</ol>
+      </li>
+      <li><a href="#wire">Wire Format For Messages Over Plain TCP/IP</a></li>
+      <li><a href="#schema">Schema</a></li>
+      <li><a href="#future">Future Work</a></li>
+      <li><a href="#example">Example</a></li>
+      </ol>
+
+      <h2><a name="intro">Introduction</a></h2>
+
+      <p>The personal universal controller (PUC) project's goal is to
+	build a software framework running on top of a personal digital
+	assistant (PDA) that is capable of providing an interface that
+	will allow users to control any appliance within their
+	environment.  In essence, the PUC is a device-independent,
+	appliance-independent, user-<strong>dependent</strong> remote control
+	device.
+      </p>
+
+      <p>For more information about the PUC framework, see the
+      	<a href="http://www.cs.cmu.edu/~pebbles/puc/">Personal Universal 
+	  Controller home page</a>.  You may also be interested in the
+	<a href="specification.html"> appliance specification language</a>.  
+      </p>
+
+      <p>This document describes the high-level communications protocol used
+	by the Personal Universal Controller and the appliances it is 
+	controlling.  Some of these messages are used for rudimentary
+	service discovery.
+      </p>
+
+    <h2><a name="rev">Revision History</a></h2>
+
+      <table border cellpadding="5">
+	<tr>
+	  <th align="left">Date</th>
+	  <th align="left">Name</th>
+	  <th align="left">Comments</th>
+	</tr>
+	<tr>
+	  <td align="left">03/07/2002</td>
+	  <td align="left">higgins</td>
+	  <td align="left">First version.</td>
+	</tr>
+	<tr>
+	  <td align="left" valign=top>03/11/2002</td>
+	  <td align="left" valign=top>jwn</td>
+	  <td align="left" valign=top>
+	    Minor modifications prior to posting the document on the
+	    web and adding it to the cvs repository.  Also changed
+	    references to reflect movement of the published DTDs and
+	    docs to the pebbles web site.
+	  </td>
+	</tr>
+	<tr>
+	  <td align="left" valign=top>06/22/2004</td>
+	  <td align="left" valign=top>jwn</td>
+	  <td align="left" valign=top>
+	    Updated this document with a Schema that represents our
+	    modifications to the protocol over the last few years.
+	    Updated the examples and accompanying text.  
+	  </td>
+	</tr>
+      </table>
+
+      <h2><a name="concept">Conceptual Basis</a></h2>
+
+      <p>
+        Because the Personal Universal Controller has few
+	pre-conceived notions of what sort of devices may be
+	controlled or, indeed, what form the controller may take, the
+	communications protocol must be quite general.  To achieve
+	this it has been kept simple, with a minimum of messages.
+      </p>
+
+      <p>Our protocol assumes a connection-oriented transport underneath it, 
+	though because it is mostly asynchronous it could probably be easily
+	adapted to connection-less environment or even a broadcast environment.
+	We have implemented it over TCP/IP, the particulars of which
+	are described in a <a href="#wire">later section</a>.
+      </p>
+
+      <p>All messages within the protocol have an XML component and
+	may optionally append unformatted binary data (such as images,
+	etc.)  XML is used for the general syntax to achieve harmony with the
+	specification language.  This may also allow easy adaptation for use
+	with SOAP and other emerging XML communication
+	standards. Binary data is appended to the end to avoid
+	possible incompatibilities that would have occurred if this
+	data had been sent within the XML.  Currently the only message
+	that may be followed by binary data is the
+	<code>binary-state-change-notification</code> message.
+      </p>
+
+      <p>Typically, the appliance acts as a server, waiting for
+	controllers to establish connections.  The controller is not
+	required to send any particular message upon establishing the
+	connection, but typically it immediately performs a
+	<code>spec-request</code> to establish the states available
+	and their types.  It then performs a
+	<code>full-state-request</code> to get the complete state of
+	the appliance.  This allows the controller to build an
+	interface reflecting the current state of the appliance.
+      </p>
+
+      <p>The most interesting feature of the protocol is that it is
+	mostly asynchronous.  The appliance can emit a
+	<code>state-change-notification</code> at any time; typically,
+	the controller does not poll for state changes.  If the
+	controller suspects that it has gotten out of sync with the
+	appliance state, it can issue a
+	<code>full-state-request</code>. 
+      </p>
+
+      <p>The controller can issue a <code>state-change-request</code>
+	or <code>command-invoke-request</code> at any time.  There is
+	no explicit acknowledgement of this by the appliance, but
+	typically one or more <code>state-change-notification</code>
+	messages will be sent shortly thereafter.
+      </p>
+
+      <p>The controller should be prepared to receive unasked-for "responses"
+	such as a <code>device-spec</code> message at any time as well.
+      </p>
+      
+      <p>The reason for this asynchronous design is that many appliances
+	may change independently of the controller (typically as a result
+	of some internal event, like the completion of a long-running
+	chore, or because of some other command, like the manipulation of
+	the physical controls on the device).  Furthermore many
+	real-world state changes take significant time to complete.  The
+	protocol should not artificially prevent the controller from
+	issuing other requests or receiving other notifications while one
+	transaction is occurring.  It is also possible that we may wish to
+	interleave many controller-appliance relationships over one transport
+	connection.  An asynchronous design helps facilitate all of these.
+      </p>
+
+      <p>
+        The one exception to this asynchronous model involves binary
+        data.  There are several reasons for this exception.  Binary
+        data may be very long and require significant time for
+        transfer. It also does not make sense to send binary data to
+        controllers will not be able to render it (e.g. a large color
+        image should not be sent to a mobile phone with a black &
+        white screen).  When new binary data is available on the
+        appliance, the appliance will send a
+        <code>binary-state-change-notification</code> message naming
+        the state that changed and the content-type of this data but
+        <b>without</b> including the actual binary data.  If the controller
+        is interested in receiving this binary data, it will send a
+        <code>state-value-request</code> message naming the same
+        state.  In response, the appliance will send another
+        <code>binary-state-change-notification</code> message
+        containing the binary data.
+      </p>
+
+      <p>
+        It should be noted that strict synchronicity is not enforced
+        here.  Other messages may be transmitted between during the
+        exchange described above.
+      </p>
+
+      <h2><a name="listdata">List Data</a></h2>
+
+      <p><code>state-change-notification</code> and
+      <code>state-change-request</code> messages support a complex
+      data structure for supporting list data structures.  This is
+      needed because lists may include large amounts of information,
+      and it is not reasonable to send all of this data everytime the
+      contents of the list changes.
+      </p>
+
+      <p>Four list operations are supported:</p>
+
+      <ul>
+        <li>The <code>data</code> operation is used specify all of the
+        list data or to change an existing value within the current
+        list.  This is the only operation that may be nested within
+        other list operations in the case of multi-dimensional lists.</li> 
+
+	<li>The <code>insert</code> operation is used to insert new
+	items into a list.</li>
+
+	<li>The <code>delete</code> operation is used to remove
+	existing items from a list.</li>
+	
+	<li>The <code>replace</code> operation replaces <cod>n</code>
+	existing list items with <code>m</code> new items.  In
+	general, if <code>n == m</code> then the <code>data</code>
+	operation should be used instead.  The operation is provided
+	as a convenience rather than requiring the appliance to send
+	a <code>delete</code> message and an <code>insert</code>
+	message in sequence.</li>
+      </ul>
+
+      <h2><a name="messages">Message Enumeration</a></h2>
+
+      <p>The controller should be prepared to receive any appliance-generated
+	message at any time, and to wait indefinitely for an 
+	appliance-generated message.  In particular, the controller should
+	not expect a strict request-response discipline to be maintained.
+      </p>
+
+      <p>Likewise, the appliance must be prepared to receive any 
+	controller-generated message at any time.
+      </p>
+
+      <h3><a name="messages-controller">Controller Generated Messages</a></h3>
+
+      <dl>
+
+	<dt><code>state-change-request</code></dt>
+	<dd>This message requests the appliance to change the designated
+	state to the value contained in the message.
+	</dd>
+
+	<dt><code>command-invoke-request</code></dt>
+	<dd>This message requests the appliance to invoke a command.  This
+	may cause state changes as side effects.
+	</dd>
+
+	<dt><code>spec-request</code></dt>
+	<dd>This message requests the appliance to send a copy of its
+	specification.  It will send this via the
+	<code>device-spec</code> message. 
+	</dd>
+
+	<dt><code>full-state-request</code></dt>
+	<dd>This message requests the appliance to send 
+	<code>state-change-notification</code> messages for every
+	state it has. 
+	</dd>
+
+	<dt><code>state-value-request</code></dt>
+	<dd>This message requests the appliance to send a
+	<code>binary-state-change-notification</code> message
+	containing binary data for a particular state.
+	</dd>
+      </dl>
+
+      <h3><a name="messages-appliance">Appliance Generated Messages</a></h3>
+
+      <dl>
+
+	<dt><code>state-change-notification</code></dt>
+	<dd>This message is sent whenever the appliance changes state.
+	  The state name as well as its value is sent.  
+	</dd>
+
+	<dt><code>binary-state-change-notification</code></dt>
+	<dd>This message may be sent in two different contexts.  It is
+	sent when binary data has changed on the appliance and is sent
+	in response to a <code>state-value-request</code> message from
+	the controller.
+	</dd>
+
+	<dt><code>device-spec</code></dt>
+	<dd>This message contains the appliance specification.  It is sent
+	  after receiving a spec-request message.
+	</dd>
+
+	<dt><code>alert-information</code></dt>
+	<dd>This message contains a string message that needs to be
+	delivered to the user of each controller.
+	</dd>
+
+      </dl>
+
+      <h2><a name="servicediscovery">Service Discovery</a></h2>
+
+      <p>We have implemented a very simplistic service discovery
+      mechanism to make finding appliances easier than remembering IP
+      addresses and port numbers.  Our method relies on each machine
+      serving PUC appliances to run a service on port 5149.
+      Controllers may send a message to this port to get a list of all
+      appliances running on the machine.  There are also registration
+      methods for appliances to notify the service discovery system of
+      their existence.
+      </p>
+
+      <h3><a name="servicemessages">Service Discovery
+      Messages</a></h3>
+
+      <dl>
+
+        <dt><code>server-information-request</code></dt>
+	<dd>This message is sent by controllers to get the list of
+	appliances connected to a particular machine.
+	</dd>
+
+	<dt><code>server-information</code></dt>
+	<dd>This message is sent by the service discovery manager to
+	let a controller know which appliances are connected to this
+	server. It is sent in response to
+	<code>server-information-request</code> messages.
+	</dd>
+
+	<dt><code>register-device</code></dt>
+	<dd>This message is sent by appliances to the service
+	discovery manager to notify the manager of the appliance's
+	existence.
+	</dd>      
+
+	<dt><code>unregister-device</code></dt>
+	<dd>This message is sent by appliances to the service
+	discovery manager to notify the manager that the appliance is
+	shutting down.
+	</dd>
+
+      </dl>
+
+      <h2><a name="wire">Wire Format For Messages Over Plain TCP/IP</a></h2>
+
+      <p>For our TCP/IP implementation, a PUC message consists of an
+      eight-byte header, XML content, and optional format-independent
+      binary content.
+      </p>
+
+      <p>The header is divided into two four-byte chunks.  The first
+      chunk is an integer giving the full length of the message (not
+      including the header).  The second chunk is an integer giving
+      the length of the XML portion of the message.  Both of these
+      integers are sent using the network byte order.  This header is
+      needed because TCP/IP has no convenient mechanism for specifying
+      message length, and there is also a need to know exactly where
+      the format-independent binary data begins.
+      </p>
+
+      <p>Immediately following the header is a well-formed XML
+	document conforming to the following <a
+	href="#schema">schema</a>.
+      </p>
+
+      <p>Following the XML, arbitrary binary content may be
+      included. The format is usually defined within an element of the
+      accompanying XML content. 
+      </p>
+
+    <h2><a name="schema">Schema</a></h2>
+      <pre>
+&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;xs:schema targetNamespace="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol" elementFormDefault="qualified"
+	xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol" xmlns:mstns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"&gt;
+	&lt;!--
+		The PUC protocol consists of an eight-byte header, XML content, and 
+		optional format-independent binary content. 
+		
+		The header is divided into two four-byte chunks.  The first chunk is an
+		integer giving the full length of the message (not including the header).  
+		The second chunk is an integer giving the length of the XML portion of 
+		the message.  Both of these integers are sent using the network byte 
+		order.
+		
+		The XML content is described by this Schema.
+		
+		The binary content may be in any arbitrary format.  The format is usually
+		defined within an element of the accompanying XML message.
+	  --&gt;
+	&lt;xs:element name="message"&gt;
+		&lt;xs:complexType&gt;
+			&lt;xs:choice minOccurs="1" maxOccurs="1"&gt;
+				&lt;xs:element name="state-change-notification" type="PUCDataType" /&gt;
+				&lt;xs:element name="state-change-request" type="PUCDataType" /&gt;
+				&lt;xs:element name="binary-state-change-notification" type="BinaryStateChangeNotifyType" /&gt;
+				&lt;xs:element name="state-value-request" type="StateValueRequestType" /&gt;
+				&lt;xs:element name="command-invoke-request" type="CommandInvokeRequestType" /&gt;
+				&lt;xs:element name="spec-request" /&gt;
+				&lt;xs:element name="device-spec" type="DeviceSpecType" /&gt;
+				&lt;xs:element name="full-state-request" /&gt;
+				&lt;xs:element name="server-information-request" /&gt;
+				&lt;xs:element name="server-information" type="ServerInformationType" /&gt;
+				&lt;xs:element name="alert-information" type="xs:string" /&gt;
+				&lt;xs:element name="register-device" type="DeviceType" /&gt;
+				&lt;xs:element name="unregister-device" type="UnregisterDeviceType" /&gt;
+			&lt;/xs:choice&gt;
+		&lt;/xs:complexType&gt;
+	&lt;/xs:element&gt;
+	&lt;xs:complexType name="BinaryStateChangeNotifyType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="state" type="StateWithContentAttribType" minOccurs="1" maxOccurs="1" /&gt;
+		&lt;/xs:sequence&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="StateWithContentAttribType"&gt;
+		&lt;xs:simpleContent&gt;
+			&lt;xs:extension base="xs:string"&gt;
+				&lt;xs:attribute name="content-type" type="xs:string" /&gt;
+			&lt;/xs:extension&gt;
+		&lt;/xs:simpleContent&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="StateValueRequestType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="state" type="xs:string" minOccurs="1" maxOccurs="1" /&gt;
+			&lt;xs:any minOccurs="0" maxOccurs="unbounded" /&gt;
+		&lt;/xs:sequence&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="CommandInvokeRequestType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="command" type="xs:string" minOccurs="1" maxOccurs="1" /&gt;
+		&lt;/xs:sequence&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="DeviceSpecType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="spec" type="xs:string" minOccurs="1" maxOccurs="1" /&gt;
+		&lt;/xs:sequence&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="ServerInformationType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="server-name" type="xs:string" minOccurs="1" maxOccurs="1" /&gt;
+			&lt;xs:element name="device" type="DeviceType" minOccurs="0" maxOccurs="unbounded" /&gt;
+		&lt;/xs:sequence&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="DeviceType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" /&gt;
+			&lt;xs:element name="port" type="xs:integer" minOccurs="1" maxOccurs="1" /&gt;
+		&lt;/xs:sequence&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="UnregisterDeviceType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="port" type="xs:integer" minOccurs="1" maxOccurs="1" /&gt;
+		&lt;/xs:sequence&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="PUCDataType"&gt;
+		&lt;xs:choice minOccurs="1" maxOccurs="1"&gt;
+			&lt;xs:sequence&gt;
+				&lt;xs:element name="state" type="xs:string" /&gt;
+				&lt;xs:element name="value" type="OldValueType" /&gt;
+			&lt;/xs:sequence&gt;
+			&lt;xs:element name="data" type="ListDataType" /&gt;
+			&lt;xs:element name="change" type="ChangeDataType" /&gt;
+			&lt;xs:element name="insert" type="InsertType" /&gt;
+			&lt;xs:element name="delete" type="DeleteType" /&gt;
+			&lt;xs:element name="replace" type="ReplaceType" /&gt;
+		&lt;/xs:choice&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="OldValueType" mixed="true"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="undefined" minOccurs="0" maxOccurs="1"/&gt;
+		&lt;/xs:sequence&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="NewValueType" mixed="true"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="undefined" minOccurs="0" maxOccurs="1"/&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attribute name="state" type="xs:string"/&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="AnyListContentType"&gt;
+		&lt;xs:choice&gt;
+			&lt;xs:element name="data" type="ListDataType" /&gt;
+			&lt;xs:element name="change" type="ChangeDataType" /&gt;
+			&lt;xs:element name="insert" type="InsertType" /&gt;
+			&lt;xs:element name="delete" type="DeleteType" /&gt;
+			&lt;xs:element name="replace" type="ReplaceType" /&gt;
+			&lt;xs:sequence&gt;
+				&lt;xs:element name="value" type="NewValueType" minOccurs="1" maxOccurs="unbounded" /&gt;
+			&lt;/xs:sequence&gt;
+		&lt;/xs:choice&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="AfterChangeOpListType"&gt;
+		&lt;xs:choice&gt;
+			&lt;xs:element name="data" type="ListDataType" /&gt;
+			&lt;xs:sequence&gt;
+				&lt;xs:element name="value" type="NewValueType" minOccurs="1" maxOccurs="unbounded" /&gt;
+			&lt;/xs:sequence&gt;
+		&lt;/xs:choice&gt;	
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="ListDataType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="el" type="AfterChangeOpListType" minOccurs="1" maxOccurs="unbounded"/&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attribute name="state" type="xs:string" use="required" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="ChangeDataType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="el" type="AnyListContentType" minOccurs="1" maxOccurs="1"/&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attribute name="state" type="xs:string" use="required" /&gt;
+		&lt;xs:attribute name="index" type="xs:integer" use="required" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="DeleteType"&gt;
+		&lt;xs:attribute name="state" type="xs:string" use="required" /&gt;
+		&lt;xs:attribute name="begin" type="xs:integer" use="required" /&gt;
+		&lt;xs:attribute name="length" type="xs:integer" use="required" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="InsertType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="el" type="AfterChangeOpListType" minOccurs="1" maxOccurs="unbounded" /&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attribute name="state" type="xs:string" use="required" /&gt;
+		&lt;xs:attribute name="after" type="xs:integer" use="required" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="ReplaceType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="el" type="AfterChangeOpListType" minOccurs="1" maxOccurs="unbounded" /&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attribute name="state" type="xs:string" use="required" /&gt;
+		&lt;xs:attribute name="begin" type="xs:integer" use="required" /&gt;
+		&lt;xs:attribute name="length" type="xs:integer" use="required" /&gt;
+	&lt;/xs:complexType&gt;
+&lt;/xs:schema&gt;
+      </pre>
+
+      <h2><a name="future">Future Work</a></h2>
+
+      <p>There is no heartbeat present in the communications spec, so a
+	controller cannot easily tell the difference between an appliance
+	that has crashed and one that is merely slow.  If the protocol is
+	implemented in a connection-oriented environment the dropping of
+	the connection could be used to indicate this, but that may not
+	be a reliable indicator of the appliance's health.  Many wireless 
+	environments have poor quality-of-service guarantees, so should be
+	expected to suffer connection failures and congestion.  The current 
+	workaround for this is to periodically have the controller perform
+	a full-state-request.  If no response is had within some reasonable
+	time, the appliance can be assumed dead.  Because the response to
+	a full-state-request is typically large this is a somewhat 
+	unsatisfactory approach.
+      </p>
+      
+      <p>
+        The service discovery mechanism still requires the user to
+        know the IP address or name of a server that is serving
+        appliances.  It would be nice to incorporate some mechanism
+        that allowed appliances to be asynchronously discovered.
+        Perhaps some mechanism using the IP broadcast address could be
+        useful for this purpose.
+      </p>
+
+      <h2><a name="example">Example</a></h2>
+      
+    <p>For the sake of a simple example, we'll imagine using the PUC
+      to control a simple media player.  (The media player is the
+      "appliance".)  NOTE: Each of these examples references the
+      Schema, but these attributes are not included in actual PUC
+      communication because there is no guarantee of internet access
+      for the controller to download the schema and verify each
+      message.
+    </p>
+
+    <p>Initially, the media player is stopped but has a few songs in
+      its play list.  A user walks up to it, armed with a PUC, and
+      initiates communication.  First the user must discover what
+      appliances are available on the appliance server.
+    </p>
+
+    <pre>
+&lt;?xml version="1.0" encoding="utf-8" ?&gt; 
+&lt;message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol"&gt;
+	&lt;server-information-request /&gt;
+&lt;/message&gt;
+    </pre>
+
+    <p>The server responds with a list of all appliances connected to
+    the server.  The user will choose the Simple Media Player to
+    connect to.
+    </p>
+
+    <pre>
+&lt;?xml version="1.0" encoding="utf-8" ?&gt; 
+&lt;message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol"&gt;
+	&lt;server-information&gt;
+		&lt;server-name&gt;Test Server&lt;/server-name&gt;
+		&lt;device&gt;
+			&lt;name&gt;Simple Media Player&lt;/name&gt;
+			&lt;port&gt;5180&lt;/port&gt;
+		&lt;/device&gt;
+	&lt;/server-information&gt;
+&lt;/message&gt;
+    </pre>
+
+    <p>Once the controller connects to the desired appliance, it sends
+    a request for the specification.</p>
+
+    <pre>
+&lt;?xml version="1.0" encoding="utf-8" ?&gt; 
+&lt;message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol"&gt;
+	&lt;spec-request/&gt;
+&lt;/message&gt;
+    </pre>
+    
+    <p>The media player responds with a spec.</p>
+
+    <pre>
+&lt;?xml version="1.0" encoding="utf-8" ?&gt; 
+&lt;message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol"&gt;
+	&lt;device-spec&gt;
+		&lt;spec&gt;
+&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;
+&amp;lt;spec name="MediaPlayer" version="PUC/2.1" xmlns="http://www.cs.cmu.edu/~pebbles/puc"&amp;gt;
+  &amp;lt;labels&amp;gt;
+    &amp;lt;label&amp;gt;Media Player&amp;lt;/label&amp;gt;
+  &amp;lt;/labels&amp;gt;
+  &amp;lt;groupings&amp;gt;
+    &amp;lt;group name="Controls" is-a="media-controls"&amp;gt;
+      &amp;lt;labels&amp;gt;
+        &amp;lt;label&amp;gt;Play Controls&amp;lt;/label&amp;gt;
+        &amp;lt;label&amp;gt;Play Mode&amp;lt;/label&amp;gt;
+        &amp;lt;text-to-speech text="Play Mode" recording="playmode.au" /&amp;gt;
+      &amp;lt;/labels&amp;gt;
+      &amp;lt;state name="Mode"&amp;gt;
+        &amp;lt;type&amp;gt;
+          &amp;lt;enumerated&amp;gt;
+            &amp;lt;item-count&amp;gt;3&amp;lt;/item-count&amp;gt;
+          &amp;lt;/enumerated&amp;gt;
+          &amp;lt;value-labels&amp;gt;
+            &amp;lt;map index="1"&amp;gt;
+              &amp;lt;labels&amp;gt;
+                &amp;lt;label&amp;gt;Stop&amp;lt;/label&amp;gt;
+              &amp;lt;/labels&amp;gt;
+            &amp;lt;/map&amp;gt;
+            &amp;lt;map index="2"&amp;gt;
+              &amp;lt;labels&amp;gt;
+                &amp;lt;label&amp;gt;Play&amp;lt;/label&amp;gt;
+              &amp;lt;/labels&amp;gt;
+            &amp;lt;/map&amp;gt;
+            &amp;lt;map index="3"&amp;gt;
+              &amp;lt;labels&amp;gt;
+                &amp;lt;label&amp;gt;Pause&amp;lt;/label&amp;gt;
+              &amp;lt;/labels&amp;gt;
+            &amp;lt;/map&amp;gt;
+          &amp;lt;/value-labels&amp;gt;
+        &amp;lt;/type&amp;gt;
+        &amp;lt;labels&amp;gt;
+          &amp;lt;label&amp;gt;Mode&amp;lt;/label&amp;gt;
+        &amp;lt;/labels&amp;gt;
+      &amp;lt;/state&amp;gt;
+      &amp;lt;group name="TrackControls"&amp;gt;
+        &amp;lt;command name="PrevTrack"&amp;gt;
+          &amp;lt;labels&amp;gt;
+            &amp;lt;label&amp;gt;Prev&amp;lt;/label&amp;gt;
+          &amp;lt;/labels&amp;gt;
+          &amp;lt;active-if&amp;gt;
+            &amp;lt;greaterthan state="PList.Selection"&amp;gt;
+              &amp;lt;static value="0"/&amp;gt; 
+            &amp;lt;/greaterthan&amp;gt;
+          &amp;lt;/active-if&amp;gt;
+        &amp;lt;/command&amp;gt;
+        &amp;lt;command name="NextTrack"&amp;gt;
+          &amp;lt;labels&amp;gt;
+            &amp;lt;label&amp;gt;Next&amp;lt;/label&amp;gt;
+          &amp;lt;/labels&amp;gt;
+          &amp;lt;active-if&amp;gt;
+            &amp;lt;lessthan state="PList.Selection"&amp;gt;
+              &amp;lt;refvalue state="PList.Length" /&amp;gt;
+            &amp;lt;/lessthan&amp;gt;
+          &amp;lt;/active-if&amp;gt;
+        &amp;lt;/command&amp;gt;
+      &amp;lt;/group&amp;gt;
+    &amp;lt;/group&amp;gt;
+    &amp;lt;list-group name="PList"&amp;gt;
+      &amp;lt;state name="Title"&amp;gt;
+        &amp;lt;type&amp;gt;
+          &amp;lt;string /&amp;gt;
+        &amp;lt;/type&amp;gt;
+        &amp;lt;labels&amp;gt;
+          &amp;lt;label&amp;gt;Title&amp;lt;/label&amp;gt;
+        &amp;lt;/labels&amp;gt;
+      &amp;lt;/state&amp;gt;
+      &amp;lt;state name="Duration" is-a="time-duration"&amp;gt;
+        &amp;lt;type&amp;gt;
+          &amp;lt;integer /&amp;gt;
+        &amp;lt;/type&amp;gt;
+        &amp;lt;labels&amp;gt;
+          &amp;lt;label&amp;gt;Duration&amp;lt;/label&amp;gt;
+        &amp;lt;/labels&amp;gt;
+      &amp;lt;/state&amp;gt;
+    &amp;lt;/list-group&amp;gt;
+  &amp;lt;/groupings&amp;gt;
+&amp;lt;/spec&amp;gt;
+		&lt;/spec&gt;
+	&lt;/device-spec&gt;
+&lt;/message&gt;
+    </pre>
+
+    <p>This response contains the complete spec for the media player,
+      which contains one enumerated state, two commands, and a list
+      with three states.  Note that the XML of the spec is escaped.
+      Upon receiving the spec and generating an interface, the
+      controller asks the media player for a listing of its complete
+      state.
+    </p>
+
+    <pre>
+&lt;?xml version="1.0" encoding="utf-8" ?&gt; 
+&lt;message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol"&gt;
+	&lt;full-state-request /&gt;
+&lt;/message&gt;
+    </pre>
+
+    <p>In response, the media player sends two messages.  The first
+      gives the value of the enumerated state and the next gives the
+      values in the list.
+    </p>
+
+    <pre>
+&lt;?xml version="1.0" encoding="utf-8" ?&gt; 
+&lt;message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol"&gt;
+	&lt;state-change-notification&gt;
+		&lt;state&gt;MediaPlayer.Controls.Mode&lt;/state&gt;
+		&lt;value&gt;1&lt;/value&gt;
+	&lt;/state-change-notification&gt;
+&lt;/message&gt;
+
+&lt;?xml version="1.0" encoding="utf-8" ?&gt; 
+&lt;message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol"&gt;
+	&lt;state-change-notification&gt;
+		&lt;data state="MediaPlayer.PList"&gt;
+			&lt;el&gt;
+				&lt;value state="Title"&gt;Sweet Home Alabama&lt;/value&gt;
+				&lt;value state="Duration"&gt;190&lt;/value&gt;
+			&lt;/el&gt;
+			&lt;el&gt;
+				&lt;value state="Title"&gt;Tower&lt;/value&gt;
+				&lt;value state="Duration"&gt;203&lt;/value&gt;
+			&lt;/el&gt;
+			&lt;el&gt;
+				&lt;value state="Title"&gt;Jane&lt;/value&gt;
+				&lt;value state="Duration"&gt;243&lt;/value&gt;
+			&lt;/el&gt;
+		&lt;/data&gt;
+	&lt;/state-change-notification&gt;
+&lt;/message&gt;
+    </pre>
+
+    <p>Now the user will set the media player to play.</p>
+
+    <pre>
+&lt;?xml version="1.0" encoding="utf-8" ?&gt; 
+&lt;message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol"&gt;
+	&lt;state-change-request&gt;
+		&lt;state&gt;MediaPlayer.Controls.Mode&lt;/state&gt;
+		&lt;value&gt;2&lt;/value&gt;
+	&lt;/state-change-request&gt;
+&lt;/message&gt;
+    </pre>
+
+    <p>The media player starts player, and as a consequence of the
+      state change, sends two messages indicating changes in its
+      state.  One of the corresponds to the state change requested by
+      the user, and the other is caused a result of a selection being
+      set in the play list.</p>
+
+    <pre>
+&lt;?xml version="1.0" encoding="utf-8" ?&gt; 
+&lt;message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol"&gt;
+	&lt;state-change-notification&gt;
+		&lt;state&gt;MediaPlayer.Controls.Mode&lt;/state&gt;
+		&lt;value&gt;1&lt;/value&gt;
+	&lt;/state-change-notification&gt;
+&lt;/message&gt;
+
+&lt;?xml version="1.0" encoding="utf-8" ?&gt; 
+&lt;message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol"&gt;
+	&lt;state-change-notification&gt;
+		&lt;state&gt;MediaPlayer.PList.Selection&lt;/state&gt;
+		&lt;value&gt;1&lt;/value&gt;
+	&lt;/state-change-notification&gt;
+&lt;/message&gt;
+    </pre>
+
+    <p>The user decides that they don't like this song, so they
+    advance to the next track of the play list.</p>
+
+    <pre>
+ &lt;?xml version="1.0" encoding="utf-8" ?&gt; 
+&lt;message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol"&gt;
+	&lt;command-invoke-request&gt;
+		&lt;command&gt;MediaPlayer.Controls.TrackControls.NextTrack&lt;/command&gt;
+	&lt;/command-invoke-request&gt;
+&lt;/message&gt;
+    </pre>
+
+    <p>The appliance changes the track, and as a result must send a
+    message to the controller because the selection in the PList has
+    changed.</p>
+
+    <pre>
+&lt;?xml version="1.0" encoding="utf-8" ?&gt; 
+&lt;message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol"&gt;
+	&lt;state-change-notification&gt;
+		&lt;state&gt;MediaPlayer.PList.Selection&lt;/state&gt;
+		&lt;value&gt;2&lt;/value&gt;
+	&lt;/state-change-notification&gt;
+&lt;/message&gt;
+    </pre>
+
+    <p>The user decides to go to the computer and update the media
+    player's play list.  This causes the appliance to send several
+    notifications.
+    </p>
+
+    <pre>
+&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol"&gt;
+	&lt;state-change-notification&gt;
+		&lt;replace state="MediaPlayer.PList" begin="3" length="1"&gt;
+			&lt;el&gt;
+				&lt;value state="Title"&gt;Gravity&lt;/value&gt;
+				&lt;value state="Duration"&gt;217&lt;/value&gt;
+			&lt;/el&gt;
+			&lt;el&gt;
+				&lt;value state="Title"&gt;1000000 Dollars&lt;/value&gt;
+				&lt;value state="Duration"&gt;236&lt;/value&gt;
+			&lt;/el&gt;
+			&lt;el&gt;
+				&lt;value state="Title"&gt;Jude&lt;/value&gt;
+				&lt;value state="Duration"&gt;209&lt;/value&gt;
+			&lt;/el&gt;
+		&lt;/replace&gt;
+	&lt;/state-change-notification&gt;
+&lt;/message&gt;
+
+&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol"&gt;
+	&lt;state-change-notification&gt;
+		&lt;delete state="MediaPlayer.PList" begin="1" length="1" /&gt;
+	&lt;/state-change-notification&gt;
+&lt;/message&gt;
+    </pre>
+    
+      <hr>
+	<address><a href="mailto:jeffreyn@cs.cmu.edu">Jeffrey Nichols</a></address>
+	<!-- Created: Thu Mar  7 13:01:28 EST 2002 -->
+	<!-- hhmts start -->
+Last modified: Tue Jun 22 15:04:36 EST 2004
+<!-- hhmts end -->
+    </body>
+  </html>

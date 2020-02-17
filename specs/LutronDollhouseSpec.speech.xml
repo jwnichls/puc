@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE spec SYSTEM "gadget.dtd">
+	<!--
+List of	States
+
+READ-WRITE STATES
+
+[Foyer/Kitchen/MediaRoom/MainBedroom]Dim - integers from 0 to 100
+Floods - boolean on/off
+Scene - Enumeration {1 = Welcome, 2 = Away, 3 = Pathway, 4 = Morning, 5 = Goodnight}
+
+COMMANDS
+
+[Foyer/Kitchen/MediaRoom/MainBedroom][Off/On]
+AllOn
+AllOff
+
+-->
+<gadget><node>
+	<label>
+		<canonical>lutron</canonical>
+		<alias>lutron dollhouse</alias>
+		<alias>dollhouse</alias>
+		<response>lutron here</response>
+	</label>
+	
+	<node> <!-- 5 zones -->
+		<label>
+			<canonical>rooms</canonical>
+			<alias>room</alias>
+			<alias>zones</alias>
+			<alias>zone</alias>
+		</label>
+
+		<node> <!-- foyer -->
+			<label><canonical>foyer</canonical></label>
+
+			<node>
+				<action name="Foyer:Off">
+					<label onoff="off">
+						<canonical>off</canonical>
+					</label>
+				</action>
+			</node>
+
+			<node>
+				<action name="Foyer:Dim">
+					<label>
+						<canonical>very dim</canonical>
+						<alias>very low</alias>
+					</label>
+					<var>25</var>
+				</action>
+			</node>
+			<node>
+				<action name="Foyer:Dim">
+					<label>
+						<canonical>dim</canonical>
+						<alias>low</alias>
+					</label>
+					<var>50</var>
+				</action>
+			</node>
+			<node>
+				<action name="Foyer:Dim">
+					<label>
+						<canonical>medium</canonical>
+					</label>
+					<var>75</var>
+				</action>
+			</node>
+
+			<node>
+				<action name="Foyer:Dim">
+					<label>
+						<canonical>bright</canonical>
+						<alias>high</alias>
+					</label>
+					<var>100</var>
+				</action>
+			</node>
+
+			<node>
+				<action name="Foyer:On">
+					<label onoff="on">
+						<canonical>on</canonical>
+					</label>
+				</action>
+			</node>
+		</node>
+
+		<node> <!-- kitchen -->
+			<label><canonical>kitchen</canonical></label>
+
+			<node>
+				<action name="Kitchen:Off">
+					<label onoff="off">
+						<canonical>off</canonical>
+					</label>
+				</action>
+			</node>
+
+			<node>
+				<action name="Kitchen:Dim">
+					<label>
+						<canonical>very dim</canonical>
+						<alias>very low</alias>
+					</label>
+					<var>25</var>
+				</action>
+			</node>
+			<node>
+				<action name="Kitchen:Dim">
+					<label>
+						<canonical>dim</canonical>
+						<alias>low</alias>
+					</label>
+					<var>50</var>
+				</action>
+			</node>
+			<node>
+				<action name="Kitchen:Dim">
+					<label>
+						<canonical>medium</canonical>
+					</label>
+					<var>75</var>
+				</action>
+			</node>
+
+			<node>
+				<action name="Kitchen:Dim">
+					<label>
+						<canonical>bright</canonical>
+						<alias>high</alias>
+					</label>
+					<var>100</var>
+				</action>
+			</node>
+
+			<node>
+				<action name="Kitchen:On">
+					<label onoff="on">
+						<canonical>on</canonical>
+					</label>
+				</action>
+			</node>
+		</node>
+	
+		<node> <!-- mediaroom -->
+			<label><canonical>mediaroom</canonical></label>
+
+			<node>
+				<action name="MediaRoom:Off">
+					<label onoff="off">
+						<canonical>off</canonical>
+					</label>
+				</action>
+			</node>
+
+			<node>
+				<action name="MediaRoom:Dim">
+					<label>
+						<canonical>very dim</canonical>
+						<alias>very low</alias>
+					</label>
+					<var>25</var>
+				</action>
+			</node>
+			<node>
+				<action name="MediaRoom:Dim">
+					<label>
+						<canonical>dim</canonical>
+						<alias>low</alias>
+					</label>
+					<var>50</var>
+				</action>
+			</node>
+			<node>
+				<action name="MediaRoom:Dim">
+					<label>
+						<canonical>medium</canonical>
+					</label>
+					<var>75</var>
+				</action>
+			</node>
+
+			<node>
+				<action name="MediaRoom:Dim">
+					<label>
+						<canonical>bright</canonical>
+						<alias>high</alias>
+					</label>
+					<var>100</var>
+				</action>
+			</node>
+
+			<node>
+				<action name="MediaRoom:On">
+					<label onoff="on">
+						<canonical>on</canonical>
+					</label>
+				</action>
+			</node>
+		</node>
+
+		<node> <!-- main bedroom -->
+			<label>
+				<canonical>master bedroom</canonical>
+				<alias>main bedroom</alias>
+				<alias>bedroom</alias>
+			</label>
+
+			<node>
+				<action name="MainBedroom:Off">
+					<label onoff="off">
+						<canonical>off</canonical>
+					</label>
+				</action>
+			</node>
+
+			<node>
+				<action name="MainBedroom:Dim">
+					<label>
+						<canonical>very dim</canonical>
+						<alias>very low</alias>
+					</label>
+					<var>25</var>
+				</action>
+			</node>
+			<node>
+				<action name="MainBedroom:Dim">
+					<label>
+						<canonical>dim</canonical>
+						<alias>low</alias>
+					</label>
+					<var>50</var>
+				</action>
+			</node>
+			<node>
+				<action name="MainBedroom:Dim">
+					<label>
+						<canonical>medium</canonical>
+					</label>
+					<var>75</var>
+				</action>
+			</node>
+
+			<node>
+				<action name="MainBedroom:Dim">
+					<label>
+						<canonical>bright</canonical>
+						<alias>high</alias>
+					</label>
+					<var>100</var>
+				</action>
+			</node>
+
+			<node>
+				<action name="MainBedroom:On">
+					<label onoff="on">
+						<canonical>on</canonical>
+					</label>
+				</action>
+			</node>
+		</node>
+
+		<node> <!-- floods -->
+			<label>
+				<canonical>flood lights</canonical>
+				<alias>floods</alias>
+			</label>
+
+			<node>
+				<action name="Floods">
+					<label onoff="off">
+						<canonical>off</canonical>
+					</label>
+					<var>false</var>
+				</action>
+			</node>
+
+			<node>
+				<action name="Floods">
+					<label onoff="on">
+						<canonical>on</canonical>
+					</label>
+					<var>true</var>
+				</action>
+			</node>
+		</node>
+	</node> <!-- 5 zones -->
+
+	<node> <!-- 5 scenes -->
+		<label>
+			<canonical>scenes</canonical>
+			<alias>scene</alias>
+		</label>
+
+		<node>
+			<action name="Scene">
+				<label>
+					<canonical>welcome</canonical>
+				</label>
+				<var>1</var>
+			</action>
+		</node>
+
+		<node>
+			<action name="Scene">
+				<label>
+					<canonical>away</canonical>
+				</label>
+				<var>2</var>
+			</action>
+		</node>
+
+		<node>
+			<action name="Scene">
+				<label>
+					<canonical>pathway</canonical>
+				</label>
+				<var>3</var>
+			</action>
+		</node>
+		
+		<node>
+			<action name="Scene">
+				<label>
+					<canonical>morning</canonical>
+				</label>
+				<var>4</var>
+			</action>
+		</node>
+
+		<node>
+			<action name="Scene">
+				<label>
+					<canonical>goodnight</canonical>
+				</label>
+				<var>5</var>
+			</action>
+		</node>
+	</node> <!-- 5 scenes -->
+
+	<node> <!-- all on/off -->
+	        <label>
+		        <canonical>all lights</canonical>
+		</label>
+
+		<node>
+			<action name="AllOn">
+				<label onoff="on">
+					<canonical>on</canonical>
+				</label>
+			</action>
+		</node>
+
+		<node>
+			<action name="AllOff">
+				<label onoff="off">
+					<canonical>off</canonical>
+				</label>
+			</action>
+		</node>
+	</node> <!-- all on/off -->
+</node></gadget>

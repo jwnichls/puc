@@ -1,0 +1,1362 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<spec xmlns="http://www.cs.cmu.edu/~pebbles/puc" name="DVD-VCR" version="PUC/2.1">
+	<labels>
+		<label>Samsung DVD-VCR DVD-V1000</label>
+		<label>Samsung DVD-VCR</label>
+	</labels>
+	<groupings>
+		<group name="Temp">
+			<group name="Setup">
+				<state name="Progress" access="read-only">
+					<type>
+						<enumerated><item-count>3</item-count></enumerated>
+						<value-labels>
+							<map index="1">
+								<labels><label>Not Setup</label></labels>
+							</map>
+							<map index="2">
+								<labels><label>Auto Setup In Progress</label><label>In Progress</label></labels>
+							</map>
+							<map index="3">
+								<labels><label>Complete</label></labels>
+							</map>
+						</value-labels>
+					</type>
+					<labels>
+						<label>Setup Progress</label>
+					</labels>
+				</state>
+				<state name="Language" is-a="language">
+					<type>
+						<enumerated><item-count>3</item-count></enumerated>
+						<value-labels>
+							<map index="1">
+								<labels><label>English</label><label>Eng</label></labels>
+							</map>
+							<map index="2">
+								<labels><label>Francais</label><label>Fr</label></labels>
+							</map>
+							<map index="3">
+								<labels><label>Espanol</label><label>Esp</label></labels>
+							</map>
+						</value-labels>
+					</type>
+					<labels>
+						<label>On-Screen Language</label>
+						<label>Language</label>
+					</labels>
+				</state>
+				<group name="Channels">
+					<labels>
+						<label>Channel Setup</label>
+						<label>Channels</label>
+					</labels>
+					
+					<list-group name="Active">
+						<min><static value="0"/></min>
+						<max><refvalue state="MaxChannel"/></max>
+					
+						<state name="ChannelNum">
+							<type>
+								<integer>
+									<min><static value="1"/></min>
+									<max><refvalue state="MaxChannel"/></max>
+								</integer>
+							</type>
+							<labels>	
+								<label>Channel Number</label>
+								<label>Ch #</label>
+							</labels>
+						</state>
+					</list-group>
+					
+					<command name="AddChannel">
+						<labels>
+							<label>Add Channel</label>
+							<label>Add</label>
+						</labels>
+						<active-if>
+							<lessthan state="Channels.Active.Selection">
+								<refvalue state="MaxChannel"/>
+							</lessthan>
+						</active-if>
+					</command>
+					<command name="RemoveChannel">
+						<labels>
+							<label>Remove Channel</label>
+							<label>Remove</label>
+						</labels>
+						<active-if>
+							<defined state="Channels.Active.Selection"/>
+						</active-if>
+					</command>
+					<command name="AutoChannelSearch">
+						<labels>
+							<label>Automatic Channel Search</label>
+							<label>Auto Channel Search</label>
+						</labels>
+					</command>
+				</group>
+				<state name="TunerBand">
+					<type>
+						<enumerated><item-count>3</item-count></enumerated>
+						<value-labels>
+							<map index="1">
+								<labels>
+									<label>Automatic</label>
+									<label>Auto</label>
+								</labels>
+							</map>
+							<map index="2">
+								<labels>
+									<label>Antenna</label>
+								</labels>
+							</map>
+							<map index="3">
+								<labels>
+									<label>Cable</label>
+								</labels>
+							</map>
+						</value-labels>
+					</type>
+				</state>
+				<state name="MaxChannel" access="read-only">
+					<!-- The maximum channel allowed depends on the setting of TunerBand.
+					     If we are using the antenna, only 69 channels are available, 
+					     otherwise 125 channels are possible. -->
+					<type>
+						<integer/>
+					</type>
+					<labels>
+						<label>Maximum Channel Available</label>
+						<label>Max Channel</label>
+					</labels>
+				</state>
+				<state name="ShowWeakChannels">
+					<type name="YesNoType">
+						<boolean/>
+						<value-labels>
+							<map index="false">
+								<labels><label>No</label></labels>
+							</map>
+							<map index="true">
+								<labels><label>Yes</label></labels>
+							</map>
+						</value-labels>
+					</type>
+					<labels>
+						<label>Show Weak Channels</label>
+					</labels>
+				</state>
+				<group name="Clock" is-a="date-time">
+					<labels>
+						<label>Clock</label>
+					</labels>
+					<state name="Channel">
+						<type>
+							<integer>
+								<min><static value="1"/></min>
+								<max><refvalue state="MaxChannel"/></max>
+							</integer>
+						</type>
+						<labels>
+							<label>Clock Set Channel</label>
+						</labels>
+					</state>
+					<state name="Set">
+						<type>
+							<boolean />
+							<value-labels>
+								<map index="false">
+									<labels><label>Manual</label></labels>
+								</map>
+								<map index="true">
+									<active-if>
+										<defined state="Clock.Channel"/>
+									</active-if>
+									<labels><label>Automatic</label><label>Auto</label></labels>
+								</map>
+							</value-labels>
+						</type>
+						<labels>
+							<label>Auto Clock Set</label>
+							<label>Clock Set</label>
+						</labels>
+					</state>
+					<group name="Time" is-a="time-absolute">
+						<state name="Time">
+							<type>
+								<integer/>
+							</type>
+							<labels>
+								<label>Time</label>
+							</labels>
+						</state>
+						<state name="TimeZone">
+							<type>
+								<enumerated>
+									<item-count>7</item-count>
+								</enumerated>
+								<value-labels>
+									<map index="1">
+										<labels>
+											<label>Atlantic</label>
+											<label>GMT-4</label>
+										</labels>
+									</map>
+									<map index="2">
+										<labels>
+											<label>Eastern</label>
+											<label>GMT-5</label>
+										</labels>
+									</map>
+									<map index="3">
+										<labels>
+											<label>Central</label>
+											<label>GMT-6</label>
+										</labels>
+									</map>
+									<map index="4">
+										<labels>
+											<label>Mountain</label>
+											<label>GMT-7</label>
+										</labels>
+									</map>
+									<map index="5">
+										<labels>
+											<label>Pacific</label>
+											<label>GMT-8</label>
+										</labels>
+									</map>
+									<map index="6">
+										<labels>
+											<label>Alaska</label>
+											<label>GMT-9</label>
+										</labels>
+									</map>
+									<map index="7">
+										<labels>
+											<label>Hawaii</label>
+											<label>GMT-10</label>
+										</labels>
+									</map>
+								</value-labels>
+							</type>
+							<labels>
+								<label>Time Zone</label>
+							</labels>
+						</state>
+						<state name="DaylightSavings">
+							<apply-type name="YesNoType" />
+							<labels>
+								<label>Daylight Savings Time</label>
+							</labels>
+						</state>
+					</group>
+					<group name="Date" is-a="date">
+						<state name="Month">
+							<type>
+								<enumerated>
+									<item-count>12</item-count>
+								</enumerated>
+								<value-labels>
+									<map index="1">
+										<labels>
+											<label>January</label>
+											<label>Jan</label>
+										</labels>
+									</map>
+									<map index="2">
+										<labels>
+											<label>February</label>
+											<label>Feb</label>
+										</labels>
+									</map>
+									<map index="3">
+										<labels>
+											<label>March</label>
+											<label>Mar</label>
+										</labels>
+									</map>
+									<map index="4">
+										<labels>
+											<label>April</label>
+											<label>Apr</label>
+										</labels>
+									</map>
+									<map index="5">
+										<labels>
+											<label>May</label>
+										</labels>
+									</map>
+									<map index="6">
+										<labels>
+											<label>June</label>
+											<label>Jun</label>
+										</labels>
+									</map>
+									<map index="7">
+										<labels>
+											<label>July</label>
+											<label>Jul</label>
+										</labels>
+									</map>
+									<map index="8">
+										<labels>
+											<label>August</label>
+											<label>Aug</label>
+										</labels>
+									</map>
+									<map index="9">
+										<labels>
+											<label>September</label>
+											<label>Sep</label>
+										</labels>
+									</map>
+									<map index="10">
+										<labels>
+											<label>October</label>
+											<label>Oct</label>
+										</labels>
+									</map>
+									<map index="11">
+										<labels>
+											<label>November</label>
+											<label>Nov</label>
+										</labels>
+									</map>
+									<map index="12">
+										<labels>
+											<label>December</label>
+											<label>Dec</label>
+										</labels>
+									</map>
+								</value-labels>
+							</type>
+							<labels>
+								<label>Month</label>
+							</labels>
+						</state>
+						<state name="Year">
+							<type>
+								<integer>
+									<min>
+										<static value="2000" />
+									</min>
+									<max>
+										<static value="2099" />
+									</max>
+								</integer>
+							</type>
+							<labels>
+								<label>Year</label>
+							</labels>
+						</state>
+						<state name="Date">
+							<type>
+								<integer>
+									<min>
+										<static value="1" />
+									</min>
+									<max>
+										<static value="31" />
+									</max>
+								</integer>
+								<value-labels>
+									<!-- I could bother with coding leap years in here, 
+										but I won't. Instead I'm choosing to leave that
+										up to the appliance. -->
+									<map index="30">
+										<labels>
+											<label>30</label>
+										</labels>
+										<active-if>
+											<not>
+												<equals state="Month">
+													<static value="2" />
+												</equals>
+											</not>
+										</active-if>
+									</map>
+									<map index="31">
+										<labels>
+											<label>31</label>
+										</labels>
+										<active-if>
+											<equals state="Month">
+												<static value="1" />
+											</equals>
+											<equals state="Month">
+												<static value="3" />
+											</equals>
+											<equals state="Month">
+												<static value="5" />
+											</equals>
+											<equals state="Month">
+												<static value="7" />
+											</equals>
+											<equals state="Month">
+												<static value="8" />
+											</equals>
+											<equals state="Month">
+												<static value="10" />
+											</equals>
+											<equals state="Month">
+												<static value="12" />
+											</equals>
+										</active-if>
+									</map>
+								</value-labels>
+							</type>
+							<labels>
+								<label>Date</label>
+							</labels>
+						</state>
+					</group>
+				</group>
+				<group name="Tuner">
+					<state name="Audio">
+						<type>
+							<enumerated><item-count>4</item-count></enumerated>
+							<value-labels>
+								<map index="1">
+									<labels><label>Mono</label></labels>
+								</map>
+								<map index="2">
+									<labels><label>Stereo</label></labels>
+									<active-if>
+										<equals state="Available.Stereo"><static value="true"/></equals>
+									</active-if>
+								</map>
+								<map index="3">
+									<labels><label>SAP</label></labels>
+									<active-if><equals state="Available.SAP"><static value="true"/></equals></active-if>
+								</map>
+								<map index="4">
+									<labels><label>TV+SAP</label></labels>
+									<active-if>
+										<equals state="Available.SAP"><static value="true"/></equals>
+									</active-if>
+								</map>
+							</value-labels>
+						</type>
+					</state>
+					<group name="Available">
+						<labels>
+							<label>Available</label>
+						</labels>
+						<state name="Stereo" access="read-only">
+							<apply-type name="YesNoType"/>
+							<labels>
+								<label>Stereo Available</label>
+								<label>Stereo</label>
+							</labels>
+						</state>
+						<state name="SAP" access="read-only">
+							<apply-type name="YesNoType"/>
+							<labels>
+								<label>SAP Available</label>
+								<label>SAP</label>
+							</labels>
+						</state>
+					</group>
+				</group>
+				<state name="ChildLock">
+					<type name="OnOffType">
+						<boolean/>
+						<value-labels>
+							<map index="false">
+								<labels><label>Off</label></labels>
+							</map>
+							<map index="true">
+								<labels><label>On</label></labels>
+							</map>
+						</value-labels>
+					</type>
+					<labels>
+						<label>Child Lock</label>
+					</labels>
+				</state>
+				<state name="PanelDimming">
+					<type>
+						<enumerated><item-count>4</item-count></enumerated>
+						<value-labels>
+							<map index="1">
+								<labels><label>Automatic</label><label>Auto</label></labels>
+							</map>
+							<map index="2">
+								<labels><label>Bright</label></labels>
+							</map>
+							<map index="3">
+								<labels><label>Dim</label></labels>
+							</map>
+							<map index="4">
+								<labels><label>Off</label></labels>
+							</map>
+						</value-labels>
+					</type>
+					<labels>
+						<label>Front Panel Display</label>
+						<label>Panel Display</label>
+					</labels>
+				</state>
+				<state name="TVAspectRatio">
+					<type>
+						<enumerated><item-count>3</item-count></enumerated>
+						<value-labels>
+							<map index="1">
+								<labels>
+									<label>4:3 Letterbox</label>
+									<label>4:3LB</label>
+								</labels>
+							</map>
+							<map index="2">
+								<labels>
+									<label>4:3 Pan & Scan</label>
+									<label>4:3PS</label>
+								</labels>
+							</map>
+							<map index="3">
+								<labels>
+									<label>16:9 Widescreen</label>
+									<label>16:9</label>
+								</labels>
+							</map>
+						</value-labels>
+					</type>
+					<labels>
+						<label>TV Aspect Ratio</label>
+						<label>Aspect Ratio</label>
+					</labels>
+				</state>
+				<state name="StillMode">
+					<type>
+						<enumerated><item-count>3</item-count></enumerated>
+						<value-labels>
+							<map index="1">
+								<labels>
+									<label>Automatic</label>
+									<label>Auto</label>
+								</labels>
+							</map>
+							<map index="2">
+								<labels>
+									<label>Frame</label>
+								</labels>
+							</map>
+							<map index="3">
+								<labels>
+									<label>Field</label>
+								</labels>
+							</map>
+						</value-labels>
+					</type>
+					<labels>
+						<label>Still Mode</label>
+					</labels>
+				</state>
+				<state name="BlackLevel">
+					<type>
+						<enumerated><item-count>2</item-count></enumerated>
+						<value-labels>
+							<map index="1">
+								<labels>
+									<label>High</label>
+								</labels>
+							</map>
+							<map index="2">
+								<labels>
+									<label>Low</label>
+								</labels>
+							</map>
+						</value-labels>
+					</type>
+					<labels>	
+						<label>Black Level</label>
+					</labels>
+				</state>
+				<state name="DVDAudioLanguage" is-a="language">
+					<type>
+						<enumerated><item-count>23</item-count></enumerated>
+						<value-labels>
+							<map index="1">
+								<labels><label>English</label></labels>
+							</map>
+							<map index="2">
+								<labels><label>Francais</label></labels>
+							</map>
+							<map index="3">
+								<labels><label>Espanol</label></labels>
+							</map>
+							<map index="4">
+								<labels><label>Deutsch</label></labels>
+							</map>
+							<map index="5">
+								<labels><label>Italiano</label></labels>
+							</map>
+							<map index="6">
+								<labels><label>Nederlands</label></labels>
+							</map>
+							<map index="7">
+								<labels><label>Original</label></labels>
+							</map>
+							<map index="8">
+								<labels><label>Cesky</label></labels>
+							</map>
+							<map index="9">
+								<labels><label>Dansk</label></labels>
+							</map>
+							<map index="10">
+								<labels><label>Magyar</label></labels>
+							</map>
+							<map index="11">
+								<labels><label>Svenska</label></labels>
+							</map>
+							<map index="12">
+								<labels><label>Norsk</label></labels>
+							</map>
+							<map index="13">
+								<labels><label>Polski</label></labels>
+							</map>
+							<map index="14">
+								<labels><label>Portugues</label></labels>
+							</map>
+							<map index="15">
+								<labels><label>Suomi</label></labels>
+							</map>
+							<map index="16">
+								<labels><label>Afrikaans</label></labels>
+							</map>
+							<map index="17">
+								<labels><label>Arabic</label></labels>
+							</map>
+							<map index="18">
+								<labels><label>Chinese</label></labels>
+							</map>
+							<map index="19">
+								<labels><label>Greek</label></labels>
+							</map>
+							<map index="20">
+								<labels><label>Hindi</label></labels>
+							</map>
+							<map index="21">
+								<labels><label>Japanese</label></labels>
+							</map>
+							<map index="22">
+								<labels><label>Russian</label></labels>
+							</map>
+							<map index="23">
+								<labels><label>Turkish</label></labels>
+							</map>
+						</value-labels>
+					</type>
+					<labels>
+						<label>Default DVD Audio Language</label>
+						<label>DVD Audio Language</label>
+						<label>Audio Language</label>
+					</labels>
+				</state>
+				<state name="SubtitleLanguage" is-a="language">
+					<type>
+						<enumerated><item-count>23</item-count></enumerated>
+						<value-labels>
+							<map index="1">
+								<labels><label>Automatic</label></labels>
+							</map>
+							<map index="2">
+								<labels><label>English</label></labels>
+							</map>
+							<map index="3">
+								<labels><label>Francais</label></labels>
+							</map>
+							<map index="4">
+								<labels><label>Espanol</label></labels>
+							</map>
+							<map index="5">
+								<labels><label>Deutsch</label></labels>
+							</map>
+							<map index="6">
+								<labels><label>Italiano</label></labels>
+							</map>
+							<map index="7">
+								<labels><label>Nederlands</label></labels>
+							</map>
+							<map index="8">
+								<labels><label>Cesky</label></labels>
+							</map>
+							<map index="9">
+								<labels><label>Dansk</label></labels>
+							</map>
+							<map index="10">
+								<labels><label>Magyar</label></labels>
+							</map>
+							<map index="11">
+								<labels><label>Svenska</label></labels>
+							</map>
+							<map index="12">
+								<labels><label>Norsk</label></labels>
+							</map>
+							<map index="13">
+								<labels><label>Polski</label></labels>
+							</map>
+							<map index="14">
+								<labels><label>Portugues</label></labels>
+							</map>
+							<map index="15">
+								<labels><label>Suomi</label></labels>
+							</map>
+							<map index="16">
+								<labels><label>Afrikaans</label></labels>
+							</map>
+							<map index="17">
+								<labels><label>Arabic</label></labels>
+							</map>
+							<map index="18">
+								<labels><label>Chinese</label></labels>
+							</map>
+							<map index="19">
+								<labels><label>Greek</label></labels>
+							</map>
+							<map index="20">
+								<labels><label>Hindi</label></labels>
+							</map>
+							<map index="21">
+								<labels><label>Japanese</label></labels>
+							</map>
+							<map index="22">
+								<labels><label>Russian</label></labels>
+							</map>
+							<map index="23">
+								<labels><label>Turkish</label></labels>
+							</map>
+						</value-labels>
+					</type>
+					<labels>
+						<label>Default DVD Subtitle Language</label>
+						<label>DVD Subtitle Language</label>
+						<label>Subtitle Langauge</label>
+					</labels>
+				</state>
+				<state name="DiscMenuLanguage" is-a="language">
+					<type>
+						<enumerated><item-count>22</item-count></enumerated>
+						<value-labels>
+							<map index="1">
+								<labels><label>English</label></labels>
+							</map>
+							<map index="2">
+								<labels><label>Francais</label></labels>
+							</map>
+							<map index="3">
+								<labels><label>Espanol</label></labels>
+							</map>
+							<map index="4">
+								<labels><label>Deutsch</label></labels>
+							</map>
+							<map index="5">
+								<labels><label>Italiano</label></labels>
+							</map>
+							<map index="6">
+								<labels><label>Nederlands</label></labels>
+							</map>
+							<map index="7">
+								<labels><label>Cesky</label></labels>
+							</map>
+							<map index="8">
+								<labels><label>Dansk</label></labels>
+							</map>
+							<map index="9">
+								<labels><label>Magyar</label></labels>
+							</map>
+							<map index="10">
+								<labels><label>Svenska</label></labels>
+							</map>
+							<map index="11">
+								<labels><label>Norsk</label></labels>
+							</map>
+							<map index="12">
+								<labels><label>Polski</label></labels>
+							</map>
+							<map index="13">
+								<labels><label>Portugues</label></labels>
+							</map>
+							<map index="14">
+								<labels><label>Suomi</label></labels>
+							</map>
+							<map index="15">
+								<labels><label>Afrikaans</label></labels>
+							</map>
+							<map index="16">
+								<labels><label>Arabic</label></labels>
+							</map>
+							<map index="17">
+								<labels><label>Chinese</label></labels>
+							</map>
+							<map index="18">
+								<labels><label>Greek</label></labels>
+							</map>
+							<map index="19">
+								<labels><label>Hindi</label></labels>
+							</map>
+							<map index="20">
+								<labels><label>Japanese</label></labels>
+							</map>
+							<map index="21">
+								<labels><label>Russian</label></labels>
+							</map>
+							<map index="22">
+								<labels><label>Turkish</label></labels>
+							</map>
+						</value-labels>
+					</type>
+					<labels>
+						<label>Default DVD Menu Language</label>
+						<label>DVD Menu Language</label>
+						<label>Menu Language</label>
+					</labels>
+				</state>
+				<state name="DynamicCompression">
+					<apply-type name="OnOffType"/>
+					<labels>
+						<label>Dynamic Compression</label>
+					</labels>
+				</state>
+				<group name="RatingControl">
+					<labels>
+						<label></label>
+					</labels>
+					<state name="RequirePassword">
+						<apply-type name="YesNoType"/>
+						<labels>
+							<label>Require Password</label>
+						</labels>
+					</state>
+					<group name="RatingPassword">
+						<state name="Password">
+							<type name="PasswordType">
+								<integer>
+									<min><static value="0"/></min>
+									<max><static value="9999"/></max>
+								</integer>
+							</type>
+							<labels>
+								<label>Password</label>
+							</labels>
+							<active-if>
+								<equals state="RequirePassword"><static value="true"/></equals>
+							</active-if>
+						</state>
+						<state name="PasswordCorrect" access="read-only">
+							<apply-type name="YesNoType"/>
+							<labels>
+								<label>Password Correct</label>
+							</labels>
+						</state>
+					</group>
+					<group name="Restricted">
+						<active-if>
+							<equals state="PasswordCorrect"><static value="true"/></equals>
+							<equals state="RequirePassword"><static value="true"/></equals>
+						</active-if>
+						<group name="SetPassword">
+							<labels>
+								<label>Set Password</label>
+							</labels>
+							<state name="NewPassword">
+								<apply-type name="PasswordType"/>
+								<labels>
+									<label>Password</label>
+								</labels>
+							</state>
+							<command name="SetCommand">
+								<labels>
+									<label>Set Password</label>
+									<label>Set</label>
+								</labels>
+								<active-if>
+									<defined state="NewPassword"/>
+								</active-if>
+							</command>
+						</group>
+						<state name="RatingLevel">
+							<type>
+								<enumerated><item-count>8</item-count></enumerated>
+								<value-labels>
+									<map index="1">
+										<labels><label>Level 1 (G)</label></labels>
+									</map>
+									<map index="2">
+										<labels><label>Level 2</label></labels>
+									</map>
+									<map index="3">
+										<labels><label>Level 3 (PG)</label></labels>
+									</map>
+									<map index="4">
+										<labels><label>Level 4 (PG-13)</label></labels>
+									</map>
+									<map index="5">
+										<labels><label>Level 5 (G)</label></labels>
+									</map>
+									<map index="6">
+										<labels><label>Level 6 (R)</label></labels>
+									</map>
+									<map index="7">
+										<labels><label>Level 7 (NC-17)</label></labels>
+									</map>
+									<map index="8">
+										<labels><label>Level 8</label></labels>
+									</map>
+								</value-labels>
+							</type>
+							<labels>
+								<label>Password Required For</label>
+							</labels>
+						</state>
+					</group>
+				</group>
+				<group name="DigitalAudio">
+					<state name="DolbyDDecoder">
+						<apply-type name="OnOffType"/>
+						<labels>
+							<label>Dolby Digital Decoder</label>
+						</labels>
+					</state>
+					<state name="DTSDecoder">
+						<apply-type name="OnOffType"/>
+						<labels>
+							<label>DTS Decoder</label>
+						</labels>
+					</state>
+				</group>
+				<state name="DVDAltVideoOut">
+					<type>
+						<enumerated><item-count>3</item-count></enumerated>
+						<value-labels>
+							<map index="1">
+								<labels><label>Off</label></labels>
+							</map>
+							<map index="2">
+								<labels><label>S-Video</label></labels>
+							</map>
+							<map index="3">
+								<labels><label>Component</label></labels>
+							</map>
+						</value-labels>
+					</type>
+					<labels>
+						<label>DVD Alternative Video Out</label>
+						<label>DVD Alt. Video Out</label>
+						<label>Alt. Video Out</label>
+					</labels>
+				</state>
+			</group>
+			<state name="TVView">
+				<type>
+					<enumerated><item-count>5</item-count></enumerated>
+					<value-labels>
+						<map index="1">
+							<labels><label>VCR</label></labels>
+						</map>
+						<map index="2">
+							<labels><label>Tuner</label></labels>
+						</map>
+						<map index="3">
+							<labels>
+								<label>Front Input (Line 1)</label>
+								<label>Line 1</label>
+							</labels>
+						</map>
+						<map index="4">
+							<labels>
+								<label>Rear Input (Line 2)</label>
+								<label>Line 2</label>
+							</labels>
+						</map>
+						<map index="5">
+							<labels>
+								<label>DVD</label>
+							</labels>
+						</map>
+					</value-labels>
+				</type>
+				<labels>
+					<label>TV View</label>
+				</labels>
+			</state>
+			<state name="Power">
+				<apply-type name="OnOffType"/>
+				<labels>
+					<label>Power</label>
+				</labels>
+			</state>
+			<group name="DVD" priority="10">
+				<labels>
+					<label>DVD</label>
+				</labels>
+				<group name="PlayControls" is-a="media-controls" priority="10">
+					<state name="Mode">
+						<type>
+							<enumerated><item-count></item-count></enumerated>
+							<value-labels>
+								<map index="1">
+									<labels><label>Stop</label></labels>
+								</map>
+								<map index="2">
+									<labels>
+										<label>128x Reverse Search</label>
+										<label>128x Reverse</label>
+									</labels>
+								</map>
+								<map index="3">
+									<labels>
+										<label>32x Reverse Search</label>
+										<label>32x Reverse</label>
+									</labels>
+								</map>
+								<map index="4">
+									<labels>
+										<label>16x Reverse Search</label>
+										<label>16x Reverse</label>
+									</labels>
+								</map>
+								<map index="5">
+									<labels>
+										<label>8x Reverse Search</label>
+										<label>8x Reverse</label>
+									</labels>
+								</map>
+								<map index="6">
+									<labels>
+										<label>4x Reverse Search</label>
+										<label>4x Reverse</label>
+									</labels>
+								</map>
+								<map index="7">
+									<labels>
+										<label>2x Reverse Search</label>
+										<label>2x Reverse</label>
+									</labels>
+								</map>
+								<map index="8">
+									<labels>
+										<label>1/2x Reverse Search</label>
+										<label>1/2x Reverse</label>
+									</labels>
+								</map>
+								<map index="9">
+									<labels>
+										<label>1/4x Reverse Search</label>
+										<label>1/4x Reverse</label>
+									</labels>
+								</map>
+								<map index="10">
+									<labels>
+										<label>1/8x Reverse Search</label>
+										<label>1/8x Reverse</label>
+									</labels>
+								</map>
+								<map index="11">
+									<labels>
+										<label>Pause</label>
+									</labels>
+								</map>
+								<map index="12">
+									<labels>
+										<label>1/8x Forward Search</label>
+										<label>1/8x Forward</label>
+									</labels>
+								</map>
+								<map index="13">
+									<labels>
+										<label>1/4x Forward Search</label>
+										<label>1/4x Forward</label>
+									</labels>
+								</map>
+								<map index="14">
+									<labels>
+										<label>1/2x Forward Search</label>
+										<label>1/2x Forward</label>
+									</labels>
+								</map>
+								<map index="15">
+									<labels><label>Play</label></labels>
+								</map>
+								<map index="16">
+									<labels>
+										<label>2x Forward Search</label>
+										<label>2x Forward</label>
+									</labels>
+								</map>
+								<map index="17">
+									<labels>
+										<label>4x Forward Search</label>
+										<label>4x Forward</label>
+									</labels>
+								</map>
+								<map index="18">
+									<labels>
+										<label>8x Forward Search</label>
+										<label>8x Forward</label>
+									</labels>
+								</map>
+								<map index="19">
+									<labels>
+										<label>16x Forward Search</label>
+										<label>16x Forward</label>
+									</labels>
+								</map>
+								<map index="20">
+									<labels>
+										<label>32x Forward Search</label>
+										<label>32x Forward</label>
+									</labels>
+								</map>
+								<map index="21">
+									<labels>
+										<label>128x Forward Search</label>
+										<label>128x Forward</label>
+									</labels>
+								</map>
+							</value-labels>
+						</type>
+						<labels>
+							<label>DVD Play Controls</label>
+							<label>Play Controls</label>
+						</labels>
+					</state>
+				</group>
+				<command name="Menu" priority="8">
+					<labels><label>DVD Menu</label><label>Menu</label></labels>
+				</command>
+				<command name="Title" priority="8">
+					<labels><label>DVD Title Menu</label><label>Title Menu</label></labels>
+				</command>
+				<group name="MenuNavigation" is-a="four-way-dpad-with-enter">
+					<group name="DPad" is-a="four-way-dpad">
+						<command name="Up">
+							<labels><label>Up</label></labels>
+						</command>
+						<command name="Down">
+							<labels><label>Down</label></labels>
+						</command>
+						<command name="Left">
+							<labels><label>Left</label></labels>
+						</command>
+						<command name="Right">
+							<labels><label>Right</label></labels>
+						</command>
+					</group>
+					<command name="Enter">
+						<labels><label>Enter</label></labels>
+					</command>
+				</group>
+				<state name="Zoom" priority="3">
+					<apply-type name="OnOffType"/>
+					<labels>
+						<label>Zoom</label>
+					</labels>
+				</state>
+				<group name="Status">
+					<state name="Title">
+						<type>
+							<integer>
+								<min><static value="1"/></min>
+								<max><refvalue state="MaxTitle"/></max>
+							</integer>
+						</type>
+						<labels><label>Title</label></labels>
+					</state>
+					<state name="MaxTitle" access="read-only">
+						<type><integer/></type>
+						<labels><label>Maximum Title Number</label><label>Max Title</label></labels>
+					</state>
+					<state name="Chapter">
+						<type>
+							<integer>
+								<min><static value="1"/></min>
+								<max><refvalue state="MaxChapter"/></max>
+							</integer>
+						</type>
+						<labels><label>Chapter</label></labels>
+					</state>
+					<state name="MaxChapter" access="read-only">
+						<type><integer/></type>
+						<labels><label>Maximum Chapter</label></labels>
+					</state>
+					<state name="Counter" is-a="time-relative">
+						<type>
+							<integer>
+								<min><static value="0"/></min>
+								<max><refvalue state="Duration"/></max>
+							</integer>
+						</type>
+						<labels><label>Counter</label></labels>
+					</state>
+					<state name="Duration" access="read-only" is-a="time-duration">
+						<type>
+							<integer/>
+						</type>
+						<labels><label>Duration</label></labels>
+					</state>
+				</group>
+				<group name="Angle">
+					<state name="Marker" access="read-only">
+						<apply-type name="YesNoType"/>
+						<labels><label>Alternate Angles Available</label><label>Angles Available</label></labels>
+					</state>
+					<list-group name="Angles">
+						<selection-type type-name="one"/>
+						<active-if><equals state="Angle.Marker"><static value="true"/></equals></active-if>
+						<state name="Name">
+							<type><string/></type>
+							<labels>
+								<label>Name</label>
+							</labels>
+						</state>
+					</list-group>
+				</group>
+				<list-group name="Subtitles">
+					<selection-type type-name="one"/>
+					<state name="Language">
+						<type><string/></type>
+						<labels>
+							<label>Language</label>
+							<label>Lang</label>
+						</labels>
+					</state>
+				</list-group>
+				<group name="Repeat">
+					<labels>
+						<label>Repeat</label>
+					</labels>
+					<state name="RepeatMode">
+						<type>
+							<enumerated><item-count>4</item-count></enumerated>
+							<value-labels>
+								<map index="1">
+									<labels><label>Off</label></labels>
+								</map>
+								<map index="2">
+									<labels><label>Chapter</label></labels>
+								</map>
+								<map index="3">
+									<labels><label>Title</label></labels>
+								</map>
+								<map index="4">
+									<labels><label>A-B</label></labels>
+									<active-if>
+										<defined state="Repeat.EndPoints.A.Time"/>
+										<defined state="Repeat.EndPoints.B.Time"/>
+										<greaterthan state="Repeat.EndPoints.B.Time"><refvalue state="Repeat.EndPoints.A.Time"/></greaterthan>
+									</active-if>
+								</map>
+							</value-labels>
+						</type>
+						<labels><label>Repeat Mode</label><label>Mode</label></labels>
+					</state>
+					<group name="EndPoints">
+						<labels>
+							<label>Start-End</label>
+						</labels>
+						<group name="A">
+							<labels>
+								<label>Repeat Start</label>
+								<label>Start</label>
+							</labels>
+							<command name="Set">
+								<labels><label>Set</label></labels>
+							</command>
+							<state name="Time" is-a="time-relative">
+								<type>
+									<integer>
+										<min><static value="0"/></min>
+										<max><refvalue state="DVD.Status.Duration"/></max>
+									</integer>
+								</type>
+								<labels><label>Time</label></labels>
+							</state>
+						</group>
+						<group name="B">
+							<labels>
+								<label>Repeat End</label>
+								<label>End</label>
+							</labels>
+							<command name="Set">
+								<labels><label>Set</label></labels>
+								<active-if>
+									<greaterthan state="DVD.Status.Counter"><refvalue state="Repeat.EndPoints.A.Time"/></greaterthan>
+								</active-if>
+							</command>
+							<state name="Time" is-a="time-relative">
+								<type>
+									<integer>
+										<min><refvalue state="Repeat.EndPoints.A.Time"/></min>
+										<max><refvalue state="DVD.Status.Duration"/></max>
+									</integer>
+								</type>
+								<labels>
+									<label>Time</label>
+								</labels>
+							</state>
+						</group>
+					</group>
+				</group>
+				<list-group name="AudioTracks">
+					<labels>
+						<label>Audio Tracks</label>
+					</labels>
+					<selection-type type-name="one"/>
+					<state name="Track" access="read-only">
+						<type><string/></type>
+						<labels><label>Track</label></labels>
+					</state>
+				</list-group>
+				<list-group name="Bookmarks">
+					<labels>
+						<label>Bookmarks</label>
+					</labels>
+					<state name="Mark" is-a="time-relative">
+						<type>
+							<integer>
+								<min><static value="0"/></min>
+								<max><refvalue state="DVD.Status.Duration"/></max>
+							</integer>
+						</type>
+						<labels>
+							<label>Mark</label>
+						</labels>
+					</state>
+					<command name="Set">
+						<labels><label>Set Bookmark</label><label>Set</label></labels>
+					</command>
+				</list-group>
+				<state name="RandomPlayback">
+					<apply-type name="OnOffType"/>
+					<labels>
+						<label>Random Playback</label>
+						<label>Random</label>
+					</labels>
+				</state>
+				<list-group name="ProgrammedPlay">
+					<max><static value="20"/></max>
+					<state name="Chapter">
+						<type>
+							<integer>
+								<min><static value="1"/></min>
+								<max><refvalue state="DVD.Status.MaxChapter"/></max>
+							</integer>
+						</type>
+						<labels>
+							<label>Chapter</label>
+						</labels>
+					</state>
+				</list-group>
+			</group>
+			<group name="VCR" priority="10">
+				<labels>
+					<label>VCR</label>
+				</labels>
+			</group>
+		</group>
+	</groupings>
+</spec>

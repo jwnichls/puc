@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spec name="MediaPlayer" version="PUC/2.1" xmlns="http://www.cs.cmu.edu/~pebbles/puc">
+  <labels>
+    <label>Media Player</label>
+  </labels>
+  <groupings>
+    <group name="Controls" is-a="media-controls">
+      <labels>
+        <label>Play Controls</label>
+        <label>Play Mode</label>
+        <text-to-speech text="Play Mode" recording="playmode.au" />
+      </labels>
+      <state name="Mode">
+        <type>
+          <enumerated>
+            <item-count>3</item-count>
+          </enumerated>
+          <value-labels>
+            <map index="1">
+              <labels>
+                <label>Stop</label>
+              </labels>
+            </map>
+            <map index="2">
+              <labels>
+                <label>Play</label>
+              </labels>
+            </map>
+            <map index="3">
+              <labels>
+                <label>Pause</label>
+              </labels>
+            </map>
+          </value-labels>
+        </type>
+        <labels>
+          <label>Mode</label>
+        </labels>
+      </state>
+      <group name="TrackControls">
+        <command name="PrevTrack">
+          <labels>
+            <label>Prev</label>
+          </labels>
+          <active-if>
+            <greaterthan state="PList.Selection">
+              <static value="0"/> 
+            </greaterthan>
+          </active-if>
+        </command>
+        <command name="NextTrack">
+          <labels>
+            <label>Next</label>
+          </labels>
+          <active-if>
+            <lessthan state="PList.Selection">
+              <refvalue state="PList.Length" />
+            </lessthan>
+          </active-if>
+        </command>
+      </group>
+    </group>
+    <list-group name="PList">
+      <state name="Title">
+        <type>
+          <string />
+        </type>
+        <labels>
+          <label>Title</label>
+        </labels>
+      </state>
+      <state name="Duration" is-a="time-duration">
+        <type>
+          <integer />
+        </type>
+        <labels>
+          <label>Duration</label>
+        </labels>
+      </state>
+    </list-group>
+  </groupings>
+</spec>

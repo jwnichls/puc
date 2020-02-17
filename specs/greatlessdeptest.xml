@@ -1,0 +1,46 @@
+<spec name="GreatLessDepTest" version="PUC/2.1" xmlns="http://www.cs.cmu.edu/~pebbles/puc">
+	<labels>
+		<label>Greater- and Less-Than Dependency Test</label>
+	</labels>
+	<groupings>
+		<group name="Test">
+			<state name="TestState" priority="10">
+				<type>
+					<fixedpt>
+						<pointpos>2</pointpos>
+						<min><static value="0"/></min>
+						<max><static value="10.45"/></max>
+						<incr><static value="0.01"/></incr>
+					</fixedpt>
+				</type>
+				<labels>
+					<label>Test</label>
+				</labels>
+			</state>
+			<state name="TestGreatState" priority="10">
+				<type>
+					<boolean />
+				</type>
+				<labels>
+					<label>GreaterThan Test</label>
+					<label>GreaterThan</label>
+				</labels>
+				<active-if>
+					<greaterthan state="TestState"><static value="6.50"/></greaterthan>
+				</active-if>
+			</state>
+			<state name="TestLessState" priority="10">
+				<type>
+					<boolean />
+				</type>
+				<labels>
+					<label>LessThan Test</label>
+					<label>LessThan</label>
+				</labels>
+				<active-if>
+					<lessthan state="TestState"><static value="4.50"/></lessthan>
+				</active-if>
+			</state>
+		</group>
+	</groupings>
+</spec>

@@ -1,0 +1,160 @@
+<spec name="RadiusDevice">
+<groupings>
+<group priority="10">
+<labels>
+<label> main group </label>
+</labels>
+<state name="SELECTGROUP" priority="10">
+<type><valueSpace>
+<enumerated>
+<items>5</items></enumerated>
+</valueSpace><valueLabels>
+<map index="1"><label> main </label></map>
+<map index="2"><label> sphere </label></map>
+<map index="3"><label> cube </label></map>
+<map index="4"><label> nn </label></map>
+<map index="5"><label> nui </label></map>
+</valueLabels>
+</type>
+<labels>
+<label> select group </label>
+</labels>
+</state>
+<group priority="10">
+<active-if>
+<equals state="SELECTGROUP">1</equals>
+</active-if>
+<labels>
+<label> global group </label>
+</labels>
+<state name="NAME" priority="0">
+<type><valueSpace>
+<string>
+</string>
+</valueSpace></type>
+<labels>
+<label> name </label>
+</labels>
+</state>
+<command priority="0" name="COMM">
+<labels>
+<label> command </label>
+</labels>
+</command>
+<state name="MATERIAL" priority="5">
+<type><valueSpace>
+<enumerated>
+<items>4</items></enumerated>
+</valueSpace><valueLabels>
+<map index="1"><label> red </label></map>
+<map index="2"><label> green </label></map>
+<map index="3"><label> blue </label></map>
+<map index="4"><label> white </label></map>
+</valueLabels>
+</type>
+<labels>
+<label> color of cube </label>
+</labels>
+</state>
+</group>
+<group priority="8">
+<active-if>
+<equals state="SELECTGROUP">2</equals>
+</active-if>
+<labels>
+<label> sphere group </label>
+</labels>
+<state name="RADIUS" priority="5">
+<type><valueSpace>
+<fixedpt>
+<min><number>0.10</number></min>
+<max><number>1.00</number></max>
+<incr><number>0.01</number></incr>
+<pointpos>2</pointpos>
+</fixedpt>
+</valueSpace></type>
+<labels>
+<label> radius of sphere </label>
+</labels>
+</state>
+</group>
+<group priority="8">
+<active-if>
+<equals state="SELECTGROUP">3</equals>
+</active-if>
+<labels>
+<label> cube group </label>
+<label> change size </label>
+<label> sz ctrl </label>
+</labels>
+<state name="HEIGHT" priority="0">
+<type><valueSpace>
+<integer>
+<min><number>1</number></min>
+<max><number>10</number></max>
+</integer>
+</valueSpace></type>
+<labels>
+<label> height of cube </label>
+</labels>
+</state>
+<state name="SIZE" priority="5">
+<type><valueSpace>
+<integer>
+<min><number>1</number></min>
+<max><number>10</number></max>
+</integer>
+</valueSpace></type>
+<active-if>
+<and>
+<greaterthan state="HEIGHT">3</greaterthan>
+<lessthan state="MATERIAL">3</lessthan>
+</and>
+</active-if>
+<labels>
+<label> size of cube </label>
+</labels>
+</state>
+</group>
+<group priority="3">
+<active-if>
+<equals state="SELECTGROUP">4</equals>
+</active-if>
+<labels>
+<label> test bool </label>
+</labels>
+<state name="TESTB1" priority="0">
+<type><valueSpace>
+<boolean>
+</boolean>
+</valueSpace><valueLabels>
+<map index="false"><label> Off </label></map>
+<map index="true"><label> On </label></map>
+</valueLabels>
+</type>
+<labels>
+<label> test1 </label>
+</labels>
+</state>
+<state name="TESTB2" priority="0">
+<type><valueSpace>
+<boolean>
+</boolean>
+</valueSpace></type>
+<labels>
+<label> test2 </label>
+</labels>
+</state>
+<state name="TESTB3" priority="0">
+<type><valueSpace>
+<boolean>
+</boolean>
+</valueSpace></type>
+<labels>
+<label> test3 </label>
+</labels>
+</state>
+</group>
+</group>
+</groupings>
+</spec>

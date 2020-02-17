@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<spec name="Winamp_3_0_Device" version="PUC/2.0">
+	<!--
+List of	States
+
+READ ONLY STATES
+
+WinampVersion: string
+PlaybackStatus:	enumerated (3) {Play, Pause, Stop}
+CurrentTitle: string
+
+READ-WRITE STATES
+
+IsShuffling: boolean
+IsLooping: boolean
+
+HIGH-LEVEL STATES
+
+Playback.Controls(standard.media-control): PrevTrack, Play,	Pause, Stop, NextTrack
+Playback.CurrentSong.Time(standard.time-absolute): CurrentTime,	TotalTime
+Volume(standard.volume): Up, Down
+
+LIST STATES
+Playlist
+
+-->
+	<groupings>
+		<group name="Playback" priority="10">
+			<group name="CurrentSong">
+				<labels>
+					<label>Song	Info</label>
+					<label>Current</label>
+				</labels>
+				<state name="CurrentTitle" access="ReadOnly" priority="3">
+					<type>
+						<string />
+					</type>
+					<labels>
+						<label>Current Title</label>
+						<label>Title</label>
+					</labels>
+				</state>
+				<group name="Time" template="time-absolute">
+					<state name="currentTime" access="ReadOnly" priority="3">
+						<type>
+							<integer>
+								<min>0</min>
+								<max>
+									<refvalue state="TotalTime" />
+								</max>
+							</integer>
+						</type>
+						<labels>
+							<label>Time</label>
+						</labels>
+					</state>
+					<state name="TotalTime" access="ReadOnly" priority="3">
+						<type>
+							<integer>
+								<min>0</min>
+							</integer>
+						</type>
+						<labels>
+							<label>Length</label>
+						</labels>
+					</state>
+				</group> <!-- End Playback.CurrentSong.Time	-->
+			</group> <!-- End Playback.CurrentSong -->
+			<group name="Controls" template="media-controls">
+				<labels>
+					<label>Play	Control</label>
+					<label>Control</label>
+				</labels>
+				<command name="PrevTrack">
+					<labels>
+						<label>Prev</label>
+					</labels>
+				</command>
+				<command name="Play">
+					<labels>
+						<label>Play</label>
+					</labels>
+				</command>
+				<command name="Pause">
+					<labels>
+						<label>Pause</label>
+						<label>"</label>
+					</labels>
+				</command>
+				<command name="Stop">
+					<labels>
+						<label>Stop</label>
+						<label>[]</label>
+					</labels>
+				</command>
+				<command name="NextTrack">
+					<labels>
+						<label>Next</label>
+					</labels>
+				</command>
+				<state name="Status" access="ReadOnly">
+					<type>
+						<enumeration>
+							<itemCount>3</itemCount>
+							<valueLabels>
+								<map index="1">
+									<label>Play</label>
+								</map>
+								<map index="2">
+									<label>Pause</label>
+								</map>
+								<map index="3">
+									<label>Stop</label>
+								</map>
+							</valueLabels>
+						</enumeration>
+					</type>
+					<labels>
+						<label>Status</label>
+					</labels>
+				</state>
+				<state name="IsShuffling" priority="7">
+					<type name="OnOffType">
+						<boolean />
+						<valueLabels>
+							<map index="false">
+								<label>Off</label>
+							</map>
+							<map index="true">
+								<label>On</label>
+							</map>
+						</valueLabels>
+					</type>
+					<labels>
+						<label>Shuffle</label>
+						<label>Shfl</label>
+					</labels>
+				</state>
+				<state name="IsLooping" priority="7">
+					<apply-type name="OnOffType" />
+					<labels>
+						<label>Repeat</label>
+						<label>Loop</label>
+					</labels>
+				</state>
+			</group> <!-- End Playback.Controls	-->
+		</group> <!-- End Playback -->
+		<group name="Volume" template="volume">
+			<labels>
+				<label>Volume</label>
+				<label>Vol</label>
+			</labels>
+			<command name="Up">
+				<labels>
+					<label>Up</label>
+					<label>^</label>
+				</labels>
+			</command>
+			<command name="Down">
+				<labels>
+					<label>Down</label>
+					<label>v</label>
+				</labels>
+			</command>
+		</group> <!-- End Volume -->
+		<group name="Playlist">
+			<labels>
+				<label>Playlist</label>
+			</labels>
+			<list-group name="List">
+				<state name="Title" access="ReadOnly" priority="3">
+					<type>
+						<string/>
+					</type>
+					<labels>
+						<label>Title</label>
+					</labels>
+				</state>
+				<group name="Length" template="time-duration">
+					<state name="Minutes">
+						<type>
+							<integer>
+								<min>0</min>
+								<max>60</max>
+							</integer>
+						</type>
+						<labels>
+							<label>Minutes</label>
+							<label>Mins</label>
+						</labels>
+					</state>
+					<state name="Seconds">
+						<type>
+							<integer>
+								<min>0</min>
+								<max>60</max>
+							</integer>
+						</type>
+						<labels>
+							<label>Seconds</label>
+							<label>Secs</label>
+						</labels>
+					</state>
+				</group> <!-- End Playlist.List.Length -->
+				<!-- Put other playlist	entry info here	-->
+			</list-group> <!-- End Playlist.List -->
+			<command name="Enqueue">
+				<labels>
+					<label>Enqueue</label>
+				</labels>
+			</command>
+			<command name="Remove">
+				<labels>
+					<label>Remove</label>
+				</labels>
+			</command>
+		</group> <!-- End Playlist -->
+		<group name="Info">
+			<labels>
+				<label>Winamp Info</label>
+				<label>Info</label>
+			</labels>
+			<state name="WinampVersion" access="ReadOnly" priority="3">
+				<type>
+					<string/>
+				</type>
+				<labels>
+					<label>Version</label>
+				</labels>
+			</state>
+		</group>
+	</groupings>
+</spec>

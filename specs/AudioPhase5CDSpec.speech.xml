@@ -1,0 +1,653 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE spec SYSTEM "gadget.dtd">
+
+<gadget> 
+
+<!--
+List of States
+
+PowerState:         boolean {Off,On}
+
+XBassState:	    boolean
+
+ModeState:          enumerated (4) {Tuner,Tape,CD,AUX}
+
+RadioBandState:	    boolean {AM,FM}
+AMStation:	    integer (530,1710,10)
+AMPresets:	    enumerated (choose some values to put in here)
+FMStation:          fixedpt (1,88.5,108.0,0.1)
+FMPresets:          enumerated (choose some values to put in here)
+
+CDPlayMode:	    enumerated (3) {Stopped,Playing,Paused}
+CDDiscActive:	    enumerated (5) (1,2,3,4,5)
+Disc1Avail:         boolean (READONLY)
+Disc2Avail:	    boolean (READONLY)
+Disc3Avail:	    boolean (READONLY)
+Disc4Avail:         boolean (READONLY)
+Disc5Avail:	    boolean (READONLY)
+CDTrackState:	    string  (READONLY)
+CDRandomState:	    boolean
+CDRepeatState:	    enumerated (4) {Off,One,One Disc,All Disc}
+
+
+List of Commands
+
+VolumeUp
+VolumeDown
+
+SeekForward
+SeekReverse
+
+CDNextTrack
+CDPrevTrack
+
+-->
+
+   <node>
+      <label>
+         <canonical>stereo</canonical>
+	 <alias>audiophase stereo</alias>
+	 <alias>audiophase</alias>
+	 <response>stereo here</response>
+      </label>
+
+      <node>
+	 <action name="PowerState">
+	    <label>
+	      <off/>
+	    </label>
+	    <var>false</var>
+	 </action>
+      </node>
+
+      <node>
+         <label>
+	    <canonical>volume</canonical>
+	    <alias>gain</alias>
+	 </label>
+
+	 <node>
+	   <node>
+	     <action name="VolumeUp">
+               <label>
+                  <canonical>up</canonical>
+	          <alias>louder</alias>
+	          <alias>higher</alias>
+                  <response>turning the volume up</response>
+	       </label>
+	     </action>
+	   </node>
+
+	   <node>
+	     <action name="VolumeDn">
+	       <label>
+	          <canonical>down</canonical>
+	          <alias>softer</alias>
+	          <alias>lower</alias>
+                  <response>turning the volume down</response>
+	       </label>
+	     </action>
+	  </node>
+        </node>
+      </node>
+
+      <node>
+         <label>
+	    <canonical>x base</canonical>
+	 </label>
+
+	 <node>
+	    <action name="XBassState">
+	       <label>
+	          <on/>
+	        </label>
+	       <var>true</var>
+	    </action>
+	 </node>
+	
+	 <node>
+	    <action name="XBassState">
+	       <label>
+	          <off/>
+	       </label>
+	       <var>false</var>
+	    </action>
+	 </node>
+      </node>
+
+      <node>
+         <action name="PowerState">
+            <var>true</var>
+         </action>
+
+         <node>
+	    <action name="ModeState">
+               <label>
+	          <canonical>tuner</canonical>
+	          <alias>radio</alias>
+	       </label>
+	       <var>4</var>
+	    </action>
+
+	    <node>
+	    <node>
+	       <action name="RadioBandState">
+	          <label>
+	             <canonical tts="ey eh m">a m</canonical>
+	             <alias>a m band</alias>
+	             <alias>amplitude modulation</alias>
+	             <alias>amplitude modulation band</alias>
+	          </label>
+	          <var>false</var>
+	       </action>
+
+	       <node>
+	       <label>
+	          <canonical>frequency</canonical>
+	       </label>
+
+	          <node>
+	             <action readonly="true" name="AMStation">
+	                <basic type="read-only"/>
+	             </action>
+	          </node>
+	    </node>
+
+	    <node>
+	       <label>
+	          <canonical>station</canonical>
+	       </label>
+
+	       <node>
+		  <action name="AMPresetNumber">
+	             <label>
+		        <canonical>k d k a</canonical>
+			<alias>ten twenty</alias>
+			<alias>ten twenty a m</alias>
+		     </label>
+		     <var>1</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="AMPresetNumber">
+	             <label>
+		        <canonical>k q v</canonical>
+			<alias>fourteen ten</alias>
+			<alias>fourteen ten a m</alias>
+		     </label>
+		     <var>2</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="AMPresetNumber">
+	             <label>
+		        <canonical>w b g g</canonical>
+			<alias>nine seventy</alias>
+			<alias>nine seventy a m</alias>
+		     </label>
+		     <var>3</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="AMPresetNumber">
+	             <label>
+		        <canonical>w e a e</canonical>
+			<alias>twelve fifty</alias>
+			<alias>twelve fifty a m</alias>
+		     </label>
+		     <var>4</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="AMPresetNumber">
+	             <label>
+		        <canonical>w j a s</canonical>
+			<alias>thirteen twenty</alias>
+			<alias>thirteen twenty a m</alias>
+		     </label>
+		     <var>5</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="AMPresetNumber">
+	             <label>
+		        <canonical>w p i t</canonical>
+			<alias>seven thirty</alias>
+			<alias>seven thirty a m</alias>
+		     </label>
+		     <var>7</var>
+		  </action>
+	       </node>
+	    </node> <!-- ampresets -->
+	 </node> <!-- am -->
+
+	 <node>
+	    <action name="RadioBandState">
+	       <label>
+	          <canonical>f m</canonical>
+	          <alias>f m band</alias>
+	          <alias>frequency modulation</alias>
+	          <alias>frequency modulation band</alias>
+	       </label>
+	       <var>true</var>
+	    </action>
+
+	    <node>
+	       <label>
+	          <canonical>frequency</canonical>
+	       </label>
+
+	       <node>
+	          <action readonly="true" name="FMStation">
+	             <basic type="read-only"/>
+	          </action>
+	       </node>
+	    </node>
+
+	    <node>
+	       <label>
+	          <canonical>station</canonical>
+	       </label>
+
+	       <node>
+		  <action name="FMPresetNumber">
+	             <label>
+		        <canonical>w b z z</canonical>
+			<alias>ninety three point seven</alias>
+			<alias>ninety three point seven f m</alias>
+		     </label>
+		     <var>2</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="FMPresetNumber">
+	             <label>
+		        <canonical>w d s y</canonical>
+			<alias>one oh seven point nine</alias>
+			<alias>one oh seven point nine f m</alias>
+			<alias>y 1 oh 8</alias>
+		     </label>
+		     <var>3</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="FMPresetNumber">
+	             <label>
+		        <canonical>w d u q</canonical>
+			<alias>ninety point five</alias>
+			<alias>ninety point five f m</alias>
+		     </label>
+		     <var>4</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="FMPresetNumber">
+	             <label>
+		        <canonical>w d v e</canonical>
+			<alias>one oh two point five</alias>
+			<alias>one oh two point five f m</alias>
+		     </label>
+		     <var>5</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="FMPresetNumber">
+	             <label>
+		        <canonical>w j j j</canonical>
+			<alias>one oh four point seven</alias>
+			<alias>one oh four point seven f m</alias>
+		     </label>
+		     <var>6</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="FMPresetNumber">
+	             <label>
+		        <canonical>w k s t</canonical>
+			<alias>ninety six point one</alias>
+			<alias>ninety six point one f m</alias>
+			<alias>kiss f m</alias>
+		     </label>
+		     <var>8</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="FMPresetNumber">
+	             <label>
+		        <canonical>w l t j</canonical>
+			<alias>ninety two point nine</alias>
+			<alias>ninety two point nine f m</alias>
+		     </label>
+		     <var>9</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="FMPresetNumber">
+	             <label>
+		        <canonical>w o r d</canonical>
+			<alias>one oh one point five</alias>
+			<alias>one oh one point five f m</alias>
+		     </label>
+		     <var>10</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="FMPresetNumber">
+	             <label>
+		        <canonical>w q e d</canonical>
+			<alias>eighty nine point three</alias>
+			<alias>eighty nine point three f m</alias>
+		     </label>
+		     <var>11</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="FMPresetNumber">
+	             <label>
+		        <canonical>w r c t</canonical>
+			<alias>eighty eight point three</alias>
+			<alias>eighty eight point three f m</alias>
+		     </label>
+		     <var>12</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="FMPresetNumber">
+	             <label>
+		        <canonical>w w s w</canonical>
+			<alias>ninety four point five</alias>
+			<alias>ninety four point five f m</alias>
+		     </label>
+		     <var>15</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="FMPresetNumber">
+	             <label>
+		        <canonical>w x d x</canonical>
+			<alias>one oh five point nine</alias>
+			<alias>one oh five point nine f m</alias>
+		     </label>
+		     <var>16</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="FMPresetNumber">
+	             <label>
+		        <canonical>w y e p</canonical>
+			<alias>ninety one point three</alias>
+			<alias>ninety one point three f m</alias>
+		     </label>
+		     <var>17</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="FMPresetNumber">
+	             <label>
+		        <canonical>w z p t</canonical>
+			<alias>one hundred point seven</alias>
+			<alias>one hundred point seven f m</alias>
+		     </label>
+		     <var>18</var>
+		  </action>
+	       </node>
+	    </node> <!-- station -->
+	 </node> <!-- fm -->
+	 </node> <!-- unlabled band node -->
+
+	 <node>
+	    <label>
+	       <canonical>seek</canonical>
+	    </label>
+	    
+	    <node>
+	    <node>
+	       <action name="SeekForward">
+	          <label>
+	             <canonical>forward</canonical>
+		     <alias>forwards</alias>
+		     <response>seeking forward</response>
+		  </label>
+	       </action>
+	    </node>
+
+	    <node>
+	       <action name="SeekReverse">
+	          <label>
+	             <canonical>reverse</canonical>
+		     <alias>backward</alias>
+		     <alias>backwards</alias>
+		     <response>seeking backward</response>
+	          </label>
+	       </action>
+	    </node>
+	    </node>
+	 </node>
+      </node> <!-- tuner -->
+
+      <node>
+	 <action name="ModeState">
+            <label>
+	       <canonical tts="ao k s ih1 l eh r iy">auxillary</canonical>
+	    </label>
+	    <var>3</var>
+	 </action>
+      </node>
+
+      <node>
+	 <action name="ModeState">
+            <label>
+	       <canonical>c d</canonical>
+	       <alias>compact disc</alias>
+	       <alias>compact disc player</alias>
+	    </label>
+	    <var>2</var>
+	 </action>
+
+	 <node>
+	 <node>
+	    <action name="CDPlayMode">
+	       <label>
+	          <canonical>play</canonical>
+                  <response>playing c d</response>
+		  <state>playing</state>
+	       </label>
+	       <var>2</var>
+	    </action>
+	 </node> <!-- play -->
+
+	 <node>
+	    <action name="CDPlayMode">
+	       <label>
+	          <canonical>stop</canonical>
+                  <response>stopping c d</response>
+	       </label>
+	       <var>1</var>
+	    </action>
+	 </node>
+
+	 <node>
+	    <action name="CDPlayMode">
+	       <label>
+	          <canonical>pause</canonical>
+                  <response>pausing c d</response>
+		  <state>paused</state>
+	       </label>
+	       <var>3</var>
+	    </action>
+	 </node>
+	 </node> <!-- unlabeled play/stop/pause group -->
+
+         <node>
+	   <label>
+	     <canonical>random</canonical>
+	   </label>
+
+           <node>
+		  <action name="CDRandomState">
+	             <label>
+		        <on/>
+		     </label>
+		     <var>true</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="CDRandomState">
+	             <label>
+		        <off/>
+		     </label>
+		     <var>false</var>
+		  </action>
+	       </node>
+	    </node>
+
+	    <node>
+	       <label>
+	          <canonical>repeat</canonical>
+	       </label>
+
+	       <node>
+		  <action name="CDRepeatState">
+	             <label>
+		        <off/>
+		     </label>
+		     <var>1</var>
+		  </action>
+	       </node>
+	       
+	       <node>
+		  <action name="CDRepeatState">
+	             <label>
+		        <canonical>single track</canonical>
+		     </label>		  
+		     <var>2</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="CDRepeatState">
+	             <label>
+		        <canonical>single disc</canonical>
+		     </label>
+		     <var>4</var>
+		  </action>
+	       </node>
+
+	       <node>
+		  <action name="CDRepeatState">
+	             <label>
+		        <canonical>all discs</canonical>
+		     </label>
+		     <var>5</var>
+		  </action>
+	       </node>
+            </node> <!-- repeat -->
+
+	 <node>
+	   <node>
+	     <action name="CDNextTrack">
+	       <label>
+	          <canonical>next track</canonical>
+		  <alias>skip track</alias>
+		  <response>skipping track</response>
+	       </label>
+	     </action>
+	   </node>
+
+	   <node>
+	     <action name="CDPrecTrack">
+	        <label>
+	          <canonical>previous track</canonical>
+	          <alias>last track</alias>
+	          <response>backtracking</response>
+	       </label>
+	     </action>
+	   </node>
+	 </node>
+
+	 <node>
+	    <label>
+	       <canonical>track</canonical>
+	    </label>
+
+	    <node>
+	       <action readonly="true" name="CDTrackState">
+	          <basic type="read-only"/>
+	       </action>
+            </node>
+	 </node>
+
+	 <node>
+	    <label>
+	       <canonical>disc</canonical>
+	    </label>
+
+	    <node>
+	       <action name="CDDiscActive">
+	          <label>
+	             <canonical>one</canonical>
+	          </label>
+	          <var>1</var>
+	       </action>
+	    </node>
+
+	    <node>
+	       <action name="CDDiscActive">
+	          <label>
+	             <canonical>two</canonical>
+	          </label>
+	          <var>2</var>
+	       </action>
+	    </node>
+
+	    <node>
+	       <action name="CDDiscActive">
+	          <label>
+	             <canonical>three</canonical>
+	          </label>
+	          <var>3</var>
+	       </action>
+	    </node>
+
+	    <node>
+	       <action name="CDDiscActive">
+	          <label>
+	             <canonical>four</canonical>
+	          </label>
+	          <var>4</var>
+	       </action>
+	    </node>
+
+	    <node>
+	       <action name="CDDiscActive">
+	          <label>
+	             <canonical>five</canonical>
+	          </label>
+	          <var>5</var>
+	       </action>
+	    </node>
+	 </node> <!-- disc -->
+
+      </node> <!-- cd -->
+      </node> <!-- unlabeled stereo on -->
+   </node> <!-- audiophase -->
+</gadget>

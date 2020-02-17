@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This is a preliminary attempt to build a "widget repository" XML
+     file for specifying what widgets are available and when they
+     should be chosen by the interface generator. -->
+
+<widget-registry name="Smartphone 2003">
+  <decision type="object">
+    <condition value="command">
+      <widget>CommandListViewItemCIO</widget>
+    </condition>
+    <condition value="explanation">
+      <widget>ExplanationListViewItemCIO</widget>
+    </condition>
+    <condition value="state">
+      <decision type="readonly">
+        <condition value="true">
+	      <decision type="constraint">
+	        <condition value="false">
+		      <decision type="valuespace">
+		        <condition value="boolean">
+		          <decision type="depended-upon-once">
+		            <condition value="false">
+		              <widget>StateListViewItemCIO</widget>
+			        </condition>
+		          </decision>
+		        </condition>
+		        <condition value="default">
+		          <widget>StateListViewItemCIO</widget>
+		        </condition>
+              </decision>
+		    </condition>
+	      </decision>
+        </condition>
+	    <condition value="false">
+  	      <decision type="valuespace">
+            <condition value="boolean">
+		      <decision type="internalcontroller">
+		        <condition value="false">
+		          <decision type="alllabels">
+		            <condition value="false">
+		              <widget>CheckboxLinkedCIO</widget>
+		            </condition>
+		            <condition value="true">
+		              <widget>SelectionListLinkedCIO</widget>
+		            </condition>
+		          </decision>
+		        </condition>
+				<!--
+		        <condition value="true">
+		          <widget> TODO: Make this widget </widget>
+		        </condition>
+		        -->
+		      </decision>
+		    </condition>
+	        <condition value="integer">
+              <decision type="boundednumber">
+                <condition value="true">
+	              <widget>ScrollbarLinkedCIO</widget>
+		        </condition>
+                <condition value="false">
+		          <widget>TextFieldLinkedCIO</widget>
+		        </condition>
+		      </decision>
+	        </condition>
+	        <condition value="fixedpt">
+              <decision type="boundednumber">
+                <condition value="true">
+	              <widget>ScrollbarLinkedCIO</widget>
+		        </condition>
+                <condition value="false">
+		          <widget>TextFieldLinkedCIO</widget>
+		        </condition>
+		      </decision>
+	        </condition>
+	        <condition value="enumerated">
+	          <widget>SelectionListLinkedCIO</widget>
+	        </condition>
+	        <condition value="default">
+	          <widget>TextFieldLinkedCIO</widget>
+	        </condition>
+	      </decision>
+	    </condition>	    
+      </decision>
+    </condition>
+  </decision>
+</widget-registry>

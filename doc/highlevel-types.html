@@ -1,0 +1,650 @@
+<html>
+  <head>
+    <title>PUC Smart Templates</title>
+  </head>
+  <body>
+    <h1>PUC Smart Templates</h1>
+
+    <p>
+      This document describes the Smart Templates recognized by <a
+      href="http://www.cs.cmu.edu/~jeffreyn/papers/pucUIST2002.pdf">personal
+      universal controllers</a> (PUCs).  Smart Templates are used in the
+      specification of appliances for the PUC as a way of indicating
+      where higher-level relationships exist beyond those that are
+      describable in the current <a
+      href="http://www.cs.cmu.edu/~pebbles/puc/specification.html">specification
+      language</a>.
+    </p>
+
+    <p>
+      As a general rule, interface generators are not required to
+      understand any of the Smart Templates described in this
+      document.  This is why state and command information is an
+      integral part of the Smart Templates description.  If an
+      interface generator does not know about a given template, then
+      it can easily fallback to the states and commands that make up
+      the template.
+    </p>
+
+    <p>
+      The states and commands also allow Smart Templates to be
+      flexible.  One template can be made up of a number of different
+      combinations of states and commands, which reflects the
+      different ways that an appliance might implement the
+      functionality of a Smart Template.  For example, a media
+      playback control on a tape player will have play, stop, pause,
+      fast-forward, and rewind modes.  On a CD player, the same
+      control would have play, stop, and pause, but have next track
+      and previous track instead of fast-forward and rewind.  The
+      states and commands underlying a Smart Template allow such
+      differentiation without requiring a number of different
+      templates for playback controls.  The interface generator that
+      handles such a template must examine the states and commands
+      that make up the template in order to create a control that
+      matches the appliance and yet matches other instances of the
+      same template.
+    </p>
+
+    <p>
+      The next section of this document shows how Smart Templates are
+      specified within the existing specification language.  A list of
+      proposed templates is presented, and then detailed
+      descriptions of those Smart Templates are shown.
+    </p>
+
+    <h2>Using Smart Templates in the PUC Specification Language</h2>
+
+    <p>
+      Smart Templates may be assigned by specifying the name of the
+      template in the <code>group</code>'s <code>is-a</code>
+      attribute.  To help interface generators recognize the
+      components of the template, each state and command within a
+      Smart Template is labeled with a particular name that is defined
+      in advance for that template.  Here are three examples of Smart
+      Templates in a PUC specification:   
+    </p>
+
+    <p><a name="example1">
+      <i>Example #1</i>
+    </p>
+
+<pre><code>&lt;group name="CountdownTimer" is-a="time-duration"&gt;
+  &lt;state name="Time"&gt;
+    &lt;type&gt;
+      &lt;integer/&gt;
+    &lt;/type&gt;
+
+    &lt;labels&gt;
+      &lt;label&gt;Countdown Timer&lt;/labels&gt;
+      &lt;label&gt;Timer&lt;/labels&gt;
+    &lt;/labels&gt;
+  &lt;/state&gt;
+&lt;/group&gt;</code></a></pre>    
+
+    <p><a name="example2">
+      <i>Example #2</i>
+    </p>
+
+<pre><code>&lt;state name="Time" is-a="time-duration"&gt;
+  &lt;type&gt;
+    &lt;string/&gt;
+  &lt;/type&gt;
+
+  &lt;labels&gt;
+    &lt;label&gt;Countdown Timer&lt;/labels&gt;
+    &lt;label&gt;Timer&lt;/labels&gt;
+  &lt;/labels&gt;
+&lt;/state&gt;</code></a></pre>    
+
+    <p><a name="example3">
+      <i>Example #3</i>
+    </p>
+
+    <pre><code>&lt;group name="CountdownTimer" is-a="time-duration"&gt;
+  &lt;labels&gt;
+    &lt;label&gt;Countdown Timer&lt;/label&gt;
+    &lt;label&gt;Timer&lt;/label&gt;
+  &lt;/labels&gt;
+
+  &lt;state name="Minutes"&gt;
+    &lt;type&gt;
+      &lt;integer/&gt;
+    &lt;/type&gt;
+
+    &lt;labels&gt;
+      &lt;label&gt;Minutes&lt;/labels&gt;
+      &lt;label&gt;Mins&lt;/labels&gt;
+    &lt;/labels&gt;
+  &lt;/state&gt;
+
+  &lt;state name="Seconds"&gt;
+    &lt;type&gt;
+      &lt;integer&gt;
+	&lt;min&gt;0&lt;/min&gt;
+	&lt;max&gt;60&lt;/max&gt;
+      &lt;/integer&gt;
+    &lt;/type&gt;
+
+    &lt;labels&gt;
+      &lt;label&gt;Seconds&lt;/label&gt;
+      &lt;label&gt;Secs&lt;/label&gt;
+    &lt;/labels&gt;
+  &lt;/state&gt;
+&lt;/group&gt;</code></a></pre>
+
+    <p>
+      These examples are based on the <a
+      href="#timeduration"><code>time-duration</code></a> Smart
+      Template.  Note that in the first and third examples the
+      <code>group</code> is labeled with the Smart Template being
+      applied.  In the second case, a state is labeled with a Smart
+      Template directly (thus eliminating the need for an extra
+      group).  In the first and third examples, the state variables
+      have particular names that are defined in advance by the <a
+      href="#typeDescriptions">detailed Smart Template
+      description</a>.
+    </p>
+
+    <p>
+      If a state is defined with a Smart Template group that an
+      interface generator does not recognize (for example, perhaps the
+      Smart Template was updated since the interface generator was
+      built), then the interface generator is expected to render that
+      state as it would normally.
+    </p>
+
+    <h2>Proposed Smart Templates</h2>
+
+    <p>
+      The following list of templates are those considered for inclusion
+      in a PUC.  Those that are linked have been defined in more
+      detail, and may have been implemented in some interface
+      generators.
+    </p>
+
+    <p><code>
+      date-absolute<br/>
+      datetime-absolute<br/>
+      <a href="#image">image</a><br/>
+      <a href="#imagelist">image-list</a><br/>
+      <a href="#mediaplaycontrols">media-controls</a><br/>
+      mute-mic<br/>
+      mute-speaker<br/>
+      power<br/>
+      telephone-dialpad<br/>
+      time-absolute<br/>
+      <a href="#timeduration">time-duration</a><br/>
+      volume<br/>
+    </code></p>
+
+
+    <h2><a name="typeDescriptions">Template Descriptions</a></h2>
+
+    <p>
+      These templates are currently defined:
+    </p>
+
+    <ul>
+      <li><a href="#image"><code>image</code></a></li>
+      <li><a href="#imagelist"><code>image-list</code></a></li>
+      <li><a href="#mediaplaycontrols"><code>media-controls</code></a></li>
+      <li><a href="#timeduration"><code>time-duration</code></a></li> 
+    </ul>
+
+    <p>
+      See the implementation notes for a particular type to check if
+      it has been implemented in any interface generators.
+    </p>
+
+    <h3><a name="image">image</a></h3>
+
+    <h4>Overview</h4>
+
+    <p>
+      This Smart Template represents any kind of image data,
+      regardless of the underlying format.
+    </p>
+
+    <h4>Revision History</h4>
+    
+    <table>
+      <tr>
+        <th width=100 align=left>Date</th>
+        <th width=100 align=left>Name</th>
+	<th align=left>Comments</th>
+      </tr>
+      <tr>
+        <td>12-23-2003</td>
+        <td>Jeff Nichols</td>
+        <td>First description of the <code>image</code> Smart Template.</td>
+      </tr>
+    </table>
+
+    <h4>Contents</h4>
+
+    <p>
+      This Smart Template may be applied to a state or a group.  If
+      the template is applied to a group, then that group must contain
+      one state with the name <code>Image</code>.  The state must have
+      the binary primitive type.  This template should support the
+      following parameters for the binary type:
+    </p>
+
+    <dl>
+      <dt><code>arbitrary-scaling</code></dt>
+      <dd>
+        This parameter indicates that the server can provide the image
+        scaled to any size.  If this parameter is defined, then the
+        Smart Template should request the appropriate image size to
+        fit in its allocated space.
+      </dd>
+
+      <dt><code>fixed-height</code></dt>
+      <dd>
+        The image will have a fixed height.  The value of this
+        parameter should be provided to the layout engine.
+      </dd>
+
+      <dt><code>fixed-width</code></dt>
+      <dd>
+        The image will have a fixed width.  The value of this
+        parameter should be provided to the layout engine.
+      </dd>
+
+      <dt><code>minimum-height</code></dt>
+      <dd>
+        The image may have any height larger than the value of this
+        parameter.
+      </dd>
+
+      <dt><code>minimum-width</code></dt>
+      <dd>
+        The image may have any width larger than the value of this
+        parameter.
+      </dd>
+    </dl>
+
+    <h4>Implementations</h4>
+
+    <p>
+      Complete for PocketPC and Smartphone.
+    </p>
+
+    <h3><a name="imagelist">imagelist</a></h3>
+
+    <h4>Overview</h4>
+
+    <p>
+      This Smart Template represents a one-dimensional list of images,
+      regardless of the underlying format of the images or the other
+      variables in the list.  It is expected that this template will
+      use a conventional layout for showing a list of images
+      (e.g. thumbnails) and pass any remaining variables in the list
+      to interface generator for normal rendering.
+    </p>
+
+    <h4>Revision History</h4>
+    
+    <table>
+      <tr>
+        <th width=100 align=left>Date</th>
+        <th width=100 align=left>Name</th>
+	<th align=left>Comments</th>
+      </tr>
+      <tr>
+        <td>12-23-2003</td>
+        <td>Jeff Nichols</td>
+        <td>First description of the <code>image-list</code> Smart Template.</td>
+      </tr>
+    </table>
+
+    <h4>Contents</h4>
+
+    <p>
+      This Smart Template must be applied to a list group.  That list
+      group may contain any number of variables and commands, but one
+      state variable must have a binary type and be named
+      <code>Image</code>.
+    </p>
+
+    <h4>Implementations</h4>
+
+    <p>
+      Complete for PocketPC and Desktop.
+    </p>
+
+    <h3><a name="mediaplaycontrols">media-controls</a></h3>
+
+    <h4>Overview</h4>
+
+    <p>
+      This template represents the interactions that control the playback
+      of any audio/visual media, such as a CD, MP3, or VHS tape.  This
+      template supports either state- or command-based representations of
+      the controls, and also handles related functions such as <i>Next
+      Track</i> and <i>Previous Track</i>.
+    </p>
+
+    <h4>Revision History</h4>
+    
+    <table>
+      <tr>
+        <th width=100 align=left>Date</th>
+        <th width=100 align=left>Name</th>
+	<th align=left>Comments</th>
+      </tr>
+      <tr>
+        <td>6-17-2003</td>
+        <td><a href="mailto:jeffreyn@cs.cmu.edu">Jeff Nichols</a></td>
+        <td>First description of the <code>media-controls</code>
+        type.</td> 
+      </tr>
+      <tr>
+        <td>6-18-2003</td>
+        <td><a href="mailto:jeffreyn@cs.cmu.edu">Jeff Nichols</a></td>
+        <td>Updated to match new group type concept and rules.</td> 
+      </tr>
+      <tr>
+        <td valign=top>12-22-2003</td>
+	<td valign=top><a href="mailto:jeffreyn@cs.cmu.edu">Jeff Nichols</a></td>
+	<td valign=top>Updated to use "Smart Templates" lingo and rules.</td>
+      </tr>
+    </table>
+
+    <h4>Contents</h4>
+
+    <p>
+      This Smart Template may represent the controls as a single state
+      variable and/or several commands.  The state-based
+      representation must have an enumerated type with standardized
+      labels mapped to each value in the type in the
+      <code>valueLabels</code> section.  The state must have the name
+      <code>Mode</code>.  The labels are described below.  Other
+      labels may be included in addition to the standardized ones for
+      the benefit of interface generators that don't recognize this
+      Smart Template.
+    </p>
+
+    <dl>
+      <dt><code>Stop</code></dt> 
+      <dd> 
+        This label identifies the state when the media is stopped.  
+      </dd>
+
+      <dt><code>Play</code></dt>
+      <dd>
+        This label identifies the state when the media is playing.
+      </dd>
+
+      <dt><code>Pause</code></dt>
+      <dd>
+        This label identifies the state when the media is paused.
+      </dd>
+
+      <dt><code>Rewind</code></dt>
+      <dd>
+        This label identifies the state when the media is rewinding.
+      </dd>
+      
+      <dt><code>Fast-Forward</code></dt>
+      <dd>
+        This label identifies the state when the media is
+        fast-forwarding. 
+      </dd>
+
+      <dt><code>Record</code></dt>
+      <dd>
+        This label identifies the state when media is being recorded.
+      </dd>
+    </dl>
+
+    <p>
+      If no state information is available from the appliance, a
+      command-based description may be used instead.  Such a
+      representation must include one or more of the following
+      commands.  These commands should <b>not</b> be included if the
+      <code>Mode</code> state is included in the description.
+      Allowable commands are:
+    </p>
+
+    <dl>
+      <dt><code>Play</code></dt>
+      <dd>
+        When this command is activated, the appliance should begin
+        playing.
+      </dd>
+
+      <dt><code>Stop</code></dt>
+      <dd>
+        When this command is activated, the appliance should stop
+        playing. 
+      </dd>
+
+      <dt><code>Pause</code></dt>
+      <dd>
+        When this command is activated, the appliance should pause
+        playback. 
+      </dd>
+
+      <dt><code>Rewind</code></dt>
+      <dd>
+        When this command is activated, the appliance should begin
+	rewinding.
+      </dd>
+
+      <dt><code>FastFwd</code></dt>
+      <dd>
+        When this command is activated, the appliance should begin
+        fast-forwarding. 
+      </dd>
+
+      <dt><code>Record</code></dt>
+      <dd>
+        When this command is activated, the appliance should begin
+        recording.
+      </dd>
+    </dl>
+
+    <p>
+      In addition to having either the state or a set of commands,
+      additional states and commands may be specified that will be
+      integrated with the rest of the playback controls.
+    </p>
+
+    <h5>Commands</h5>
+
+    <dl>
+      <dt><code>NextTrack</code></dt>
+      <dd>
+        When this command is activated, the next track should be
+        selected. 
+      </dd>
+
+      <dt><code>PrevTrack</code></dt>
+      <dd>
+        When this command is activated, the previous track should be
+        selected. 
+      </dd>
+    </dl>
+
+    <p>
+      <i>NOTE:</i>
+      Other playback modes may be possible and should probably be
+      considered.  These include:
+      <ul>
+        <li>Reverse Play</li>
+        <li>Fast-Forward while Playing vs. while Stopped</li>
+	<li>Rewind (same thing)</li>
+	<li>Different speeds of fast-forward and rewind</li>
+	<li>Play New (for answering machines)</li>
+      </ul>
+    </p>
+
+    <h4>Implementations</h4>
+
+    <p>
+      Complete for PocketPC, Smartphone and Desktop.  Smartphone
+      implementation is limited and should probably be re-visited.
+    </p>
+
+    <h3><a name="timeduration">time-duration</a></h3>
+
+    <h4>Overview</h4>
+
+    <p>
+      This template describes data that stores a duration of time.  This
+      could be used by media player devices to describe the length of
+      a song or the current playback point in a song, or by microwaves
+      to display the amount of cooking time that remains.  This template
+      supports resolutions in the fractions of a second, seconds,
+      minutes and hours.  The fractions of a second resolution is
+      purposely left ambiguous and may be defined by the specification
+      designer by defining a range for the state.  Milliseconds might
+      be the fraction used for a timer application, whereas frame
+      number might be used by a VCR or other video application.
+    </p>
+
+    <h4>Revision History</h4>
+    
+    <table>
+      <tr>
+        <th width=100 align=left>Date</th>
+        <th width=100 align=left>Name</th>
+	<th align=left>Comments</th>
+      </tr>
+      <tr>
+        <td>6-13-2003</td>
+        <td><a href="mailto:jeffreyn@cs.cmu.edu">Jeff Nichols</a></td>
+        <td>First description of the <code>time-duration</code> type.</td>
+      </tr>
+      <tr>
+        <td>6-15-2003</td>
+        <td><a href="mailto:jeffreyn@cs.cmu.edu">Jeff Nichols</a></td>
+        <td>Created test specification and added link.</td>
+      </tr>
+      <tr>
+        <td>6-18-2003</td>
+        <td><a href="mailto:jeffreyn@cs.cmu.edu">Jeff Nichols</a></td>
+        <td>Updated to match new group type concept and rules.</td>
+      </tr>
+      <tr>
+        <td>12-23-2003</td>
+	<td><a href="mailto:jeffreyn@cs.cmu.edu">Jeff Nichols</a></td>
+	<td>Updated to use "Smart Templates" lingo and rules.</td>
+      </tr>
+    </table>
+
+    <h4>Contents</h4>
+
+    <p>
+      The contents of this Smart Template may be represented in several
+      different ways.  One state with one of four primitive types may
+      be used, or multiple states with an integer type may be used.
+      If one state is used, the Smart Template must be applied
+      directly to that state (<a href="#example2">see Example #2
+      above</a>).  The allowable types are: 
+    </p>
+
+    <dl>
+      <dt><i>Integer</i></dt>
+      <dd>The value of the state variable should contain
+      the number of seconds in the time duration.</dd>
+
+      <dt><i>Fixed Point</i></dt>
+      <dd>The pointpos may be set as necessary.  The value of the state
+      variable should contain the number of seconds in the time
+      duration.  The decimal component represents the fractions of a
+      second that have elapsed.</dd>
+
+      <dt><i>Floating Point</i></dt> <dd>The value of the state
+      variable should contain the number of seconds in the time
+      duration, with the decimal component representing the fractions
+      of seconds in the duration.</dd>
+
+      <dt><i>String</i></dt>
+      <dd>The value of the state variable must be of the form:
+      <code>hh:mm:ss:fff</code>, <code>mm:ss:fff</code>,
+      <code>hh:mm:ss</code>, or <code>mm:ss</code>, where h = hours, m
+      = minutes, s = seconds, and f = fractions of a second.  Note
+      that it is <b>not</b> optional to omit digits if they are not
+      significant.  In other words, <code>1:45:56</code> is not valid,
+      but both <code>01:45:56</code> and <code>01:45:560</code> are.
+      Also note that three digits are required for fractions of second
+      component, if it is used.
+    </dl>
+
+    <p>
+      If multiple states are used to represent the
+      <code>time-duration</code>, they must have the following form:
+    </p>
+
+    <dl>
+      <dt><code>Hours</code></dt>
+      <dd>This state must have an integer type.  A minimum, maximum,
+      and increment may be optionally specified.</dd>
+
+      <dt><code>Minutes</code></dt>
+      <dd>This state must have an integer type ranging between 0 and
+      60 if the <code>Hours</code> state is specified. Minimum and
+      maximum are optional if <code>Hours</code> is not specified. The
+      increment may optionally be specified in either case.  This
+      state must be included if both the <code>Hours</code> and
+      <code>Seconds</code> states are specified.</dd>
+
+      <dt><code>Seconds</code></dt>
+      <dd>This state must have an integer type ranging between 0 and
+      60 if the <code>Minutes</code> state is specified. Minimum and
+      maximum are optional if <code>Minutes</code> is not
+      specified. The increment may optionally be specified in either
+      case.  This state must be included if both the
+      <code>Minutes</code> and <code>Fraction</code> states are
+      specified.</dd> 
+
+      <dt><code>Fraction</code></dt>
+      <dd>This state must have an integer type.  The ranges may be
+      specified to fit the type of second fraction being used.</dd>
+    </dl>
+
+    <h4>Implementations</h4>
+
+    <p>
+      Complete for PocketPC, Desktop and Smartphone.
+    </p>
+
+    <p>
+      A specification for testing <code>time-duration</code>
+      Smart Template handlers is available in the repository at
+      <code><a
+      href="../specs/time-duration.xml">specs/time-duration.xml</a></code>.
+    </p>
+
+    <hr>
+    <font size=-1>Last Modified: <i>12-23-2003</i></font>
+  </body>
+</html>
+
+<!--
+    Template for creating new template descriptions.
+
+    <h3><a name="timeduration">time-duration</a></h3>
+
+    <h4>Overview</h4>
+    <h4>Revision History</h4>
+    
+    <table>
+      <tr>
+        <th width=100 align=left>Date</th>
+        <th width=100 align=left>Name</th>
+	<th align=left>Comments</th>
+      </tr>
+      <tr>
+        <td>12-23-2003</td>
+        <td>Jeff Nichols</td>
+        <td>First description of the <code>time-duration</code> Smart Template.</td>
+      </tr>
+    </table>
+
+    <h4>Single or Multi-State</h4>
+    <h4>Contents</h4>
+    <h4>Implementations</h4>
+-->

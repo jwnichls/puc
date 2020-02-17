@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<spec name="Tasks" version="PUC/2.0">
+
+    <labels>
+	        <label preferred>Task List</label>
+	</labels>
+
+	<groupings>
+		<group name="Operations">
+			<state name="CompletedFilter">
+				<type>
+					<enumerated>
+						<item-count>3</item-count>
+					</enumerated>
+					<valueLabels>
+						<map index="1">
+							<label>All Tasks</label>
+							<label preferred>All</label>
+						</map>
+						<map index="2">
+							<label>Uncompleted Tasks</label>
+							<label preferred>Uncompleted</label>
+						</map>
+						<map index="3">
+							<label>Completed Tasks</label>
+							<label preferred>Completed</label>
+						</map>
+					</valueLabels>
+				</type>
+				
+				<labels>
+					<label>Filter</label>
+				</labels>
+			</state>
+	
+			<group name="Commands">
+				<command name="Duplicate">
+					<labels>
+						<label preferred>Duplicate</label>
+						<label>Copy</label>
+					</labels>
+					
+					<active-if>
+						<defined state="Tasks.List.Selection"/>
+						<lessthan state="Tasks.List.Selection"><refvalue state="Tasks.List.Length"/></lessthan>
+					</active-if>
+				</command>
+				<command name="Remove">
+					<labels>
+						<label>Remove</label>
+					</labels>
+					
+					<active-if>
+						<defined state="Tasks.List.Selection"/>
+						<lessthan state="Tasks.List.Selection"><refvalue state="Tasks.List.Length"/></lessthan>
+					</active-if>
+				</command>
+			</group>
+		</group>
+
+		<list-group name="List">
+			<state name="Completed">
+				<type>
+					<boolean/>
+				</type>
+				
+				<labels>
+					<label preferred>Completed</label>
+					<label>Done</label>
+				</labels>
+			</state>
+			
+			<state name="Priority">
+				<type>
+					<enumerated>
+					        <item-count>6</item-count>
+					</enumerated>
+					<valueLabels>
+					        <map index="1">
+						  <label>0</label>
+						</map>
+					        <map index="2">
+						  <label>1</label>
+						</map>
+					        <map index="3">
+						  <label>2</label>
+						</map>
+					        <map index="4">
+						  <label>3</label>
+						</map>
+					        <map index="5">
+						  <label>4</label>
+						</map>
+					        <map index="6">
+						  <label>5</label>
+						</map>
+					</valueLabels>
+				</type>
+				
+				<labels>
+					<label>Priority</label>
+				</labels>
+			</state>
+			
+			<state name="Description">
+				<type>
+					<string/>
+				</type>
+				
+				<labels>
+					<label>Description</label>
+				</labels>
+			</state>
+		</list-group>
+	</groupings>
+</spec>

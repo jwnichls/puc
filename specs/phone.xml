@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<spec name="TAPI Phone/Voice Mail">
+  <groupings>
+    <group>
+      <!-- Phone Functions -->
+      
+      <labels>
+        <label>Dialing</label>
+	<label>Phone</label>
+      </labels>
+
+      <state name="OffHook">
+        <type>
+	  <valueSpace>
+	    <boolean/>
+	  </valueSpace>
+	  <valueLabels>
+	    <map index="true">
+	      <label>Off Hook</label>
+	    </map>
+	    <map index="false">
+	      <label>On Hook</label>
+	    </map>
+	  </valueLabels>
+	</type>
+
+	<labels>
+	  <label>Line Status</label>
+	  <label>Status</label>
+	  <label>Line</label>
+	</labels>
+      </state>
+      
+      <state name="SpeakerPhone">
+        <type-ref name="OnOff"/>
+
+	<labels>
+	  <label>Speaker Phone</label>
+	  <label>Speaker</label>
+	</labels>
+      </state>
+
+      <group type="telephone-dialpad"> <!-- dial pad commands -->
+
+        <active-if>
+	  <equals state="OffHook">1</equals>
+	</active-if>      
+
+        <command name="DialKey1">
+	  <labels>
+	    <label>1</label>
+	  </labels>
+	</command>
+
+	<command name="DialKey2">
+	  <labels>
+	    <label>2 abc</label>
+	    <label>2</label>
+	  </labels>
+	</command>
+
+	<command name="DialKey3">
+	  <labels>
+	    <label>3 def</label>
+	    <label>3</label>
+	  </labels>
+	</command>
+
+	<command name="DialKey4">
+	  <labels>
+	    <label>4 ghi</label>
+	    <label>4</label>
+	  </labels>
+	</command>
+
+	<command name="DialKey5">
+	  <labels>
+	    <label>5 jkl</label>
+	    <label>5</label>
+	  </labels>
+	</command>
+
+	<command name="DialKey6">
+	  <labels>
+	    <label>6 mno</label>
+	    <label>6</label>
+	  </labels>
+	</command>
+
+	<command name="DialKey7">
+	  <labels>
+	    <label>7 pqrs</label>
+	    <label>7</label>
+	  </labels>
+	</command>
+
+	<command name="DialKey8">
+	  <labels>
+	    <label>8 tuv</label>
+	    <label>8</label>
+	  </labels>
+	</command>
+
+	<command name="DialKey9">
+	  <labels>
+	    <label>9 wxyz</label>
+	    <label>9</label>
+	  </labels>
+	</command>
+
+	<command name="DialKey0">
+	  <labels>
+	    <label>0</label>
+	  </labels>
+	</command>
+
+	<command name="DialKeyStar">
+	  <labels>
+	    <label>*</label>
+	  </labels>
+	</command>
+
+	<command name="DialKeyPound">
+	  <labels>
+	    <label>#</label>
+	  </labels>
+	</command>
+      </group>
+
+      <group> <!-- Functions used while in call -->
+
+        <active-if>
+	  <equals state="OffHook">1</equals>
+	</active=if>
+
+        <state name="HoldState">
+	  <type name="OnOff">
+	    <valueSpace>
+	      <boolean/>
+	    </valueSpace>
+	    <valueLabels>
+	      <map index="true">
+	        <label>On</label>
+	      </map>
+	      <map index="false">
+	        <label>Off</label>
+	      </map>
+	    </valueLabels>
+	  </type>
+
+	  <labels>
+	    <label>Hold</label>
+	  </labels>
+	</state>
+
+	<state name="MuteMicrophone">
+	  <type-ref name="OnOff"/>
+
+	  <labels>
+	    <label>Mute</label>
+	  </labels>
+	</state>
+
+	<command name="FlashButton">
+	  <labels>
+	    <label>Flash</label>
+	  </labels>
+	</command>
+      </group>
+
+      <group> <!-- Speed Dial Functions -->
+        <state name="SpeedDialList">
+	  <type>
+	    <valueSpace>
+	      <list>
+	        <string/>
+		<items>10</items>
+	      </list>
+	    </valueSpace>
+	  </type>
+	</state>
+
+	<state name="SpeedDialSelection">
+	  <type>
+	    <valueSpace>
+	      <listSelection>
+	        <list-ref state="SpeedDialList"/>
+	      </listSelection>
+	    </valueSpace>
+	  </type>
+	</state>
+
+	<command name="DialSpeedNumber">
+	  <labels>
+	    <label>Dial Selected Number</label>
+	    <label>Dial</label>
+	  </labels>
+
+	  <active-if>
+	    <defined state="SpeedDialSelection"/>
+	    <defined state="*SpeedDialSelection"/>
+	  </active-if>
+	</command>
+      </group>
+    </group>
+
+    <group> <!-- Answering Machine Functions -->
+      <group> <!-- Message-Related Functions -->
+        <labels>
+	  <label>Messages</label>
+        </labels>
+
+        <state name="Messages" access="ReadOnly">
+          <type>
+	    <valueSpace>
+	      <list>
+	        <list>
+	          <string/>
+	        </list>
+	        <items>4</items>
+	      </list>
+	    </valueSpace>
+	    <valueLabels>
+	      <map index="[]">
+	        <label>Mailbox</label>
+	      </map>
+	      <map index="[][]">
+	        <label>Message</label>
+	      </map>
+	    </valueLabels>
+	  </type>
+
+	  <labels>
+	    <label>Date/Time</label>
+	    <label>Time</label>
+	  </labels>
+        </state>
+
+        <state name="NewMsgFlag" access="ReadOnly">
+          <type>
+	    <valueSpace>
+	      <list>
+	        <list>
+	          <boolean/>
+	        </list>
+	        <items>4</items>
+	      </list>
+	    </valueSpace>
+	    <valueLabels>
+	      <map index="[]">
+	        <label>Mailbox</label>
+	      </map>
+	      <map index="[][]">
+	        <label>Message</label>
+	      </map>
+	    </valueLabels>
+	  </type>
+
+	  <labels>
+	    <label>New</label>
+	  </labels>
+        </state>
+
+        <state name="MailboxSelection">
+          <type>
+	    <valueSpace>
+	      <listSelection>
+	        <list-ref state="Messages[]"/>
+	        <list-ref state="NewMsgFlag[]"/>
+	      </listSelection>
+	    </valueSpace>
+	  </type>
+        </state>
+
+        <state name="MessageSelection">
+          <type>
+	    <valueSpace>
+	      <listSelection>
+	        <list-ref state="Messages[][]"/>
+	        <list-ref state="NewMsgFlag[][]"/>
+	      </listSelection>
+	    </valueSpace>
+	  </type>
+        </state>
+
+        <group>
+          <!-- Mailbox-level Functions -->
+	  <active-if>
+	    <defined state="MailboxSelection"/>
+	  </active-if>
+
+	  <group>
+  	    <command name="PlayAllMsgs">
+	      <labels>
+	        <label>Play All</label>
+	      </labels>
+	    </command>
+
+	    <command name="PlayNewMsgs">
+	      <labels>
+	        <label>Play New</label>
+	      </labels>
+	    </command>
+	  </group>
+	
+	  <command name="DeleteAllMsgs">
+	    <labels>
+	      <label>Delete All</label>
+	    </labels>
+	  </command>
+        </group>
+
+        <group>
+          <!-- Message Playback Functions -->
+
+	  <group name="mediaplayer-playcontrol">
+	    <state name="MsgPlayState">
+	      <type name="mediaplayer-playstop">
+	        <valueSpace>
+	          <enumerated>
+	            <items>2</items>
+	          </enumerated>
+	        </valueSpace>
+	        <valueLabels>
+	          <map index="1">
+	            <label>Stop</label>
+	          </map>
+	          <map index="2">
+	            <label>Play</label>
+	          </map>
+	        </valueLabels>
+	      </type>
+
+	      <active-if>
+	        <defined state="MessageSelection"/>
+	      </active-if>	  
+	    </state>
+
+	    <group>
+	      <active-if>
+	        <equals state="MsgPlayState
+	      </active-if>
+
+	      <command name="PrevMsg">
+	        <labels>
+	          <label>Play</label>
+	        </labels>
+	      </command>
+
+	      <command name="NextMsg">
+	        <labels>
+	          <label>Next</label>
+	        </labels>
+	      </command>
+	    </group>
+	  </group>
+
+	  <group>
+	    <active-if>
+	      <defined state="MessageSelection"/>
+	    </active-if>
+
+	    <command name="DeleteMsg">
+	      <labels>
+	        <label>Delete</label>
+	      </labels>
+	    </command>
+
+	    <group>
+	      <state name="BoxEnabled">
+	        <type>
+	          <list>
+	            <boolean/>
+	            <items>4</items>
+	          </list>
+	        </type>
+	      </state>
+	    
+	      <state name="BoxToMoveToState">
+	        <!-- An example of a state that might want to be -->
+	        <!-- maintained locally to a connection -->
+	        <type>
+	          <valueSpace>
+	            <enumerated>
+		      <items>4</items>
+		    </enumerated>
+	          </valueSpace>
+	          <valueLabels>
+	            <map index="1" enable="BoxEnabled[1]">
+		      <label>1</label>
+		    </map>
+	            <map index="2" enable="BoxEnabled[2]">
+		      <label>2</label>
+		    </map>
+	            <map index="3" enable="BoxEnabled[3]">
+		      <label>3</label>
+		    </map>
+	            <map index="4" enable="BoxEnabled[4]">
+		      <label>4</label>
+		    </map>
+	          </valueLabels>
+	        </type>
+	      </state>
+	  
+	      <command name="MoveMsg">
+	        <active-if>
+	          <defined state="BoxToMoveToState"/>
+	        </active-if>
+	      </command>
+	    </group>
+	  </group>
+	</group>
+      </group>
+
+      <group> <!-- Answering Machine Setup Functions -->
+        <state name="AnswerOn">
+	  <type name="generic-onoff">
+	    <valueSpace>
+	      <boolean/>
+	    </valueSpace>
+	    <valueLabels>
+	      <map index="1">
+	        <label>Off</label>
+	      </map>
+	      <map index="2">
+	        <label>On</label>
+	      </map>
+	    </valueLabels>
+	  </type>
+
+	  <labels>
+	    <label>Answer Phone?</label>
+	  </labels>
+	</state>
+      
+        <state name="RingNumber">
+	  <type>
+	    <valueSpace>
+	      <integer>
+	        <min>3</min>
+		<max>6</max>
+	      </integer>
+	    </valueSpace>
+	  </type>
+
+	  <labels>
+	    <label>Number of Rings Before Answer</label>
+	    <label>Rings Before Answer</label>
+	    <label>Answer Rings</label>
+	  </labels>
+	</state>
+
+	<group>
+	  <state name="AnnouncementState">
+	    <type>
+	      <valueSpace>
+	        <enumerated>
+	          <items>3</items>
+	        </enumerated>
+	      </valueSpace>
+	      <valueLabels>
+	        <map index="1">
+	          <label>Answer #1</label>
+	        </map>
+	        <map index="2">
+	          <label>Answer #2</label>
+	        </map>
+	        <map index="3">
+	          <label>No Answer</label>
+	        </map>
+	      </valueLabels>
+	    </type>
+
+	    <labels>
+	      <label>Announcement</label>
+	      <label>Anncment</label>
+	    </labels>
+	  </state>
+
+	  <group>
+	    <active-if>
+	      <defined state="AnnouncementState"/>
+	    </active-if>
+
+	    <command name="RecordAnnc">
+	      <labels>
+	        <label>Record</label>
+	      </labels>
+	    </command>
+
+	    <command name="PlayAnnc">
+	      <labels>
+	        <label>Play</label>
+	      </labels>
+	    </command>
+	</group>
+      </group>
+    </group>
+  </groupings>
+</spec>

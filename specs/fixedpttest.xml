@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spec name="FixedPt" version="PUC/2.1">
+  <labels>
+	<label>FixedPt Test</label>
+  </labels>
+  <groupings>
+    <group name="Test">
+      <state name="TestState" priority="10">
+        <type>
+          <fixedpt>
+            <pointpos>2</pointpos>
+            <min>
+              <static value="0" />
+            </min>
+            <max>
+              <static value="10.45" />
+            </max>
+            <incr>
+              <static value="0.01" />
+            </incr>
+          </fixedpt>
+        </type>
+        <labels>
+          <label>Test</label>
+        </labels>
+      </state>
+      <state name="TestIntState" priority="10">
+        <type>
+          <integer>
+            <min>
+              <static value="0" />
+            </min>
+            <max>
+              <static value="100" />
+            </max>
+            <incr>
+              <static value="2" />
+            </incr>
+          </integer>
+        </type>
+        <labels>
+          <label>Int Test</label>
+          <label>Int</label>
+        </labels>
+      </state>
+    </group>
+  </groupings>
+</spec>

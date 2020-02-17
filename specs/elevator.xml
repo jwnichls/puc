@@ -1,0 +1,531 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spec name="Elevator" version="PUC/2.1" xmlns="http://www.cs.cmu.edu/~pebbles/puc">
+  <labels>
+    <label>Simulated Elevator</label>
+  </labels>
+  <groupings>
+    <group name="Car">
+      <state name="UserState" access="read-only">
+        <type>
+          <enumerated>
+            <item-count>2</item-count>
+          </enumerated>
+          <value-labels>
+            <map index="1">
+              <labels>
+                <label>Waiting for Elevator</label>
+                <label>Waiting</label>
+              </labels>
+            </map>
+            <map index="2">
+              <labels>
+                <label>Inside Elevator</label>
+                <label>Inside</label>
+              </labels>
+            </map>
+          </value-labels>
+        </type>
+        <labels>
+          <label>Position</label>
+        </labels>
+      </state>
+      <state name="ElevatorLocation" access="read-only">
+        <type name="FloorType">
+          <integer>
+            <min>
+              <static value="1" />
+            </min>
+            <max>
+              <static value="5" />
+            </max>
+          </integer>
+          <value-labels>
+            <map index="1">
+              <labels>
+                <label>Floor 1</label>
+                <label>One</label>
+                <label>1</label>
+              </labels>
+            </map>
+            <map index="2">
+              <labels>
+                <label>Floor 2</label>
+                <label>Two</label>
+                <label>2</label>
+              </labels>
+            </map>
+            <map index="3">
+              <labels>
+                <label>Floor 3</label>
+                <label>Three</label>
+                <label>3</label>
+              </labels>
+            </map>
+            <map index="4">
+              <labels>
+                <label>Floor 4</label>
+                <label>Four</label>
+                <label>4</label>
+              </labels>
+            </map>
+            <map index="5">
+              <labels>
+                <label>Floor 5</label>
+                <label>Five</label>
+                <label>5</label>
+              </labels>
+            </map>
+          </value-labels>
+        </type>
+        <labels>
+          <label>Current Floor</label>
+          <label>Floor</label>
+        </labels>
+      </state>
+      <state name="ElevatorDirection" access="read-only">
+        <type>
+          <enumerated>
+            <item-count>3</item-count>
+          </enumerated>
+          <value-labels>
+            <map index="1">
+              <labels>
+                <label>Going Up</label>
+                <label>Up</label>
+              </labels>
+            </map>
+            <map index="2">
+              <labels>
+                <label>None</label>
+              </labels>
+            </map>
+            <map index="3">
+              <labels>
+                <label>Going Down</label>
+                <label>Down</label>
+              </labels>
+            </map>
+          </value-labels>
+        </type>
+        <labels>
+          <label>Direction</label>
+        </labels>
+      </state>
+      <state name="DoorState" access="read-only">
+        <type>
+          <enumerated>
+            <item-count>2</item-count>
+          </enumerated>
+          <value-labels>
+            <map index="1">
+              <labels>
+                <label>Open</label>
+              </labels>
+            </map>
+            <map index="2">
+              <labels>
+                <label>Closed</label>
+              </labels>
+            </map>
+          </value-labels>
+        </type>
+        <labels>
+          <label>Door Status</label>
+        </labels>
+      </state>
+      <state name="Color" access="read-only">
+        <type>
+          <string />
+        </type>
+        <labels>
+          <label>Color</label>
+        </labels>
+      </state>
+      <group name="Outside">
+        <active-if>
+          <equals state="UserState">
+            <static value="1" />
+          </equals>
+        </active-if>
+        <state name="UserLocation" access="read-only">
+          <apply-type name="FloorType" />
+        </state>
+        <group name="Call">
+          <state name="Up">
+            <type name="FloorCall">
+              <boolean />
+            </type>
+            <labels>
+              <label>Up</label>
+            </labels>
+            <active-if>
+              <lessthan state="UserLocation">
+                <static value="5" />
+              </lessthan>
+              <equals state="Call.Up">
+                <static value="false" />
+              </equals>
+            </active-if>
+          </state>
+          <state name="Down">
+            <apply-type name="FloorCall" />
+            <labels>
+              <label>Down</label>
+            </labels>
+            <active-if>
+              <greaterthan state="UserLocation">
+                <static value="1" />
+              </greaterthan>
+              <equals state="Call.Down">
+                <static value="false" />
+              </equals>
+            </active-if>
+          </state>
+        </group>
+        <command name="Enter">
+          <labels>
+            <label>Enter</label>
+          </labels>
+          <active-if>
+            <equals state="UserState">
+              <static value="1" />
+            </equals>
+            <equals state="DoorState">
+              <static value="1" />
+            </equals>
+            <equals state="ElevatorLocation">
+              <refvalue state="UserLocation" />
+            </equals>
+          </active-if>
+        </command>
+      </group>
+      <group name="Inside">
+        <active-if>
+          <equals state="UserState">
+            <static value="2" />
+          </equals>
+        </active-if>
+        <group name="Floor1">
+          <state name="Enable" access="read-only">
+            <type name="EnableState">
+              <boolean />
+            </type>
+            <labels>
+              <label>enable floor 1</label>
+            </labels>
+          </state>
+          <state name="Request">
+            <type>
+              <boolean />
+            </type>
+            <labels>
+              <label>Floor 1</label>
+              <label>One</label>
+              <label>1</label>
+            </labels>
+            <active-if>
+              <and>
+                <equals state="Floor1.Enable">
+                  <static value="true" />
+                </equals>
+                <or>
+                  <and>
+                    <equals state="ElevatorDirection">
+                      <static value="1" />
+                    </equals>
+                    <lessthan state="ElevatorLocation">
+                      <static value="1" />
+                    </lessthan>
+                  </and>
+                  <and>
+                    <equals state="ElevatorDirection">
+                      <static value="3" />
+                    </equals>
+                    <greaterthan state="ElevatorLocation">
+                      <static value="1" />
+                    </greaterthan>
+                  </and>
+                  <equals state="ElevatorDirection">
+                    <static value="2" />
+                  </equals>
+                </or>
+                <equals state="Floor1.Request">
+                  <static value="false" />
+                </equals>
+              </and>
+            </active-if>
+          </state>
+        </group>
+        <group name="Floor2">
+          <state name="Enable" access="read-only">
+            <apply-type name="EnableState" />
+            <labels>
+              <label>enable floor 2</label>
+            </labels>
+          </state>
+          <state name="Request">
+            <type>
+              <boolean />
+            </type>
+            <labels>
+              <label>Floor 2</label>
+              <label>Two</label>
+              <label>2</label>
+            </labels>
+            <active-if>
+              <and>
+                <equals state="Floor2.Enable">
+                  <static value="true" />
+                </equals>
+                <or>
+                  <and>
+                    <equals state="ElevatorDirection">
+                      <static value="1" />
+                    </equals>
+                    <lessthan state="ElevatorLocation">
+                      <static value="2" />
+                    </lessthan>
+                  </and>
+                  <and>
+                    <equals state="ElevatorDirection">
+                      <static value="3" />
+                    </equals>
+                    <greaterthan state="ElevatorLocation">
+                      <static value="2" />
+                    </greaterthan>
+                  </and>
+                  <equals state="ElevatorDirection">
+                    <static value="2" />
+                  </equals>
+                </or>
+                <equals state="Floor2.Request">
+                  <static value="false" />
+                </equals>
+              </and>
+            </active-if>
+          </state>
+        </group>
+        <group name="Floor3">
+          <state name="Enable" access="read-only">
+            <apply-type name="EnableState" />
+            <labels>
+              <label>enable floor 3</label>
+            </labels>
+          </state>
+          <state name="Request">
+            <type>
+              <boolean />
+            </type>
+            <labels>
+              <label>Floor 3</label>
+              <label>Three</label>
+              <label>3</label>
+            </labels>
+            <active-if>
+              <and>
+                <equals state="Floor3.Enable">
+                  <static value="true" />
+                </equals>
+                <or>
+                  <and>
+                    <equals state="ElevatorDirection">
+                      <static value="1" />
+                    </equals>
+                    <lessthan state="ElevatorLocation">
+                      <static value="3" />
+                    </lessthan>
+                  </and>
+                  <and>
+                    <equals state="ElevatorDirection">
+                      <static value="3" />
+                    </equals>
+                    <greaterthan state="ElevatorLocation">
+                      <static value="3" />
+                    </greaterthan>
+                  </and>
+                  <equals state="ElevatorDirection">
+                    <static value="2" />
+                  </equals>
+                </or>
+                <equals state="Floor3.Request">
+                  <static value="false" />
+                </equals>
+              </and>
+            </active-if>
+          </state>
+        </group>
+        <group name="Floor4">
+          <state name="Enable" access="read-only">
+            <apply-type name="EnableState" />
+            <labels>
+              <label>enable floor 4</label>
+            </labels>
+          </state>
+          <state name="Request">
+            <type>
+              <boolean />
+            </type>
+            <labels>
+              <label>Floor 4</label>
+              <label>Four</label>
+              <label>4</label>
+            </labels>
+            <active-if>
+              <and>
+                <equals state="Floor4.Enable">
+                  <static value="true" />
+                </equals>
+                <or>
+                  <and>
+                    <equals state="ElevatorDirection">
+                      <static value="1" />
+                    </equals>
+                    <lessthan state="ElevatorLocation">
+                      <static value="4" />
+                    </lessthan>
+                  </and>
+                  <and>
+                    <equals state="ElevatorDirection">
+                      <static value="3" />
+                    </equals>
+                    <greaterthan state="ElevatorLocation">
+                      <static value="4" />
+                    </greaterthan>
+                  </and>
+                  <equals state="ElevatorDirection">
+                    <static value="2" />
+                  </equals>
+                </or>
+                <equals state="Floor4.Request">
+                  <static value="false" />
+                </equals>
+              </and>
+            </active-if>
+          </state>
+        </group>
+        <group name="Floor5">
+          <state name="Enable" access="read-only">
+            <apply-type name="EnableState" />
+            <labels>
+              <label>enable floor 5</label>
+            </labels>
+          </state>
+          <state name="Request">
+            <type>
+              <boolean />
+            </type>
+            <labels>
+              <label>Floor 5</label>
+              <label>Five</label>
+              <label>5</label>
+            </labels>
+            <active-if>
+              <and>
+                <equals state="Floor5.Enable">
+                  <static value="true" />
+                </equals>
+                <or>
+                  <and>
+                    <equals state="ElevatorDirection">
+                      <static value="1" />
+                    </equals>
+                    <lessthan state="ElevatorLocation">
+                      <static value="5" />
+                    </lessthan>
+                  </and>
+                  <and>
+                    <equals state="ElevatorDirection">
+                      <static value="3" />
+                    </equals>
+                    <greaterthan state="ElevatorLocation">
+                      <static value="5" />
+                    </greaterthan>
+                  </and>
+                  <equals state="ElevatorDirection">
+                    <static value="2" />
+                  </equals>
+                </or>
+                <equals state="Floor5.Request">
+                  <static value="false" />
+                </equals>
+              </and>
+            </active-if>
+          </state>
+        </group>
+        <state name="AccessCode">
+          <type>
+            <string />
+          </type>
+          <labels>
+            <label>Security Code</label>
+            <label>Access Code</label>
+            <label>Code</label>
+          </labels>
+          <active-if>
+            <equals state="DoorState">
+              <static value="2" />
+            </equals>
+          </active-if>
+        </state>
+        <group name="DoorControl">
+          <state name="Open">
+            <type>
+              <boolean />
+            </type>
+            <labels>
+              <label>Open Doors</label>
+              <label>Door Open</label>
+              <label>Open</label>
+            </labels>
+            <active-if>
+              <or>
+                <equals state="DoorState">
+                  <static value="1" />
+                </equals>
+                <equals state="ElevatorDirection">
+                  <static value="2" />
+                </equals>
+              </or>
+              <equals state="DoorControl.Open">
+                <static value="false" />
+              </equals>
+            </active-if>
+          </state>
+          <state name="Close">
+            <type>
+              <boolean />
+            </type>
+            <labels>
+              <label>Close Doors</label>
+              <label>Door Close</label>
+              <label>Close</label>
+            </labels>
+            <active-if>
+              <equals state="DoorState">
+                <static value="1" />
+              </equals>
+              <equals state="DoorControl.Close">
+                <static value="false" />
+              </equals>
+            </active-if>
+          </state>
+        </group>
+        <command name="Exit">
+          <labels>
+            <label>Exit</label>
+          </labels>
+          <active-if>
+            <and>
+              <equals state="UserState">
+                <static value="2" />
+              </equals>
+              <equals state="DoorState">
+                <static value="1" />
+              </equals>
+            </and>
+          </active-if>
+        </command>
+      </group>
+    </group>
+  </groupings>
+</spec>

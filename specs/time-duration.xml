@@ -1,0 +1,426 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spec name="Time" version="PUC/2.1">
+  <labels>
+    <label>time/duration Test</label>
+  </labels>
+  <groupings>
+    <group name="Test">
+      <group name="Single">
+        <group name="Integer">
+          <state name="IntTestState1" is-a="time-duration" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="1200" />
+                </max>
+              </integer>
+            </type>
+            <labels>
+              <label>Int Test #1</label>
+            </labels>
+          </state>
+          <state name="IntTestState2" is-a="time-duration" priority="10">
+            <type>
+              <integer />
+            </type>
+            <labels>
+              <label>Int Test #2</label>
+            </labels>
+          </state>
+          <state name="IntTestState3" is-a="time-duration" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="1200" />
+                </max>
+                <incr>
+                  <static value="60" />
+                </incr>
+              </integer>
+            </type>
+            <labels>
+              <label>Int Test #3</label>
+            </labels>
+          </state>
+        </group>
+        <group name="FixedPt">
+          <state name="FxdTestState1" is-a="time-duration" priority="10">
+            <type>
+              <fixedpt>
+                <pointpos>3</pointpos>
+                <min>
+                  <static value="0.000" />
+                </min>
+                <max>
+                  <static value="1200.000" />
+                </max>
+              </fixedpt>
+            </type>
+            <labels>
+              <label>Fxd Test #1</label>
+            </labels>
+          </state>
+          <state name="FxdTestState2" is-a="time-duration" priority="10">
+            <type>
+              <fixedpt>
+                <pointpos>3</pointpos>
+              </fixedpt>
+            </type>
+            <labels>
+              <label>Fxd Test #2</label>
+            </labels>
+          </state>
+          <state name="FxdTestState3" is-a="time-duration" priority="10">
+            <type>
+              <fixedpt>
+                <pointpos>3</pointpos>
+                <min>
+                  <static value="0.000" />
+                </min>
+                <max>
+                  <static value="1200.000" />
+                </max>
+                <incr>
+                  <static value="0.1" />
+                </incr>
+              </fixedpt>
+            </type>
+            <labels>
+              <label>Fxd Test #3</label>
+            </labels>
+          </state>
+        </group>
+        <group name="FloatPt">
+          <state name="FloatTestState1" is-a="time-duration" priority="10">
+            <type>
+              <floatingpt>
+                <min>
+                  <static value="0.000" />
+                </min>
+                <max>
+                  <static value="1200.000" />
+                </max>
+              </floatingpt>
+            </type>
+            <labels>
+              <label>Float Test #1</label>
+            </labels>
+          </state>
+          <state name="FloatTestState2" is-a="time-duration" priority="10">
+            <type>
+              <floatingpt />
+            </type>
+            <labels>
+              <label>Float Test #2</label>
+            </labels>
+          </state>
+        </group>
+        <group name="String">
+          <state name="StrTestState1" is-a="time-duration" priority="10">
+            <type>
+              <string />
+            </type>
+            <labels>
+              <label>String Test #1</label>
+            </labels>
+          </state>
+        </group>
+      </group>
+      <group name="Multi">
+        <group name="One" is-a="time-duration">
+          <labels>
+            <label>Multi-State Test #1</label>
+          </labels>
+          <state name="Fraction" priority="10">
+            <type>
+              <integer />
+            </type>
+          </state>
+        </group>
+        <group name="Two" is-a="time-duration">
+          <labels>
+            <label>Multi-State Test #2</label>
+          </labels>
+          <state name="Seconds" priority="10">
+            <type>
+              <integer />
+            </type>
+          </state>
+          <state name="Fraction" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="999" />
+                </max>
+              </integer>
+            </type>
+          </state>
+        </group>
+        <group name="Three" is-a="time-duration">
+          <labels>
+            <label>Multi-State Test #3</label>
+          </labels>
+          <state name="Minutes" priority="10">
+            <type>
+              <integer />
+            </type>
+          </state>
+          <state name="Seconds" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="59" />
+                </max>
+              </integer>
+            </type>
+          </state>
+          <state name="Fraction" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="999" />
+                </max>
+              </integer>
+            </type>
+          </state>
+        </group>
+        <group name="Four" is-a="time-duration">
+          <labels>
+            <label>Multi-State Test #4</label>
+          </labels>
+          <state name="Hours" priority="10">
+            <type>
+              <integer />
+            </type>
+          </state>
+          <state name="Minutes" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="59" />
+                </max>
+              </integer>
+            </type>
+          </state>
+          <state name="Seconds" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="59" />
+                </max>
+              </integer>
+            </type>
+          </state>
+          <state name="Fraction" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="999" />
+                </max>
+              </integer>
+            </type>
+          </state>
+        </group>
+        <group name="Five" is-a="time-duration">
+          <labels>
+            <label>Multi-State Test #5</label>
+          </labels>
+          <state name="Hours" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="12" />
+                </max>
+              </integer>
+            </type>
+          </state>
+          <state name="Minutes" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="59" />
+                </max>
+              </integer>
+            </type>
+          </state>
+          <state name="Seconds" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="59" />
+                </max>
+              </integer>
+            </type>
+          </state>
+          <state name="Fraction" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="999" />
+                </max>
+              </integer>
+            </type>
+          </state>
+        </group>
+        <group name="Six" is-a="time-duration">
+          <labels>
+            <label>Multi-State Test #6</label>
+          </labels>
+          <state name="Hours" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="12" />
+                </max>
+              </integer>
+            </type>
+          </state>
+          <state name="Minutes" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="59" />
+                </max>
+              </integer>
+            </type>
+          </state>
+          <state name="Seconds" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="59" />
+                </max>
+              </integer>
+            </type>
+          </state>
+        </group>
+        <group name="Seven" is-a="time-duration">
+          <labels>
+            <label>Multi-State Test #7</label>
+          </labels>
+          <state name="Hours" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="12" />
+                </max>
+              </integer>
+            </type>
+          </state>
+          <state name="Minutes" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="59" />
+                </max>
+              </integer>
+            </type>
+          </state>
+        </group>
+        <group name="Eight" is-a="time-duration">
+          <labels>
+            <label>Multi-State Test #8</label>
+          </labels>
+          <state name="Hours" priority="10">
+            <type>
+              <integer />
+            </type>
+          </state>
+        </group>
+        <group name="Nine" is-a="time-duration">
+          <labels>
+            <label>Multi-State Test #9</label>
+          </labels>
+          <state name="Minutes" priority="10">
+            <type>
+              <integer />
+            </type>
+          </state>
+          <state name="Seconds" priority="10">
+            <type>
+              <integer>
+                <min>
+                  <static value="0" />
+                </min>
+                <max>
+                  <static value="59" />
+                </max>
+              </integer>
+            </type>
+          </state>
+        </group>
+        <group name="Ten" is-a="time-duration">
+          <labels>
+            <label>Multi-State Test #10</label>
+          </labels>
+          <state name="Minutes" priority="10">
+            <type>
+              <integer />
+            </type>
+          </state>
+        </group>
+        <group name="Eleven" is-a="time-duration">
+          <labels>
+            <label>Multi-State Test #11</label>
+          </labels>
+          <state name="Seconds" priority="10">
+            <type>
+              <integer />
+            </type>
+          </state>
+        </group>
+      </group>
+    </group>
+  </groupings>
+</spec>

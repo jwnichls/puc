@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spec name="UPnP" version="PUC/2.1">
+  <labels>
+    <label>Intel UPnP Light</label>
+  </labels>
+  <groupings>
+    <group name="Light">
+      <state name="Power">
+        <type>
+          <boolean />
+          <value-labels>
+            <map index="false">
+              <labels>
+                <label>Off</label>
+              </labels>
+            </map>
+            <map index="true">
+              <labels>
+                <label>On</label>
+              </labels>
+            </map>
+          </value-labels>
+        </type>
+        <labels>
+          <label>Power</label>
+        </labels>
+      </state>
+      <state name="LoadLevel">
+        <type>
+          <integer>
+            <min>
+              <static value="0" />
+            </min>
+            <max>
+              <static value="100" />
+            </max>
+          </integer>
+        </type>
+        <labels>
+          <label>Brightness</label>
+          <label>Bright</label>
+          <label>Dim</label>
+        </labels>
+      </state>
+    </group>
+    <group name="All">
+      <command name="On">
+        <labels>
+          <label>Turn On All</label>
+          <label>All On</label>
+        </labels>
+      </command>
+      <command name="Off">
+        <labels>
+          <label>Turn Off All</label>
+          <label>All Off</label>
+        </labels>
+      </command>
+    </group>
+  </groupings>
+</spec>

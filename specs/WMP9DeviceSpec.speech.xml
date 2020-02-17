@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE spec SYSTEM "gadget.dtd">
+
+<gadget> 
+
+<!--
+List of States
+
+READ ONLY STATES
+
+WMPVersion:	 string
+StatusString:    string
+CurrentTitle:	 string
+CurrentLength:	 string
+CurrentDuration: integer
+
+READ-WRITE STATES
+
+PlaybackStatus:	 enumerated (3) {Play, Pause, Stop}
+CurrentPosition: integer (bounded by CurrentDuration)
+Volume:	         integer (0-100)
+Mute:            boolean
+
+List of Commands
+
+PrevTrack
+NextTrack
+
+-->
+
+  <node>
+    <label>
+      <canonical>windows media player</canonical>
+      <alias>media player</alias>
+    </label>
+
+    <node>
+      <node>
+        <action name="PlaybackStatus:Mode">
+          <label>
+	    <canonical>stop</canonical>
+	    <state>stopped</state>
+	  </label>
+	  <var>1</var>
+        </action>
+      </node>
+
+      <node>
+        <action name="PlaybackStatus:Mode">
+          <label>
+	    <canonical>play</canonical>
+	    <state>playing</state>
+	  </label>
+	  <var>2</var>
+        </action>
+      </node>
+
+      <node>
+        <action name="PlaybackStatus:Mode">
+          <label>
+	    <canonical>pause</canonical>
+	    <state>paused</state>
+	  </label>
+	  <var>3</var>
+        </action>
+      </node>
+
+      <node>
+        <action name="PrevTrack">
+          <label>
+	    <canonical>previous track</canonical>
+	  </label>
+        </action>
+      </node>
+
+      <node>
+        <action name="NextTrack">
+          <label>
+	    <canonical>next track</canonical>
+	    <alias>skip track</alias>
+	  </label>
+        </action>
+      </node>
+    </node> <!-- play control -->
+
+    <node>
+      <label>
+        <canonical>volume</canonical>
+      </label>
+
+      <node>
+        <action name="Volume">
+          <label>
+	    <canonical>very low</canonical>
+	    <alias>very quiet</alias>
+	  </label>
+	  <var>5</var>
+        </action>
+      </node>
+
+      <node>
+        <action name="Volume">
+          <label>
+	    <canonical>low</canonical>
+	    <alias>quiet</alias>
+	  </label>
+	  <var>25</var>
+        </action>
+      </node>
+
+      <node>
+        <action name="Volume">
+          <label>
+	    <canonical>medium</canonical>
+	    <alias>normal</alias>
+	  </label>
+	  <var>50</var>
+        </action>
+      </node>
+
+      <node>
+        <action name="Volume">
+          <label>
+	    <canonical>high</canonical>
+	    <alias>loud</alias>
+	  </label>
+	  <var>75</var>
+        </action>
+      </node>
+
+      <node>
+        <action name="Volume">
+          <label>
+	    <canonical>very high</canonical>
+	    <alias>very loud</alias>
+	  </label>
+	  <var>95</var>
+        </action>
+      </node>
+    </node> <!-- volume -->
+
+    <node>
+      <node>
+        <action name="Mute">
+          <label>
+            <canonical>mute audio</canonical>
+          </label>
+          <var>true</var>
+        </action>
+
+        <node>
+          <action name="Mute">
+            <label onoff="off">
+	      <canonical>off</canonical>
+	      <alias>unmute</alias>
+	    </label>
+	    <var>false</var>
+          </action>
+        </node>
+      </node>
+    </node> <!-- mute -->
+
+    <node>
+      <label>
+        <canonical>current title</canonical>
+        <alias>title</alias>
+      </label>
+      <node>
+        <action readonly="true" name="CurrentTitle">
+          <basic type="read-only"/>
+        </action>
+      </node>
+    </node>
+
+    <node>
+      <label>
+        <canonical>media player info</canonical>
+        <alias>windows media player info</alias>
+        <alias>info</alias>
+      </label>
+
+<!-- causes blowup for some reason
+      <node>
+        <label>
+          <canonical>status</canonical>
+        </label>
+	<node>
+          <action readonly="true" name="StatusString">
+            <basic type="read-only"/>
+          </action>
+	</node>
+      </node> -->
+      
+      <node>
+        <label>
+	  <canonical>version</canonical>
+        </label>
+	<node>
+	  <action readonly="true" name="WMPVersion">
+            <basic type="read-only"/>
+	  </action>
+	</node>	    
+      </node>
+    </node> <!-- media player info -->
+  </node> <!-- windows media player -->
+</gadget>

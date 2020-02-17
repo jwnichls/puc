@@ -1,0 +1,109 @@
+<!-- This is version 0.1 of the Personal Universal Controller -->
+<!-- Appliance Specification Document Type Definition -->
+
+<!ENTITY % PRIORITY '(1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10)'>
+
+<!ELEMENT spec (labels?, groupings)>
+<!ATTLIST spec name CDATA #REQUIRED>
+
+<!ELEMENT groupings (group+)>
+
+<!ELEMENT group (active-if?, labels?, (command | explanation | group | state )+)>
+<!ATTLIST group name ID #REQUIRED 
+                priority %PRIORITY; #IMPLIED>
+
+<!ELEMENT list-group (active-if?, labels?, (command | explanation | group | state )+)>
+<!ATTLIST list-group name ID #REQUIRED 
+                     priority %PRIORITY; #IMPLIED>
+
+<!ELEMENT union-group (active-if?, labels?, (command | explanation | group | state )+)>
+<!ATTLIST union-group name ID #REQUIRED 
+                           priority %PRIORITY; #IMPLIED>
+
+<!ELEMENT active-if (and | or | apply-over |<!ELEMENT group (active-if?, labels?, (command | explanation | group | state )+)>
+<!ATTLIST group name ID #REQUIRED 
+                priority %PRIORITY; #IMPLIED>
+ (equals | greaterthan | lessthan | defined | undefined)+)>
+<!ATTLIST active-if ignore (parent | all) #IMPLIED>
+
+<!ELEMENT command (labels?, active-if?)>
+<!ATTLIST command name ID #REQUIRED 
+                  priority %PRIORITY; #IMPLIED>
+
+<!ELEMENT explanation (labels, active-if?)>
+<!ATTLIST explanation name CDATA #REQUIRED priority %PRIORITY; #IMPLIED>
+
+<!ELEMENT labels ((label | refstring | phonetic | text-to-speech)+)>
+<!ATTLIST labels recording CDATA #IMPLIED>
+
+<!ELEMENT state ((type | apply-type), labels?, active-if?)>
+<!ATTLIST state name ID #REQUIRED 
+                access (ReadOnly | WriteOnly) #IMPLIED 
+		priority %PRIORITY; #IMPLIED>
+
+<!ELEMENT and ((equals | greaterthan | lessthan)+)>
+
+<!ELEMENT equals (#PCDATA)>
+<!ATTLIST equals state IDREF #REQUIRED>
+
+<!ELEMENT greaterthan (#PCDATA)>
+<!ATTLIST greaterthan state IDREF #REQUIRED>
+
+<!ELEMENT lessthan (#PCDATA)>
+<!ATTLIST lessthan state IDREF #REQUIRED>
+
+<!ELEMENT or ((equals | greaterthan | lessthan)+)>
+
+<!ELEMENT label (#PCDATA)>
+
+<!ELEMENT phonetic (#PCDATA)>
+
+<!ELEMENT text-to-speech EMPTY>
+<!ATTLIST text-to-speech text CDATA #REQUIRED 
+                         recording CDATA #IMPLIED>
+
+<!ELEMENT type (valueSpace, expectedValues?, valueLabels?)>
+<!ATTLIST type name ID #IMPLIED>
+
+<!ELEMENT apply-type EMPTY>
+<!ATTLIST apply-type name IDREF #REQUIRED>
+
+<!ELEMENT refstring EMPTY>
+<!ATTLIST refstring state IDREF #REQUIRED>
+
+<!ELEMENT expectedValues (boolean | custom | enumerated | fixedpt | integer | string | floatingpt)>
+
+<!ELEMENT valueLabels (map+)>
+
+<!ELEMENT valueSpace (boolean | custom | enumerated | fixedpt | integer | string | floatingpt)>
+
+<!ELEMENT boolean EMPTY>
+
+<!ELEMENT custom (#PCDATA)>
+
+<!ELEMENT enumerated (items+)>
+
+<!ELEMENT fixedpt (incr?, max?, min?)>
+
+<!ELEMENT integer (incr?, max?, min?)>
+
+<!ELEMENT floatingpt (max?, min?)>
+
+<!ELEMENT string EMPTY>
+
+<!ELEMENT map ((label | phonetic | refstring | text-to-speech)+)>
+<!ATTLIST map index CDATA #REQUIRED 
+              enable CDATA #IMPLIED>
+
+<!ELEMENT items (#PCDATA)>
+
+<!ELEMENT incr (number | refvalue)>
+
+<!ELEMENT max (number | refvalue)>
+
+<!ELEMENT min (number | refvalue)>
+
+<!ELEMENT number (#PCDATA)>
+
+<!ELEMENT refvalue EMPTY>
+<!ATTLIST refvalue state IDREF #REQUIRED>

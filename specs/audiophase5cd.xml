@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Note: This file is best viewed in Internet Explorer. -->
+<!-- This is an updated specification of the cheap 5 CD Home Stereo System.
+     It incorporates new features, like lists, that have not been implemented
+     for the actual stereo. -->
+<spec xmlns="http://www.cs.cmu.edu/~pebbles/puc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" name="Audiophase" version="PUC/2.2">
+	<labels>
+		<label>Audiophase 5CD Stereo</label>
+	</labels>
+	<types>
+		<type type-name="OnOffType">
+			<boolean />
+			<value-labels>
+				<map index="false">
+					<labels>
+						<label>Off</label>
+					</labels>
+				</map>
+				<map index="true">
+					<labels>
+						<label>On</label>
+					</labels>
+				</map>
+			</value-labels>
+		</type>
+		<type type-name="FMType">
+			<fixedpt>
+				<pointpos>1</pointpos>
+				<min><constant value="88.5"/></min>
+				<max><constant value="108.0"/></max>
+				<incr><constant value="0.1"/></incr>
+			</fixedpt>
+		</type>
+		<type type-name="AMType">
+			<integer>
+				<min><constant value="530"/></min>
+				<max><constant value="1710"/></max>
+				<incr><constant value="10"/></incr>
+			</integer>
+		</type>
+	</types>
+	<groupings>
+		<!--
+List of States
+
+Power:              boolean {Off,On}
+
+Volume:	            integer (limits?)
+Time of Day:        integer (or other time-related type)
+X-Bass:		    boolean
+Stereo Wide:	    boolean
+
+TimerActivate:	    boolean
+TimerTime:          integer (or other time-related type)
+
+SleepActivate:	    boolean
+SleepTime:          integer (10..90,10)
+
+Mode:               enumerated (4) {Tuner,Tape,CD,AUX}
+
+Band:		    boolean {AM,FM}
+Mono:		    boolean {Off,On}
+AMStation:	    integer (530,1710,10)
+AMPresets(20):	    list of integers (20 elements in list, limits on AMStation)
+FMStation:          fixedpt (1,88.5,108.0,0.1)
+FMPresets(20):      list of fixedpt (20 elements in list, limits on FMStation)
+
+CDPlayMode:	    enumerated (3) {Stopped,Playing,Paused}
+DiscOne:            boolean
+DiscTwo:	    boolean
+DiscThree:	    boolean
+DiscFour:           boolean
+DiscFive:	    boolean
+CDTracksCount:      integer (0 to 99)
+CDTrack:            integer (1..CDTracksCount)
+CDRandom:	    boolean
+CDRepeat:	    enumerated (4) {Off,One,One Disc,All Disc}
+
+ignoring programmable CD features for now
+
+
+List of Commands
+
+SeekForward
+SeekReverse
+
+OpenClose
+ForwardSearch
+ReverseSearch
+
+-->
+		<group name="Base">
+			<state name="Power" priority="10">
+				<apply-type type-name="OnOffType" />
+				<labels>
+					<label>Stereo Power</label>
+					<label>Power</label>
+					<label>Powr</label>
+					<label>Pwr</label>
+				</labels>
+			</state>
+			<group name="PoweredItems">
+				<active-if>
+					<equals state="Base.Power">
+						<constant value="true" />
+					</equals>
+				</active-if>
+				<group name="Volume" is-a="volume" priority="10">
+					<labels>
+						<label>Volume</label>
+						<label>Vol</label>
+					</labels>
+					<command name="VolumeUp">
+						<labels>
+							<label>Volume Up</label>
+							<label>Up</label>
+						</labels>
+					</command>
+					<command name="VolumeDown">
+						<labels>
+							<label>Volume Down</label>
+							<label>Down</label>
+						</labels>
+					</command>
+				</group>
+				<state name="XBassState" priority="3">
+					<apply-type type-name="OnOffType" />
+					<labels>
+						<label>X-Bass</label>
+					</labels>
+				</state>
+				<state name="ModeState" priority="10">
+					<type>
+						<enumerated>
+							<item-count>4</item-count>
+						</enumerated>
+						<value-labels>
+							<map index="1">
+								<labels>
+									<label>Tape</label>
+								</labels>
+							</map>
+							<map index="2">
+								<labels>
+									<label>CD</label>
+								</labels>
+							</map>
+							<map index="3">
+								<labels>
+									<label>AUX</label>
+								</labels>
+							</map>
+							<map index="4">
+								<labels>
+									<label>Tuner</label>
+								</labels>
+							</map>
+						</value-labels>
+					</type>
+					<labels>
+						<label>Output Mode</label>
+						<label>Mode</label>
+					</labels>
+				</state>
+				<group name="Tape">
+					<active-if>
+						<equals state="ModeState">
+							<constant value="1" />
+						</equals>
+					</active-if>
+					<labels>
+						<label>Tape</label>
+					</labels>
+					<explanation name="TapeExpl">
+						<labels>
+							<label>Tape not controllable.</label>
+						</labels>
+					</explanation>
+				</group>
+				<group name="AUX">
+					<active-if>
+						<equals state="ModeState">
+							<constant value="3" />
+						</equals>
+					</active-if>
+					<labels>
+						<label>AUX</label>
+					</labels>
+					<explanation name="AUXExpl">
+						<labels>
+							<label>AUX not controllable.</label>
+						</labels>
+					</explanation>
+				</group>
+				<group name="Radio">
+					<active-if>
+						<equals state="ModeState">
+							<constant value="4" />
+						</equals>
+					</active-if>
+					<labels>
+						<label>Radio</label>
+					</labels>
+					<state name="Band">
+						<type>
+							<enumerated>
+								<item-count>2</item-count>
+							</enumerated>
+							<value-labels>
+								<map index="1">
+									<labels>
+										<label>AM</label>
+									</labels>
+								</map>
+								<map index="2">
+									<labels>
+										<label>FM</label>
+									</labels>
+								</map>
+							</value-labels>
+						</type>
+						<labels>
+							<label>Radio Band</label>
+							<label>Band</label>
+						</labels>
+					</state>
+					<group name="Seek" is-a="media-controls">
+						<labels>
+							<label>Seek</label>
+						</labels>
+						<command name="SeekForward">
+							<labels>
+								<label>Seek Forward</label>
+								<label>Forward</label>
+							</labels>
+						</command>
+						<command name="SeekReverse">
+							<labels>
+								<label>Seek Reverse</label>
+								<label>Reverse</label>
+							</labels>
+						</command>
+					</group>
+					<group name="AM">
+						<active-if>
+							<equals state="Radio.Band"><constant value="1"/></equals>
+						</active-if>
+						<state name="Station" priority="10">
+							<apply-type type-name="AMType"/>
+							<labels>
+								<label>Radio Station</label>
+								<label>Station</label>
+							</labels>
+						</state>
+						<group name="Presets" priority="8">
+							<labels>
+								<label>AM Presets</label>
+								<label>Presets</label>
+							</labels>
+							<state name="Preset" priority="8">
+								<type>
+									<list-selection list="Radio.AM.Presets.Stations"/>
+								</type>
+								<labels>
+									<label>AM Preset</label>
+									<label>Preset</label>
+								</labels>
+							</state>
+							<command name="AddPreset" priority="7" is-a="list-add">
+								<labels>
+									<label>Add Preset</label>
+									<label>Add</label>
+								</labels>
+								<active-if>
+									<defined state="Radio.AM.Station"/>
+									<lessthan state="Radio.AM.PresetStations.Length"><constant value="20"/></lessthan>
+								</active-if>
+							</command>
+							<command name="DeletePreset" priority="7" is-a="list-delete">
+								<labels>
+									<label>Delete Preset</label>
+									<label>Delete</label>
+									<label>Del</label>
+								</labels>
+								<active-if>
+									<defined state="Radio.AM.Presets.Preset"/>
+								</active-if>
+							</command>
+						</group>
+						<list-group name="PresetStations" priority="0">
+							<min><constant value="0"/></min>
+							<max><constant value="20"/></max>
+							<selections number="one" access="read-only"/>
+							<state name="Station" access="read-only">
+								<apply-type type-name="AMType"/>
+								<labels>
+									<label>AM Station</label>
+									<label>Station</label>
+								</labels>
+							</state>
+						</list-group>
+					</group>
+					<group name="FM">
+						<active-if>
+							<equals state="Radio.Band"><constant value="2"/></equals>
+						</active-if>
+						<state name="Station" priority="10">
+							<apply-type type-name="FMType"/>
+							<labels>
+								<label>Radio Station</label>
+								<label>Station</label>
+							</labels>
+						</state>
+						<group name="Presets" priority="8">
+							<labels>
+								<label>FM Preset</label>
+								<label>Preset</label>
+							</labels>
+							<state name="Preset" priority="8">
+								<type>
+									<list-selection list="Radio.FM.Presets.Stations"/>
+								</type>
+								<labels>
+									<label>FM Preset</label>
+									<label>Preset</label>
+								</labels>
+							</state>
+							<command name="AddPreset" priority="7" is-a="list-add">
+								<labels>
+									<label>Add Preset</label>
+									<label>Add</label>
+								</labels>
+								<active-if>
+									<defined state="Radio.FM.Station"/>
+									<lessthan state="Radio.FM.PresetStations.Length"><constant value="20"/></lessthan>
+								</active-if>
+							</command>
+							<command name="DeletePreset" priority="7" is-a="list-delete">
+								<labels>
+									<label>Delete Preset</label>
+									<label>Delete</label>
+									<label>Del</label>
+								</labels>
+								<active-if>
+									<defined state="Radio.FM.Presets.Preset"/>
+								</active-if>
+							</command>
+						</group>
+						<list-group name="PresetStations" priority="0">
+							<labels>
+								<label>Preset Stations</label>
+							</labels>
+							<min><constant value="0"/></min>
+							<max><constant value="20"/></max>
+							<selections number="one" access="read-only"/>
+							<state name="Station" access="read-only">
+								<apply-type type-name="FMType"/>
+								<labels>
+									<label>Station</label>
+								</labels>
+							</state>
+						</list-group>
+						<state name="Mono" priority="3">
+							<apply-type type-name="OnOffType"/>
+							<labels>
+								<label>Mono</label>
+							</labels>
+						</state>
+					</group>
+				</group>
+				<group name="CD">
+					<active-if>
+						<equals state="ModeState"><constant value="2"/></equals>
+					</active-if>
+					<labels>
+						<label>CD</label>
+					</labels>
+					<group name="Controls" priority="10" is-a="media-controls">
+						<state name="Mode">
+							<type>
+								<enumerated><item-count>3</item-count></enumerated>
+								<value-labels>
+									<map index="1">
+										<labels>
+											<label>Stop</label>
+										</labels>
+									</map>
+									<map index="2">
+										<labels><label>Play</label></labels>
+									</map>
+									<map index="3">
+										<labels><label>Pause</label></labels>
+									</map>
+								</value-labels>
+							</type>
+							<labels>
+								<label>Play Mode</label>
+								<label>Mode</label>
+							</labels>
+						</state>
+						<group name="TrackControls">
+							<command name="NextTrack">
+								<labels>
+									<label>Next Track</label>
+									<label>Next</label>
+								</labels>
+								<active-if>
+									<lessthan state="CD.Track"><ref-value state="CD.Status.MaxTracks"/></lessthan>
+								</active-if>
+							</command>
+							<command name="PrevTrack">
+								<labels>
+									<label>Previous Track</label>
+									<label>Previous</label>
+									<label>Prev</label>
+								</labels>
+								<active-if>
+									<greaterthan state="CD.Track"><constant value="1"/></greaterthan>
+								</active-if>
+							</command>
+						</group>
+					</group>
+					<state name="Disc" priority="9">
+						<type>
+							<list-selection list="CD.Status.DiscStatus">
+								<active-if>
+									<equals state="Available"><constant value="true"/></equals>
+								</active-if>
+							</list-selection>
+						</type>
+						<labels>
+							<label>Disc</label>
+						</labels>
+					</state>
+					<state name="Track" priority="9">
+						<type>
+							<integer>
+								<min><constant value="1"/></min>
+								<max><ref-value state="CD.Status.MaxTracks"/></max>
+							</integer>
+						</type>
+						<labels>
+							<label>Track</label>
+						</labels>
+					</state>
+					<state name="Random" priority="5">
+						<apply-type type-name="OnOffType"/>
+						<labels>
+							<label>Random</label>
+						</labels>
+						<active-if>
+							<equals state="CD.Controls.Mode"><constant value="1"/></equals>
+						</active-if>
+					</state>
+					<state name="Repeat" priority="5">
+						<type>
+							<enumerated>
+								<item-count>5</item-count>
+							</enumerated>
+							<value-labels>
+								<map index="1">
+									<labels><label>Off</label></labels>
+								</map>
+								<map index="2">
+									<labels>
+										<label>One Track</label>
+										<label>One</label>
+									</labels>
+								</map>
+								<map index="3">
+									<labels>
+										<label>All Tracks</label>
+										<label>All</label>
+									</labels>
+									<active-if>
+										<equals state="CD.Random"><constant value="true"/></equals>
+									</active-if>
+								</map>
+								<map index="4">
+									<labels>
+										<label>One Disc</label>
+										<label>1 Disc</label>
+									</labels>
+									<active-if>
+										<equals state="CD.Random"><constant value="false"/></equals>
+									</active-if>
+								</map>
+								<map index="5">
+									<labels>
+										<label>All Discs</label>
+										<label>All</label>
+									</labels>
+									<active-if>
+										<equals state="CD.Random"><constant value="false"/></equals>
+									</active-if>
+								</map>
+							</value-labels>
+						</type>
+						<labels>
+							<label>Repeat</label>
+						</labels>
+					</state>
+					<group name="Status" priority="0">
+						<list-group name="DiscStatus">
+							<min><constant value="0"/></min>
+							<max><constant value="5"/></max>
+							<selections number="one" access="read-only"/>
+							<state name="Available" access="read-only">
+								<apply-type type-name="YesNoType"/>
+								<labels>
+									<label>Available</label>
+									<label>Avail</label>
+								</labels>
+							</state>
+						</list-group>
+						<state name="MaxTracks" access="read-only">
+							<type>
+								<integer/>
+							</type>
+							<labels>
+								<label>Maximum Tracks</label>
+								<label>Max Tracks</label>
+							</labels>
+						</state>
+					</group>
+				</group>
+			</group>
+		</group>
+	</groupings>
+</spec>

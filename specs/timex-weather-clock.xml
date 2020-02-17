@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<spec name="TimexClock" version="PUC/2.0">
+  <labels>
+    <label>Timex Alarm Clock</label>
+  </labels>
+
+  <appliance-info>
+    <brand>Timex</brand>
+    <model>T150G</model>
+    <serial-number>15K3W5</serial-number>
+  </appliance-info>
+
+<!--
+Variables:
+Time
+Date
+DayOfWeek
+Daylight Savings Time
+
+Light
+CurrentSound
+
+Weather Alarm
+Weather DaysOfWeek
+Sounds Alarm
+Sounds DaysOfWeek
+Buzzer Alarm
+Buzzer DaysOfWeek
+
+Sleep Volume: 1-3
+Volume (hard switch)
+Weather Band (hard switch)
+
+Command:
+Snooze
+Weather On/Sleep
+Sound On/Sleep
+Off/Reset
+-->
+
+  <groupings>
+    <group name="Clock" is-a="date-time">
+      <state name="Time" is-a="time-absolute">
+        <type>
+	  <integer/>
+	</type>
+
+	<labels>
+	  <label>Time</label>
+	</labels>
+      </state>
+
+      <state name="Date" is-a="date">
+        <type>
+	  <integer/>
+	</type>
+
+	<labels>
+	  <label>Date</label>
+	</labels>
+      </state>
+
+      <state name="DayOfWeek" is-a="day-of-week">
+        <type>
+	  <enumerated>
+	    <item-count>8</item-count>
+	  </enumerated>
+	  <valueLabels>
+	    <map index="1">
+	      <label>Sunday</label>
+	      <label>Sun</label>
+	    </map>
+	    <map index="2">
+	      <label>Monday</label>
+	      <label>Mon</label>
+	    </map>
+	    <map index="3">
+	      <label>Tuesday</label>
+	      <label>Tue</label>
+	    </map>
+	    <map index="4">
+	      <label>Wednesday</label>
+	      <label>Wed</label>
+	    </map>
+	    <map index="5">
+	      <label>Thursday</label>
+	      <label>Thu</label>
+	    </map>
+	    <map index="6">
+	      <label>Friday</label>
+	      <label>Fri</label>
+	    </map>
+	    <map index="7">
+	      <label>Saturday</label>
+	      <label>Sat</label>
+	    </map>
+	  </valueLabels>
+	</type>
+
+	<labels>
+	  <label>Day of the Week</label>
+	</labels>
+      </state>
+
+      <state name="DaylightSavings">
+        <type name="OnOffType">
+	  <boolean/>
+	  <valueLabels>
+	    <map index="true">
+	      <label>On</label>
+	    </map>
+	    <map index="false">
+	      <label>Off</label>
+	    </map>
+	  </valueLabels>
+	</type>
+
+	<labels>
+	  <label>Daylight Savings Time</label>
+	  <label>DST</label>
+	</labels>
+      </state>
+    </group>
+
+    <group name="Alarms">
+      <labels>
+        <label>Alarm</label>
+      </labels>
+    
+      <command name="Snooze">
+        <labels>
+	  <label>Snooze</label>
+	</labels>
+
+	<active-if>
+	  <or>
+	    <equals state="Alarms.Weather.Alarm">true</equals>
+	    <equals state="Alarms.Sounds.Alarm">true</equals>
+	    <equals state="Alarms.Buzzer.Alarm">true</equals>
+	  </or>
+	</active-if>
+      </command>
+
+      <group name="Weather">
+        <labels>
+	  <label>Weather Alarm</label>
+	  <label>Weather</label>
+	</labels>
+      
+        <state name="Time" is-a="time-absolute">
+	  <type>
+	    <integer/>
+	  </type>
+
+	  <labels>
+	    <label>Alarm Time</label>
+	    <label>Time</label>
+	  </labels>
+	</state>
+
+	<state name="Days">
+	  <type name="DaysType">
+	    <enumerated>
+	      <item-count>3</item-count>
+	    </enumerated>
+	    <valueLabels>
+	      <map index="1">
+	        <label>Everyday</label>
+	      </map>
+	      <map index="2">
+	        <label>Weekdays Only</label>
+		<label>Weekdays</label>
+	      </map>
+	      <map index="3">
+	        <label>Weekends Only</label>
+		<label>Weekends</label>
+	      </map>
+	    </valueLabels>
+	  </type>
+
+	  <labels>
+	    <label>Alarm Days</label>
+	    <label>Days</label>
+	  </labels>
+	</state>
+	
+	<state name="Alarm" access="ReadOnly">
+	  <apply-type name="OnOffType"/>
+
+	  <labels>
+	    <label>Alarm</label>
+	  </labels>
+	</state>
+      </group>
+      
+      <group name="Sounds">
+        <labels>
+	  <label>Sounds Alarm</label>
+	  <label>Sounds</label>
+	</labels>
+      
+        <state name="Time" is-a="time-absolute">
+	  <type>
+	    <integer/>
+	  </type>
+
+	  <labels>
+	    <label>Alarm Time</label>
+	    <label>Time</label>
+	  </labels>
+	</state>
+
+	<state name="Days">
+	  <apply-type name="DaysType"/>
+
+	  <labels>
+	    <label>Alarm Days</label>
+	    <label>Days</label>
+	  </labels>
+	</state>
+	
+	<state name="Alarm" access="ReadOnly">
+	  <apply-type name="OnOffType"/>
+
+	  <labels>
+	    <label>Alarm</label>
+	  </labels>
+	</state>
+      </group>
+
+      <group name="Buzzer">
+        <labels>
+	  <label>Buzzer Alarm</label>
+	  <label>Buzzer</label>
+	</labels>
+      
+        <state name="Time" is-a="time-absolute">
+	  <type>
+	    <integer/>
+	  </type>
+
+	  <labels>
+	    <label>Alarm Time</label>
+	    <label>Time</label>
+	  </labels>
+	</state>
+
+	<state name="Days">
+	  <apply-type name="DaysType"/>
+
+	  <labels>
+	    <label>Alarm Days</label>
+	    <label>Days</label>
+	  </labels>
+	</state>
+	
+	<state name="Alarm" access="ReadOnly">
+	  <apply-type name="OnOffType"/>
+
+	  <labels>
+	    <label>Alarm</label>
+	  </labels>
+	</state>
+      </group>
+    </group>
+
+    <group name="OtherControls">
+      <state name="Light" is-a="push-to-stay-on">
+        <apply-type name="OnOffType"/>
+
+	<labels>
+	  <label>Light</label>
+	</labels>
+      </state>
+
+      <group name="Sleep">
+        <state name="Weather">
+          <apply-type name="OnOffType"/>
+ 
+	  <labels>
+	    <label>Weather/Sleep</label>
+	  </labels>
+
+	  <active-if>
+	    <equals state="Sleep.Sound">false</equals>
+ 	  </active-if>
+        </state>
+
+        <state name="Sound">
+          <apply-type name="OnOffType"/>
+	
+	  <labels>
+	    <label>Sound/Sleep</label>
+	  </labels>
+
+	  <active-if>
+	    <equals state="Sleep.Weather">false</equals>
+	  </active-if>
+        </state>
+
+	<state name="Volume">
+	  <type>
+	    <integer>
+	      <min>1</min>
+	      <max>3</max>
+	    </integer>
+	  </type>
+
+	  <labels>
+	    <label>Sleep Volume</label>
+	    <label>Volume</label>
+	  </labels>
+
+	  <active-if>
+	    <or>
+	      <equals state="Sleep.Sound">true</equals>
+	      <equals state="Sleep.Weather">true</equals>
+	    </or>
+	  </active-if>
+	</state>
+      </group>
+
+      <state name="Sound">
+        <type>
+	  <enumerated>
+	    <item-count>4</item-count>
+	  </enumerated>
+
+	  <valueLabels>
+	    <map index="1">
+	      <label>Ocean</label>
+	    </map>
+	    <map index="2">
+	      <label>Forest</label>
+	    </map>
+	    <map index="3">
+	      <label>Brook</label>
+	    </map>
+	    <map index="4">
+	      <label>Wind</label>
+	    </map>
+	  </valueLabels>
+	</type>
+
+	<active-if>
+	  <equals state="Sleep.Sound">true</equals>
+	</active-if>
+      </state>
+    </group>
+  </groupings>
+</spec>

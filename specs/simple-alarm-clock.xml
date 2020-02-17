@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spec name="SimpleClock" version="PUC/2.1">
+  <labels>
+    <label>Simple Alarm Clock</label>
+  </labels>
+  <appliance-info>
+    <brand>Equity Industries</brand>
+    <model>31006</model>
+  </appliance-info>
+  <groupings>
+    <group name="Clock">
+      <state name="Time" is-a="time-absolute">
+        <type>
+          <integer />
+        </type>
+        <labels>
+          <label>Time</label>
+        </labels>
+      </state>
+      <group name="Alarm">
+        <state name="Time" is-a="time-absolute">
+          <type>
+            <integer />
+          </type>
+          <labels>
+            <label>Alarm Time</label>
+          </labels>
+        </state>
+        <state name="Alarm" access="read-only">
+          <type>
+            <boolean />
+            <value-labels>
+              <map index="true">
+                <labels>
+                  <label>On</label>
+                </labels>
+              </map>
+              <map index="false">
+                <labels>
+                  <label>Off</label>
+                </labels>
+              </map>
+            </value-labels>
+          </type>
+          <labels>
+            <label>Alarm</label>
+          </labels>
+        </state>
+      </group>
+      <state name="Light" is-a="push-to-stay-on">
+        <type>
+          <boolean />
+          <value-labels>
+            <map index="true">
+              <labels>
+                <label>On</label>
+              </labels>
+            </map>
+            <map index="false">
+              <labels>
+                <label>Off</label>
+              </labels>
+            </map>
+          </value-labels>
+        </type>
+        <labels>
+          <label>Backlight</label>
+          <label>Light</label>
+        </labels>
+      </state>
+      <command name="Snooze">
+        <labels>
+          <label>Snooze</label>
+        </labels>
+        <active-if>
+          <equals state="Clock.Alarm.Alarm">
+            <static value="true" />
+          </equals>
+        </active-if>
+      </command>
+    </group>
+  </groupings>
+</spec>

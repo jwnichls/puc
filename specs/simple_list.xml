@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<spec name="Test" version="PUC/2.1">
+  <labels>
+    <label>List Test #1</label>
+  </labels>
+  <groupings>
+    <list-group name="List">
+      <min>
+        <static value="5" />
+      </min>
+      <max>
+        <static value="10" />
+      </max>
+      <selection-type type-name="one" access="read-write"/>
+      <state name="Playing" access="read-only">
+        <type>
+          <boolean />
+        </type>
+        <labels>
+          <label>Currently Playing</label>
+          <label>Playing</label>
+        </labels>
+      </state>
+      <state name="Title" access="read-only">
+        <type>
+          <string />
+        </type>
+        <labels>
+          <label>Song Title</label>
+          <label>Title</label>
+        </labels>
+      </state>
+      <state name="Time" is-a="time-duration" access="read-only">
+        <type>
+          <integer />
+        </type>
+        <labels>
+          <label>Duration</label>
+          <label>Length</label>
+          <label>Time</label>
+        </labels>
+      </state>
+      <list-group name="Test2D">
+		<state name="Name">
+			<type><string/></type>
+			<labels>
+				<label>Name</label>
+			</labels>
+		</state>
+		<list-group name="Test3D">
+			<state name="Toggle">
+				<type><boolean/></type>
+				<labels>
+					<label>Toggle</label>
+				</labels>
+			</state>
+		</list-group>
+      </list-group>
+    </list-group>
+    <group name="ApplyOverTest">
+		<command name="AnyTest">
+			<labels>
+				<label>Any Test</label>
+			</labels>
+			<active-if>
+				<apply-over list="List" true-if="any">
+					<equals state="Title"><static value="Tower"/></equals>
+				</apply-over>
+			</active-if>
+		</command>
+		<command name="AllTest">
+			<labels>
+				<label>All Test</label>
+			</labels>
+			<active-if>
+				<apply-over list="List" true-if="all">
+					<greaterthan state="Time"><static value="50"/></greaterthan>
+				</apply-over>
+			</active-if>
+		</command>
+		<command name="NoneTest">
+			<labels>
+				<label>None Test</label>
+			</labels>
+			<active-if>
+				<apply-over list="List" true-if="none">
+					<equals state="Playing"><static value="true"/></equals>
+				</apply-over>
+			</active-if>
+		</command>
+    </group>
+  </groupings>
+</spec>

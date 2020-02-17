@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spec name="DVDevice" version="PUC/2.1">
+  <labels>
+    <label>Sony DV Camcorder</label>
+  </labels>
+  <groupings>
+    <group name="Root" priority="10">
+      <state name="PowerState" access="read-only" priority="10">
+        <type name="OnOffType">
+          <boolean />
+          <value-labels>
+            <map index="false">
+              <labels>
+                <label>Off</label>
+              </labels>
+            </map>
+            <map index="true">
+              <labels>
+                <label>On</label>
+              </labels>
+            </map>
+          </value-labels>
+        </type>
+        <labels>
+          <label>Power</label>
+          <label>Powr</label>
+          <label>Pwr</label>
+        </labels>
+      </state>
+      <group name="PoweredItems">
+        <active-if>
+          <equals state="PowerState">
+            <static value="true" />
+          </equals>
+        </active-if>
+        <state name="ActivePageState">
+          <type>
+            <enumerated>
+              <item-count>2</item-count>
+            </enumerated>
+            <value-labels>
+              <map index="1">
+                <labels>
+                  <label>Control</label>
+                </labels>
+              </map>
+              <map index="2">
+                <labels>
+                  <label>Info</label>
+                </labels>
+              </map>
+            </value-labels>
+          </type>
+        </state>
+        <group name="Info">
+          <active-if>
+            <equals state="ActivePageState">
+              <static value="2" />
+            </equals>
+          </active-if>
+          <labels>
+            <label>Device Information</label>
+            <label>Device Info</label>
+            <label>Dev. Info</label>
+            <label>Info</label>
+          </labels>
+          <state name="DeviceModeState" access="read-only" priority="7">
+            <type>
+              <boolean />
+              <value-labels>
+                <map index="false">
+                  <labels>
+                    <label>Camera</label>
+                  </labels>
+                </map>
+                <map index="true">
+                  <labels>
+                    <label>VCR</label>
+                  </labels>
+                </map>
+              </value-labels>
+            </type>
+            <labels>
+              <label>Device Mode</label>
+              <label>Mode</label>
+            </labels>
+          </state>
+          <state name="MediaState" access="read-only" priority="5">
+            <type>
+              <enumerated>
+                <item-count>4</item-count>
+              </enumerated>
+              <value-labels>
+                <map index="1">
+                  <labels>
+                    <label>VHS</label>
+                  </labels>
+                </map>
+                <map index="2">
+                  <labels>
+                    <label>DV</label>
+                  </labels>
+                </map>
+                <map index="3">
+                  <labels>
+                    <label>Unknown</label>
+                  </labels>
+                </map>
+                <map index="4">
+                  <labels>
+                    <label>None</label>
+                  </labels>
+                </map>
+              </value-labels>
+            </type>
+            <labels>
+              <label>Media Type</label>
+              <label>Media</label>
+            </labels>
+          </state>
+          <state name="AVCVersionState" access="read-only" priority="3">
+            <type>
+              <string />
+            </type>
+            <labels>
+              <label>Version</label>
+            </labels>
+          </state>
+          <state name="CaptureFrameRateState" access="read-only" priority="3">
+            <type>
+              <string />
+            </type>
+            <labels>
+              <label>Frame Rate</label>
+              <label>Frame/sec</label>
+              <label>Fps</label>
+            </labels>
+          </state>
+          <state name="PortState" access="read-only" priority="3">
+            <type>
+              <string />
+            </type>
+            <labels>
+              <label>Port</label>
+            </labels>
+          </state>
+        </group>
+        <group name="Control">
+          <active-if>
+            <equals state="ActivePageState">
+              <static value="1" />
+            </equals>
+          </active-if>
+          <labels>
+            <label>Device Control</label>
+            <label>Control</label>
+          </labels>
+          <state is-a="time-duration" name="TimecodeState" access="read-only" priority="3">
+            <type>
+              <string />
+            </type>
+            <labels>
+              <label>Time</label>
+            </labels>
+          </state>
+          <state is-a="media-controls" name="TransportModeState">
+            <type>
+              <enumerated>
+                <item-count>6</item-count>
+              </enumerated>
+              <value-labels>
+                <map index="1">
+                  <labels>
+                    <label>Play</label>
+                  </labels>
+                  <active-if>
+                    <equals state="DeviceModeState">
+                      <static value="True" />
+                    </equals>
+                  </active-if>
+                </map>
+                <map index="2">
+                  <labels>
+                    <label>Stop</label>
+                  </labels>
+                </map>
+                <map index="3">
+                  <labels>
+                    <label>Pause</label>
+                  </labels>
+                  <active-if>
+                    <equals state="DeviceModeState">
+                      <static value="True" />
+                    </equals>
+                  </active-if>
+                </map>
+                <map index="4">
+                  <labels>
+                    <label>Fast-Forward</label>
+                    <label>FF</label>
+                  </labels>
+                  <active-if>
+                    <equals state="DeviceModeState">
+                      <static value="True" />
+                    </equals>
+                  </active-if>
+                </map>
+                <map index="5">
+                  <labels>
+                    <label>Rewind</label>
+                    <label>Rew</label>
+                  </labels>
+                  <active-if>
+                    <equals state="DeviceModeState">
+                      <static value="True" />
+                    </equals>
+                  </active-if>
+                </map>
+                <map index="6">
+                  <labels>
+                    <label>Record</label>
+                  </labels>
+                </map>
+              </value-labels>
+            </type>
+            <labels>
+              <label>Play Mode</label>
+              <label>Mode</label>
+            </labels>
+          </state>
+          <group name="StepControls">
+            <active-if>
+              <equals state="DeviceModeState">
+                <static value="true" />
+              </equals>
+            </active-if>
+            <labels>
+              <label>Step</label>
+            </labels>
+            <command name="StepBack">
+              <labels>
+                <label>Step Back</label>
+                <label>&lt;</label>
+              </labels>
+            </command>
+            <command name="StepForward">
+              <labels>
+                <label>Step Forward</label>
+                <label>&gt;</label>
+              </labels>
+            </command>
+          </group>
+        </group>
+      </group>
+    </group>
+  </groupings>
+</spec>

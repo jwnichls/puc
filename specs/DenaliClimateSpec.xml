@@ -1,0 +1,388 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spec name="Denali" version="PUC/2.1" xmlns="http://www.cs.cmu.edu/~pebbles/puc">
+  <labels>
+    <label>Denali Climate Controls</label>
+  </labels>
+  <groupings>
+    <group name="External">
+      <state name="PersonLocation" access="read-only">
+        <type>
+          <enumerated>
+            <item-count>3</item-count>
+          </enumerated>
+          <value-labels>
+            <map index="1">
+              <labels>
+                <label>Driver</label>
+              </labels>
+            </map>
+            <map index="2">
+              <labels>
+                <label>Passenger</label>
+              </labels>
+            </map>
+            <map index="3">
+              <labels>
+                <label>Rear</label>
+              </labels>
+            </map>
+          </value-labels>
+        </type>
+        <labels>
+          <label>Your Location</label>
+          <label>Location</label>
+        </labels>
+      </state>
+    </group>
+    <group name="Front">
+      <active-if>
+        <or>
+          <equals state="PersonLocation">
+            <static value="1" />
+          </equals>
+          <equals state="PersonLocation">
+            <static value="2" />
+          </equals>
+        </or>
+      </active-if>
+      <state name="SystemPower">
+        <type name="OnOffType">
+          <boolean />
+          <value-labels>
+            <map index="true">
+              <labels>
+                <label>On</label>
+              </labels>
+            </map>
+            <map index="false">
+              <labels>
+                <label>Off</label>
+              </labels>
+            </map>
+          </value-labels>
+        </type>
+        <labels>
+          <label>Power</label>
+        </labels>
+      </state>
+      <state name="AutomaticMode">
+        <apply-type name="OnOffType" />
+        <labels>
+          <label>Automatic Mode</label>
+          <label>Auto. Mode</label>
+          <label>Auto</label>
+        </labels>
+        <active-if>
+          <equals state="SystemPower">
+            <static value="true" />
+          </equals>
+        </active-if>
+      </state>
+      <state name="DriversTemp">
+        <type name="FrontTempType">
+          <integer>
+            <min>
+              <static value="60" />
+            </min>
+            <max>
+              <static value="90" />
+            </max>
+          </integer>
+        </type>
+        <labels>
+          <label>Driver's Temperature</label>
+          <label>Driver's Temp.</label>
+          <label>Driver Temp.</label>
+        </labels>
+        <active-if>
+          <equals state="PersonLocation">
+            <static value="1" />
+          </equals>
+          <equals state="SystemPower">
+            <static value="true" />
+          </equals>
+        </active-if>
+      </state>
+      <state name="PassengersTemp">
+        <apply-type name="FrontTempType" />
+        <labels>
+          <label>Passenger's Temperature</label>
+          <label>Passenger's Temp.</label>
+          <label>Passenger Temp.</label>
+        </labels>
+        <active-if>
+          <equals state="PersonLocation">
+            <static value="2" />
+          </equals>
+          <equals state="SystemPower">
+            <static value="true" />
+          </equals>
+        </active-if>
+      </state>
+      <state name="FanSetting">
+        <type name="FanType">
+          <integer>
+            <min>
+              <static value="0" />
+            </min>
+            <max>
+              <static value="13" />
+            </max>
+          </integer>
+        </type>
+        <labels>
+          <label>Front Fan</label>
+          <label>Fan</label>
+        </labels>
+        <active-if>
+          <equals state="AutomaticMode">
+            <static value="false" />
+          </equals>
+          <equals state="SystemPower">
+            <static value="true" />
+          </equals>
+        </active-if>
+      </state>
+      <state name="AirflowDirection">
+        <type>
+          <enumerated>
+            <item-count>4</item-count>
+          </enumerated>
+          <value-labels>
+            <map index="1">
+              <labels>
+                <label>Panel</label>
+                <label>Top</label>
+              </labels>
+            </map>
+            <map index="2">
+              <labels>
+                <label>Bi-Level</label>
+              </labels>
+            </map>
+            <map index="3">
+              <labels>
+                <label>Floor</label>
+              </labels>
+            </map>
+            <map index="4">
+              <labels>
+                <label>Defogger</label>
+                <label>Defog</label>
+              </labels>
+            </map>
+          </value-labels>
+        </type>
+        <labels>
+          <label>Air-flow Direction</label>
+          <label>Airflow Dir.</label>
+          <label>Air-flow</label>
+        </labels>
+        <active-if>
+          <equals state="AutomaticMode">
+            <static value="false" />
+          </equals>
+          <equals state="SystemPower">
+            <static value="true" />
+          </equals>
+        </active-if>
+      </state>
+      <state name="Recirculation">
+        <apply-type name="OnOffType" />
+        <labels>
+          <label>Recirculation</label>
+          <label>Recirc.</label>
+        </labels>
+        <active-if>
+          <equals state="AutomaticMode">
+            <static value="false" />
+          </equals>
+          <equals state="SystemPower">
+            <static value="true" />
+          </equals>
+        </active-if>
+      </state>
+      <state name="AirConditioning">
+        <apply-type name="OnOffType" />
+        <labels>
+          <label>Air Conditioning</label>
+          <label>Air Cond.</label>
+          <label>A/C</label>
+        </labels>
+        <active-if>
+          <equals state="AutomaticMode">
+            <static value="false" />
+          </equals>
+          <equals state="SystemPower">
+            <static value="true" />
+          </equals>
+        </active-if>
+      </state>
+      <state name="FrontDefrost">
+        <apply-type name="OnOffType" />
+        <labels>
+          <label>Front Defrost</label>
+        </labels>
+        <active-if>
+          <equals state="SystemPower">
+            <static value="true" />
+          </equals>
+        </active-if>
+      </state>
+      <state name="RearDefogger">
+        <apply-type name="OnOffType" />
+        <labels>
+          <label>Rear Window Defogger</label>
+          <label>Rear Defogger</label>
+        </labels>
+        <active-if>
+          <equals state="SystemPower">
+            <static value="true" />
+          </equals>
+        </active-if>
+      </state>
+    </group>
+    <group name="Rear">
+      <state name="RearSystemMode">
+        <type>
+          <boolean />
+          <value-labels>
+            <map index="false">
+              <labels>
+                <label>Front</label>
+              </labels>
+            </map>
+            <map index="true">
+              <labels>
+                <label>Rear</label>
+              </labels>
+            </map>
+          </value-labels>
+        </type>
+        <labels>
+          <label>Rear Control</label>
+          <label>Rear Ctl</label>
+        </labels>
+        <active-if>
+          <or>
+            <equals state="PersonLocation">
+              <static value="1" />
+            </equals>
+            <equals state="PersonLocation">
+              <static value="2" />
+            </equals>
+          </or>
+        </active-if>
+      </state>
+      <group name="Controls">
+        <active-if>
+          <or>
+            <and>
+              <or>
+                <equals state="PersonLocation">
+                  <static value="1" />
+                </equals>
+                <equals state="PersonLocation">
+                  <static value="2" />
+                </equals>
+              </or>
+              <equals state="RearSystemMode">
+                <static value="false" />
+              </equals>
+            </and>
+            <and>
+              <equals state="PersonLocation">
+                <static value="3" />
+              </equals>
+              <equals state="RearSystemMode">
+                <static value="true" />
+              </equals>
+            </and>
+          </or>
+        </active-if>
+        <state name="RearSystemPower">
+          <apply-type name="OnOffType" />
+          <labels>
+            <label>Rear System Power</label>
+            <label>Rear Power</label>
+          </labels>
+        </state>
+        <group name="Powered">
+          <active-if>
+            <equals state="RearSystemPower">
+              <static value="true" />
+            </equals>
+          </active-if>
+          <state name="RearAutomaticMode">
+            <apply-type name="OnOffType" />
+            <labels>
+              <label>Rear Automatic Mode</label>
+              <label>Rear Auto Mode</label>
+              <label>Rear Auto</label>
+            </labels>
+          </state>
+          <state name="RearFanSetting">
+            <apply-type name="FanType" />
+            <labels>
+              <label>Rear Fan</label>
+            </labels>
+            <active-if>
+				<equals state="RearAutomaticMode"><static value="false"/></equals>
+            </active-if>
+          </state>
+          <state name="RearTemp">
+            <type>
+              <integer>
+                <min>
+                  <static value="66" />
+                </min>
+                <max>
+                  <static value="82" />
+                </max>
+              </integer>
+            </type>
+            <labels>
+              <label>Rear Temperature</label>
+              <label>Rear Temp.</label>
+            </labels>
+            <active-if>
+				<equals state="RearAutomaticMode"><static value="false"/></equals>
+            </active-if>
+          </state>
+          <state name="RearAirflowDirection">
+            <type>
+              <enumerated>
+                <item-count>3</item-count>
+              </enumerated>
+              <value-labels>
+                <map index="1">
+                  <labels>
+                    <label>Panel</label>
+                    <label>Top</label>
+                  </labels>
+                </map>
+                <map index="2">
+                  <labels>
+                    <label>Bi-Level</label>
+                  </labels>
+                </map>
+                <map index="3">
+                  <labels>
+                    <label>Floor</label>
+                  </labels>
+                </map>
+              </value-labels>
+            </type>
+            <labels>
+              <label>Rear Direction</label>
+              <label>Rear</label>
+            </labels>
+            <active-if>
+				<equals state="RearAutomaticMode"><static value="false"/></equals>
+            </active-if>
+          </state>
+        </group>
+      </group>
+    </group>
+  </groupings>
+</spec>

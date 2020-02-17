@@ -1,0 +1,4502 @@
+<HTML><HEAD><TITLE>Documentation of the Specification</TITLE>
+<META content="text/html; charset=windows-1252" http-equiv=Content-Type>
+<META content="MSHTML 5.00.3315.2870" name=GENERATOR></HEAD>
+<BODY>
+<P><FONT size=+2><I><B>Personal Universal Controller</B></I></FONT><BR><FONT 
+size=+1><B>Appliance Specification Language Documentation</B></FONT> </P>
+<P><FONT size=-1>Documention originally written by Jeffrey Nichols and
+Mathilde Pignol.
+<BR>
+<BR>
+Language design by the personal universal controller working group:
+Michael Higgins, Joe Hughes, Peter Lucas, Brad A. Myers, Jeffrey
+Nichols, and Mathilde Pignol.  Speech interface contributions by
+Thomas K. Harris. 
+</FONT><BR><BR><BR></P>
+
+<H3><A name=toc>Table of Contents</A></H3>
+<OL>
+  <LI><A 
+  href="#intro">Introduction</A> 
+
+  <LI><A 
+  href="#revisions">Revision 
+  History</A> 
+  <LI><A 
+  href="#concept">Conceptual 
+  Basis</A> 
+  <UL>
+    <LI><A 
+    href="#cncptObjects">Appliance 
+    Objects</A> 
+    <LI><A 
+    href="#cncptLabels">Label 
+    Information</A> 
+    <LI><A 
+    href="#cncptTypes">State 
+    Variable Types</A> 
+    <LI><A 
+    href="#cncptGroup">The 
+    Group Tree</A> </LI>
+    <LI><A href="#cncptList">Lists</A></LI>
+    <LI><A href="#cncptUnion">Unions</A></LI>
+    <LI><a href="#cncptTypeReuse">Type Reuse</A></LI>
+    <LI><A 
+    href="#cncptDepend">Dependency 
+    Information</A> </LI>
+    <LI><A href="#cncptSmartTemplates">Smart Templates</A></LI>
+</UL>
+  <LI><A 
+  href="#langdesc">Language 
+  Description</A> 
+  <LI><A
+  href="#schema">Schema</A>
+  <LI><A 
+  href="#tagref">Tag 
+  Reference</A>
+  <UL>
+    <LI><A href="#tagindex">Tag Index</A>
+    <LI><A href="#tagdesc">Tag Descriptions</A> </LI>
+  </UL> 
+  <LI><A 
+  href="#future">Future 
+  Work</A> 
+  <UL>
+    <LI><A 
+    href="#futureHints">Hints</A> 
+    <LI><A 
+    href="#futureCmdState">Command/State 
+    Relationships</A> </LI></UL>
+  <LI><A 
+  href="#examplespec">Appendix 
+  A. <I>Example Specification</I></A> 
+  <LI><A 
+  href="#Reference">References</A> 
+  </LI></OL>
+
+<H3><A name=intro>Introduction</A></H3>
+<P>
+The personal universal controller (PUC) project's goal is to build a
+software framework running on top of a personal digital assistant
+(PDA) or other mobile device that is capable of providing an interface
+that will allow users to control any appliance within their
+environment. In essence, the PUC is a device-independent,
+appliance-independent, user-<I>dependent</I> remote control device.
+</P>
+<P>
+Because of the universal nature of the PUC, it is not reasonable to
+pre-program the controller device with an interface for every
+appliance that might be encountered. Similarly, it is not reasonable
+to require each appliance to provide hard-coded interfaces for several
+device form factors, and expect the controller devices to interpolate
+to their actual form factor. This approach ignores user interface
+conventions that may differ among controller platforms, which cannot
+easily be interpolated between. For example, certain platforms may not
+have support for certain types of widgets, and it is possible to
+imagine a future device that would differ significantly from the
+devices of today (e.g. a watch with a circular display that uses
+several physical dials for input).
+</P>
+<P>
+We have chosen to <I>automatically</I> generate user interfaces on the
+controller device from an interface-independent specification
+language. This specification language describes the functions of the
+appliance and provides knowledge about how these functions relate to
+each other. We hope that many different kinds of interfaces can be
+generated from this specification, including interfaces for handhelds,
+WAP cellular phones, and future devices with new and different
+interaction styles. We also plan to explore the use of our
+specification with the automatic generation of speech interfaces.
+</P>
+<P>
+This document describes the specification language that we have
+designed for supporting automatic generation of user interfaces. It
+begins with a description of the <A href="#concept">conceptual basis
+for the language</A>, and then <A href="#langdesc">defines the
+language in concrete terms</A>. The document concludes with a section
+detailing <A href="#future">planned additions to the specification
+language</A>. 
+<!--An example specification is also included in the <A href="#examplespec">first appendix</A>.-->
+</P>
+<P>
+Users of this document may also be interested in <a
+href="protocol_spec.html">documentation of the network protocol</a>
+that is used by PUCs to communicate with appliances.
+</P>
+
+<H3><A name=revisions>Revision History</A></H3>
+<TABLE BORDER cellpadding=5>
+<TR><TH align=left>Date</TH><TH align=left>Name</TH><TH align=left>Comments</TH></TR>
+<TR>
+  <TD valign=top>02/22/2002</TD>
+  <TD valign=top>jwn</TD>
+  <TD valign=top>
+    Fixed typos and added information about new tags for supporting
+    the creation of speech interfaces from the specification
+    language.  See &lt;<a href="#phonetic">phonetic</a>&gt; tag and
+    the <a href="#cncptLabels">label dictionary explanation</a>.
+  </TD>
+</TR>
+<TR>
+  <TD valign=top>02/23/2002</TD>
+  <TD valign=top>jwn</TD>
+  <TD valign=top>
+    Made priority a parameter of &lt;<a href="#group">group</a>&gt;,
+    &lt;<a href="#state">state</a>&gt;, &lt;<a
+    href="#command">command</a>&gt;, and &lt;<a
+    href="#explanation">explanation</a>&gt instead of having its own
+    tag.
+  </TD>
+</TR>
+<TR>
+  <TD valign=top>02/27/2002</TD>
+  <TD valign=top>jwn</TD>
+  <TD valign=top>
+    Made changes to support the <a href="#dtd">DTD</a> and its
+    formatting requirements.  Added the <a href="#dtd">DTD
+    section</a>.  Updated the <a href="#examplespec">example spec</a>
+    to reflect all of the recent language revisions.  Added the
+    &lt;apply-type&gt; and &lt;object-ref&gt; tags to support the
+    reuse of type declarations and multiple occurences of the same
+    object within the group tree.  This was previously included as a
+    feature that was incompatible with the restrictions of the DTD.
+    Added the &lt;number&gt; tag to make numeric values symmetrical
+    with the use of &lt;refvalue&gt;, again for DTD conformance.  Also
+    removed the <i>recording</i> parameter from the &lt;<a
+    href="#map">map</a>&gt; and &lt;<a href="#labels">labels</a>&gt;
+    elements.  Instead, each of these elements may now contain
+    multiple &lt;<a href="#text-to-speech">text-to-speech</a>&gt;
+    elements that may specify similar information.
+  </TD>
+</TR>
+<TR>
+  <TD valign=top>03/11/2002</TD>
+  <TD valign=top>jwn</TD>
+  <TD valign=top>
+    Added a reference to the new <a href="protocol_spec.html">protocol
+    documentation</a>.  Also moved the published versions of the DTDs
+    and docs to the pebbles web site, and updated the links in this
+    documentation appropriately.
+  </TD>
+</TR>
+<TR>
+  <TD valign=top>10/06/2003</TD>
+  <TD valign=top>jwn</TD>
+  <TD valign=top>
+    Started updating documentation to include all changes to the
+    specification in the last year and a half.  This includes
+    significant changes to the group systems, new dependencies, <a
+    href="#cncptLists">list</a> and <a href="#cncptUnions">union</a>
+    structures, <a href="#cncptSmartTemplates">Smart Templates</a>,
+    and some changes to which XML tags are allowed.  Updates not
+    completed and new version not released.
+  </TD>
+</TR>
+<TR>
+  <TD valign=top>05/19/2004</TD>
+  <TD valign=top>jwn</TD>
+  <TD valign=top>
+    Finished updating the documentation for the new specification
+    language format.  Wrote and added an XML Schema for the language,
+    and updated the tag reference.  Removed the example specification
+    in Appendix A for now, as this document describes changes that are
+    not actually implemented in any specification language.  Once the
+    Mitsubishi DVCR spec is complete, I will add it to the appendix.
+  </TD>
+</TR>
+</TABLE>
+
+<H3><A name=concept>Conceptual Basis</A></H3>
+
+<P>
+The design of the specification language was based upon prototyping
+interfaces for a phone and a stereo appliance on a standard handheld
+form factor (we tried both Palm and PocketPC). These prototypes taught
+us several things about the functions of appliances:
+</P>
+<UL>
+  <LI>
+  The functions of an appliance can be represented by either state variables 
+  or state-less commands. State variables have specific type information that 
+  describe how they can be manipulated by the interface. Commands and states 
+  are collectively called <I>appliance objects</I>. 
+  <LI>The structure of the prototype interfaces were often based upon 
+  <I>dependency</I> information. For example, suppose that an interface was 
+  being created for a shelf stereo system with a tape and cd player. When the 
+  power is off, a screen with only a power button widget would be shown, because 
+  none of the other objects would be enabled. When the power is on, a screen is 
+  shown with many widgets, because most of the objects are active when the power 
+  is on. We might also expect this interface to have a panel whose widgets 
+  change based upon whether the tape or cd player is active. 
+  <LI>The final representation of any interface can be described using a tree 
+  format. It is not reasonable to include the tree representation of one 
+  interface in the specification of an appliance however, because the tree may 
+  differ for different form factors. For example, the tree 
+  will be very deeply branched on a small screen WAP cellular phone interface, 
+  whereas the tree will be broader for a desktop PC interface. Our specification 
+  language defines a <I>group tree</I> that is deeply branched. It is expected 
+  that this information could be used for small screen and large screen 
+  interfaces alike, because presumably some of the branches could be ignored 
+  in a large interface. </LI>
+  <LI>
+    It was important to use domain-specific conventions as much as
+    possible, so that users could leverage their knowledge of previous
+    systems to use the interfaces.  There is a need for some way to
+    include this information in the appliance specifications. We have
+    developed <a href="#cncptSmartTemplates">Smart Templates</a> to
+    solve this problem.
+  </LI>
+</UL>
+<P>Each of these items are described in more detail below. </P>
+
+<H4><A name=cncptObjects>Appliance Objects</A></H4>
+
+<P>
+Three types of appliance objects are supported in the specification
+language.
+</P>
+<UL>
+  <LI><B>States</B> - Variables that represent data that is stored within the 
+  appliance. Examples might be the radio station on a stereo, the number of 
+  rings until an answering machine picks up, and the time that an
+  alarm clock is set for. Each variable has a type, and the UI
+  generator assumes that the value of a state may be changed to any
+  value within that type, at any time that the state is enabled. It is
+  possible for state variables to be undefined, i.e. without any
+  value. This commonly happens just after an interface is generated
+  before any values have been assigned, but could occur for other
+  reasons.<BR> 
+  </LI> 
+  <LI><B>Commands</B> - Any function of an appliance that 
+  cannot be described by variables alone. They may be used in situations where 
+  invoking the command caused an unknown change to a known state variable (such 
+  as the "seek" function on a radio), or in situations where the state variable 
+  is not known (manufacturer choice or other reason, the dialing buttons on a 
+  standard phone would all be commands). </LI>
+  <LI><b>Explanations</b> - Descriptive information that is not
+  appropriate to include as the label of a state or command, and is
+  more important than a simple group label.  This represents an early
+  stab at including help information within the specification, and is
+  likely a temporary addition to the language.
+</UL>
+<P>
+Although there are differences between states, commands and
+explanations, they also share a common property of being enabled. When
+an object is enabled (or active), the user interface widgets that
+correspond to that object can be manipulated by the user. Knowing the
+circumstances in which an object will be enabled or disabled can
+provide a helpful hint for structuring the interface, because items
+that are active in similar situations can be grouped, and items can be
+placed on panels such that the widgets are not visible when the object
+would not be active.  Specifying the prior knowledge of the enabled
+property is discussed in more detail in the <A
+href="#cncptDepend">Dependency Information</A> sub-section.
+</P>
+<H4><A name=cncptLabels>Label Information</A></H4>
+<P>
+Another common property of appliance objects is the need to specify
+rich labeling information for flexibility when generating interfaces
+in different form factors.
+</P>
+<P>
+To support specifying labeling information, we use the concept of a
+<I>label dictionary</I>. At any place in the specification where a
+label can be entered, more than one label may be provided. It is
+expected that all these labels contain the same general information,
+but vary in terms of length and detail.  We also allow the
+specification designer to designate one label as "preferred" for use
+in an interface.  The interface generator would choose the preferred
+label or the longest label that fits within the space allocated on the
+screen.  In certain situations, the preferred label may be used as the
+basis for making layout decisions.
+</P>
+<P>
+Labels can be specified for any appliance object, and also be linked
+with particular values of an appliance state's type.
+</P>
+<P>
+This language also supports the specification of label information for
+speech interfaces.  This support is for both recognition and
+text-to-speech.  Label dictionaries can store phonetic information to
+help recognizers interpret label names.  Multiple pronunciations can
+be specified for robustness, just as multiple labels can be
+specified.  To assist text-to-speech engines, each label dictionary
+can be associated with a URL that points to an audio recording of the
+label.
+</P>
+
+<H4><A name=cncptTypes>State Variable Types</A></H4>
+
+<P>
+Every appliance state has a type object associated with it. The type
+information is used to determine what kinds of widgets can be used to
+manipulate the state, and is one of the paramters that is used to
+recognize <a href="#cncptSmartTemplates">Smart Templates</a>.
+</P>
+<P>
+There are currently eight different kinds of types that can be used in
+the specification: 
+</P>
+<UL>
+  <LI>binary 
+  <LI>boolean 
+  <LI>enumerated 
+  <LI>fixedpt 
+  <LI>floatingpt 
+  <LI>integer 
+  <LI>list-selection
+  <LI>string
+</UL>
+<P>
+Each of these types has a different set of parameters that can be
+specified for it. For a complete list of those parameters, see the <A
+href="#tagref">tag reference</A>.
+</P>
+<P>
+The binary type is used for data that cannot be described as a string,
+e.g. images, sound clips, or video.  Unlike the other types,
+interface generators are not expected to have a default rendering for
+variables with binary types.  A <a href="#cncptSmartTemplates">Smart
+Template</a> must be used in conjunction with a binary state to ensure
+that the state is rendered. 
+</P>
+<P>
+The list selection type allows the user to specify an item in a list.
+This is used in locations where it would not make sense to duplicate
+the list state variables.  For more on lists see the <a
+href="#cncptLists">lists section</a>.
+</P>
+<P>
+Older versions of the specification language supported a <i>custom</i>
+primitive type, which was used for representing domain-specific
+types. This type is no longer allowed.  See the section on <a
+href="#cncptSmartTemplates">Smart Templates</a> later for more
+information on our current solution for this problem.
+</P>
+<P>
+The specification language contains a provision for re-using type
+declarations in subsequently defined state variables via the
+&lt;<a href="#apply-type">apply-type</a>&gt; element.  This allows two
+or more state variables to have the same type without specifying that
+information multiple times in a specification.  No data is shared
+between those state variables. 
+</P>
+<H4><A name=cncptGroup>The Group Tree</A></H4>
+<P>
+Proper structure is a very important part of any user interface. In
+our language we use a hierarchical "group tree" to specify structure.
+The leaf nodes in the tree are appliance objects, and the branch nodes
+are groups.  Each node in the tree has a name which must not be the
+same as any other child of its parent.  Thus each node has a locally
+unique name, and a globally unique name can be constructed by
+pre-pending the names of all a nodes parents.  We use a "."  character
+to separate each name. For example, the locally unique name of a state
+variable might be "PlayState" but the globally unique name would be
+"Stereo.CD.PlayState".  That same specification could also contain
+other states like "Stereo.Tape.PlayState".  Note that the root name
+"Stereo" cannot be re-used as a name anywhere in the specification.
+</P>
+<P>
+It is often necessary to explicitly refer to state variables in a
+specification.  This may be done using any name that starts with a
+globally unique name.  Since the root name is unique, the full name
+will always work.  For the above examples, "Tape.PlayState" and
+"CD.PlayState" would also work, assuming that there are no other
+groups or states named "CD" or "Tape".
+</P>
+<P>
+The group tree also extends our language's type system by allowing
+multiple state variables (possibly with different types) to be
+aggregated and replicated.  There are three types of groups: normal,
+list, and union. A normal group is used for putting related data
+together, similar to a record in a programming language. List and
+union groups replicate states and provide special aggregating
+behaviors, which are discussed in the next two sections.
+</P>
+<H4><a name=cncptList>Lists</h4>
+<P>
+Specifying a list group is similar to specifying an array of records
+in a programming language, and multiple list groups can be nested to
+create multi-dimensional lists.  Each list group has an implicit
+length state variable (named "Length") that always contains the length
+of the current list.  If this variable is undefined, then the list
+currently has no members.  The specification may define bounds on the
+length of the list in order to help the interface generator create a
+better rendering.  An exact size may be specified, or a minimum and/or
+maximum size may be specified. 
+</P>
+<P> 
+List groups also maintain an implicit structure to keep track of
+one or more list selections.  The number of selections allowed may be
+defined in the specification ("one" and "many" are the only options
+currently), and the default is one if nothing is specified.  If a list
+allows only one selection, then an implicit "Selection" variable is
+created which contains the index of the current selection (undefined
+means no selection).  If multiple selections are created, then an
+implicit list group named "Selection" is created.  This group contains
+a "Length" state (as all list groups do) and an "Index" state which
+contains all of the selected indices. 
+</P>
+<P>
+Our language does not have any built-in mechanism for specifying the
+set of operations that can be performed on any given list, because we
+did want to attempt to enumerate and support all of the possible
+operations.  List operations can be specified using commands.  <a
+href=#cncptSmartTemplate>Smart templates</a> can be used to help
+interface generators appropriately render list operations. 
+</P>
+<h4><a name=cncptUnion>Unions</h4>
+<P>
+A union group is simliar to specifying a union in a programming
+language; of the children within a union (either groups or appliance
+objects), only one may be active at a time.  An implicit state
+variable named "ChildUsed" is automatically created within a union
+group that contains the name of the currently active child.
+</P>
+<H4><A name=cncptTypeReuse>Type Re-use</a></H4>
+<p>
+The specification language has a mechanism for re-using types, both
+for state variable types and grouping types.  A special section at the
+beginning of each specification allows the author to specify types
+that they use often in their specification and the <a
+href=#apply-type>apply-type</a> element can be used within the
+specification to apply these types where appropriate.
+</p>
+<p>
+In this language, the use of the <a href=#apply-type>apply-type</a>
+element prevents the need for copying & pasting snippets of a
+specification multiple times in the same file.  There is currently no
+mechanism for extending or modifying a type that has already been
+specified.
+</p>
+<H4><A name=cncptDepend>Dependency Information</A></H4>
+<P>
+Dependency information is specified for each appliance object as a
+boolean equation. This information gives the interface generator some
+approximate a priori knowledge of when the object will be enabled (see
+the <A href="#cncptObjects">Appliance Objects</A> section for more
+information).
+</P>
+<P>
+Five kinds of dependencies can be specified. Each of these
+dependencies specifies a state that is depended upon, and most specify
+a value of that state.  In those cases where a value must be
+specified, a pointer to another variable may be used instead with the
+&lt;<a href="#refvalue">refvalue</a>&gt; tag.
+</P>
+<UL>
+  <LI><B>Equals</B> - True when the specified state has the specified value. 
+  <LI><B>GreaterThan</B> - True when the specified state has a value greater 
+  than the specified value. 
+  <LI><B>LessThan</B> - True when the specified state has a value less than the 
+  specified value. </LI>
+  <LI><B>Defined</B> - True when the specified state has any
+  value.</LI>
+  <LI><B>Undefined</B> - True when the specified state does not have
+  any value.</LI>
+</UL>
+<P>
+These dependencies can be composed into boolean formulas using AND and OR. 
+</P>
+<P>
+Specifying dependencies on list state variables must be done using the
+special &lt;<a href="#apply-over">apply-over</a>&gt; element.  This
+element applies the dependencies it contains over all the elements in
+a list and returns a value depending on the value of its "true-if"
+property.  This property may be either "all", "any" or "none".  If
+"true-if" is "all", then all of the dependencies contained in the
+"apply-over" element must be true for elements if true is returned.
+If "true-if" is "any", then all of the dependencies contained in the
+"apply-over" must be true for one of the elements.  If "true-if" is
+"none", then the dependencies must not be satisfied by any element
+to return true. 
+</P>
+<H4><A name=cncptSmartTemplates>Smart Templates</a></h4>
+<p>
+Smart Templates extend the primitive types of the specification
+language with high-level semantic information.  With a Smart Template,
+a group in a specification might be marked as "media-controls" for
+example, and an interface generator could use this information to
+create an interface that uses the standard play and stop icons that
+people are accustomed to.  More information about Smart Templates is
+available in <a
+href="http://www.cs.cmu.edu/~jeffreyn/papers/templatesIUI.pdf">this
+paper</a>. 
+</p>
+<P>
+Documentation about applying and specifying templates and a list of
+the Smart Templates specified so far is available <a
+href="highlevel-types.html">here</a>.
+</P>
+
+<H3><A name=langdesc>Language Description</A></H3>
+
+<P>
+Our specification language is based on the <A
+href="http://www.w3.org/xml/">XML standard</A> from the <A
+href="http://www.w3.org/">Worldwide Web Consortium</A>.  A <a
+href="http://www.w3.org/XML/Schema">Schema</a> for the language is
+shown below.  You may separately download the schema from <a
+href="http://www.cs.cmu.edu/~pebbles/puc/puc.xsd">here</a>.  The <A
+href="#tagref">tag reference</A> and the <A
+href="#examplespec">example specifications in Appendix A</A> may also
+be helpful for understanding the particulars of our specification
+language.
+</P>
+
+<H3><A name="schema">Schema</a></H3>
+
+<P>
+NOTE: The following schema is designed to be usable in Microsoft's
+Visual Studio .NET, which makes some restrictions on the formatting.
+This schema should not be used as an example of good style.
+</P>
+
+<PRE>
+&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;xs:schema targetNamespace="http://www.cs.cmu.edu/~pebbles/puc" elementFormDefault="qualified"
+	xmlns="http://www.cs.cmu.edu/~pebbles/puc" xmlns:mstns="http://www.cs.cmu.edu/~pebbles/puc"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"&gt;
+	&lt;!-- Top-Level Element --&gt;
+	&lt;xs:element name="spec"&gt;
+		&lt;xs:complexType&gt;
+			&lt;xs:sequence&gt;
+				&lt;xs:element name="labels" type="LabelDictionary" /&gt;
+				&lt;xs:element name="types" type="TypesGroup" minOccurs="0" maxOccurs="1"/&gt;
+				&lt;xs:element name="groupings" type="MultipleGroups" /&gt;
+			&lt;/xs:sequence&gt;
+			&lt;xs:attribute name="name" type="xs:string" /&gt;
+			&lt;xs:attribute name="version" type="SpecVersionType" /&gt;
+		&lt;/xs:complexType&gt;
+	&lt;/xs:element&gt;
+	&lt;!-- Attribute Types --&gt;
+	&lt;xs:simpleType name="SpecVersionType"&gt;
+		&lt;xs:restriction base="xs:string"&gt;
+			&lt;xs:enumeration value="PUC/2.2" /&gt;
+		&lt;/xs:restriction&gt;
+	&lt;/xs:simpleType&gt;
+	&lt;xs:simpleType name="IgnoreType"&gt;
+		&lt;xs:restriction base="xs:string"&gt;
+			&lt;xs:enumeration value="none" /&gt;
+			&lt;xs:enumeration value="parent" /&gt;
+			&lt;xs:enumeration value="all" /&gt;
+		&lt;/xs:restriction&gt;
+	&lt;/xs:simpleType&gt;
+	&lt;xs:simpleType name="AccessType"&gt;
+		&lt;xs:restriction base="xs:string"&gt;
+			&lt;xs:enumeration value="read-only" /&gt;
+			&lt;xs:enumeration value="read-write" /&gt;
+		&lt;/xs:restriction&gt;
+	&lt;/xs:simpleType&gt;
+	&lt;xs:simpleType name="TypeNameType"&gt;
+		&lt;xs:restriction base="xs:string"&gt;
+			&lt;xs:enumeration value="one" /&gt;
+			&lt;xs:enumeration value="multiple" /&gt;
+		&lt;/xs:restriction&gt;
+	&lt;/xs:simpleType&gt;
+	&lt;xs:simpleType name="PriorityType"&gt;
+		&lt;xs:restriction base="xs:integer"&gt;
+			&lt;xs:minInclusive value="0" /&gt;
+			&lt;xs:maxInclusive value="10" /&gt;
+		&lt;/xs:restriction&gt;
+	&lt;/xs:simpleType&gt;
+	&lt;xs:simpleType name="TrueIfType"&gt;
+		&lt;xs:restriction base="xs:string"&gt;
+			&lt;xs:enumeration value="any" /&gt;
+			&lt;xs:enumeration value="all" /&gt;
+			&lt;xs:enumeration value="none" /&gt;
+		&lt;/xs:restriction&gt;
+	&lt;/xs:simpleType&gt;
+	&lt;!-- Elements --&gt;
+	&lt;xs:complexType name="LabelDictionary"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:choice minOccurs="1" maxOccurs="unbounded"&gt;
+				&lt;xs:element name="label" type="xs:string" minOccurs="1" /&gt;
+				&lt;xs:element name="ref-value" type="stateAttribNoContent" /&gt;
+				&lt;xs:element name="phonetic" type="xs:string" /&gt;
+				&lt;xs:element name="text-to-speech" type="TextToSpeechType" /&gt;
+			&lt;/xs:choice&gt;
+		&lt;/xs:sequence&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="stateAttribNoContent"&gt;
+		&lt;xs:attribute name="state" type="xs:string" use="required" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="TextToSpeechType"&gt;
+		&lt;xs:attribute name="text" type="xs:string" use="required" /&gt;
+		&lt;xs:attribute name="recording" type="xs:string" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;!-- Types Section --&gt;
+	&lt;xs:complexType name="TypesGroup"&gt;
+		&lt;xs:choice minOccurs="1" maxOccurs="unbounded"&gt;
+			&lt;xs:element name="group" type="TypesGroupType" /&gt;
+			&lt;xs:element name="list-group" type="TypesListGroupType" /&gt;
+			&lt;xs:element name="union-group" type="TypesUnionGroupType" /&gt;
+			&lt;xs:element name="state" type="TypesStateType" /&gt;
+			&lt;xs:element name="command" type="TypesCommandType" /&gt;
+			&lt;xs:element name="explanation" type="TypesCommandType" /&gt;
+			&lt;xs:element name="type" type="TypesPrimitiveType" /&gt;
+		&lt;/xs:choice&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:attributeGroup name="TypesObjectAttribs"&gt;
+		&lt;xs:attribute name="type-name" type="xs:string" use="required" /&gt;
+		&lt;xs:attribute name="is-a" type="xs:string" use="optional" /&gt;
+		&lt;xs:attribute name="priority" type="PriorityType" use="optional" /&gt;
+	&lt;/xs:attributeGroup&gt;
+	&lt;xs:complexType name="TypesGroupType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="active-if" type="ActiveIfType" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:element name="labels" type="LabelDictionary" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:choice minOccurs="1" maxOccurs="unbounded"&gt;
+				&lt;xs:element name="group" type="GroupType" /&gt;
+				&lt;xs:element name="list-group" type="ListGroupType" /&gt;
+				&lt;xs:element name="union-group" type="UnionGroupType" /&gt;
+				&lt;xs:element name="state" type="StateType" /&gt;
+				&lt;xs:element name="command" type="CommandType" /&gt;
+				&lt;xs:element name="explanation" type="CommandType" /&gt;
+				&lt;xs:element name="apply-type" type="ObjectApplyType" /&gt;
+			&lt;/xs:choice&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attributeGroup ref="TypesObjectAttribs" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="TypesUnionGroupType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="labels" type="LabelDictionary" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:element name="active-if" type="ActiveIfType" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:choice minOccurs="1" maxOccurs="unbounded"&gt;
+				&lt;xs:element name="group" type="GroupType" /&gt;
+				&lt;xs:element name="list-group" type="ListGroupType" /&gt;
+				&lt;xs:element name="union-group" type="UnionGroupType" /&gt;
+				&lt;xs:element name="state" type="StateType" /&gt;
+				&lt;xs:element name="command" type="CommandType" /&gt;
+				&lt;xs:element name="explanation" type="CommandType" /&gt;
+				&lt;xs:element name="apply-type" type="ObjectApplyType" /&gt;
+			&lt;/xs:choice&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attributeGroup ref="TypesObjectAttribs" /&gt;
+		&lt;xs:attribute name="access" type="AccessType" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="TypesListGroupType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="labels" type="LabelDictionary" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:element name="active-if" type="ActiveIfType" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:choice minOccurs="1" maxOccurs="unbounded"&gt;
+				&lt;xs:choice minOccurs="0" maxOccurs="1"&gt;
+					&lt;xs:sequence&gt;
+						&lt;xs:element name="min" type="StaticOrReference" minOccurs="0" maxOccurs="1" /&gt;
+						&lt;xs:element name="max" type="StaticOrReference" minOccurs="0" maxOccurs="1" /&gt;
+					&lt;/xs:sequence&gt;
+					&lt;xs:element name="item-count" type="xs:integer" /&gt;
+				&lt;/xs:choice&gt;
+				&lt;xs:element name="selections" type="SelectionTypeType" minOccurs="0" maxOccurs="1" /&gt;
+				&lt;xs:element name="group" type="GroupType" /&gt;
+				&lt;xs:element name="list-group" type="ListGroupType" /&gt;
+				&lt;xs:element name="union-group" type="UnionGroupType" /&gt;
+				&lt;xs:element name="state" type="StateType" /&gt;
+				&lt;xs:element name="command" type="CommandType" /&gt;
+				&lt;xs:element name="explanation" type="CommandType" /&gt;
+				&lt;xs:element name="apply-type" type="ObjectApplyType" /&gt;
+			&lt;/xs:choice&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attributeGroup ref="TypesObjectAttribs" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="TypesCommandType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="labels" type="LabelDictionary" /&gt;
+			&lt;xs:element name="active-if" type="ActiveIfType" minOccurs="0" maxOccurs="1" /&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attributeGroup ref="TypesObjectAttribs" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="TypesStateType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:choice minOccurs="1" maxOccurs="1"&gt;
+				&lt;xs:element name="type" type="PrimitiveType" /&gt;
+				&lt;xs:element name="apply-type" type="ApplyPrimitiveType" /&gt;
+			&lt;/xs:choice&gt;
+			&lt;xs:element name="labels" type="LabelDictionary" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:element name="active-if" type="DependencyContent" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:choice minOccurs="0" maxOccurs="1"&gt;
+				&lt;xs:element name="required-if" type="DependencyContent" /&gt;
+				&lt;xs:element name="not-required" /&gt;
+			&lt;/xs:choice&gt;
+			&lt;xs:element name="default-value" type="StaticOrReference"/&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attributeGroup ref="TypesObjectAttribs" /&gt;
+		&lt;xs:attribute name="access" type="AccessType" use="optional" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="TypesPrimitiveType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:choice minOccurs="1" maxOccurs="1"&gt;
+				&lt;xs:element name="binary" type="BinaryType" /&gt;
+				&lt;xs:element name="boolean" /&gt;
+				&lt;xs:element name="enumerated" type="EnumeratedType" /&gt;
+				&lt;xs:element name="fixedpt" type="FixedPtType" /&gt;
+				&lt;xs:element name="floatingpt" type="FloatingPtType" /&gt;
+				&lt;xs:element name="integer" type="IntegerType" /&gt;
+				&lt;xs:element name="list-selection" type="ListSelectionType" /&gt;
+				&lt;xs:element name="string" type="StringType" /&gt;
+			&lt;/xs:choice&gt;
+			&lt;xs:element name="value-labels" type="ValueLabelsType" minOccurs="0" maxOccurs="1" /&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attribute name="type-name" type="xs:string" use="required" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;!-- Groupings Section --&gt;
+	&lt;xs:complexType name="MultipleGroups"&gt;
+		&lt;xs:choice minOccurs="1" maxOccurs="unbounded"&gt;
+			&lt;xs:element name="group" type="GroupType" /&gt;
+			&lt;xs:element name="list-group" type="ListGroupType" /&gt;
+			&lt;xs:element name="union-group" type="UnionGroupType" /&gt;
+			&lt;xs:element name="apply-type" type="ObjectApplyType" /&gt;
+		&lt;/xs:choice&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="GroupType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="active-if" type="ActiveIfType" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:element name="labels" type="LabelDictionary" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:choice minOccurs="1" maxOccurs="unbounded"&gt;
+				&lt;xs:element name="group" type="GroupType" /&gt;
+				&lt;xs:element name="list-group" type="ListGroupType" /&gt;
+				&lt;xs:element name="union-group" type="UnionGroupType" /&gt;
+				&lt;xs:element name="state" type="StateType" /&gt;
+				&lt;xs:element name="command" type="CommandType" /&gt;
+				&lt;xs:element name="explanation" type="CommandType" /&gt;
+				&lt;xs:element name="apply-type" type="ObjectApplyType" /&gt;
+			&lt;/xs:choice&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attributeGroup ref="ApplianceObjectAttribs" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:attributeGroup name="ApplianceObjectAttribs"&gt;
+		&lt;xs:attribute name="name" type="xs:string" use="required" /&gt;
+		&lt;xs:attribute name="type-name" type="xs:string" use="optional" /&gt;
+		&lt;xs:attribute name="is-a" type="xs:string" use="optional" /&gt;
+		&lt;xs:attribute name="priority" type="PriorityType" use="optional" /&gt;
+	&lt;/xs:attributeGroup&gt;
+	&lt;xs:complexType name="UnionGroupType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="labels" type="LabelDictionary" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:element name="active-if" type="ActiveIfType" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:choice minOccurs="1" maxOccurs="unbounded"&gt;
+				&lt;xs:element name="group" type="GroupType" /&gt;
+				&lt;xs:element name="list-group" type="ListGroupType" /&gt;
+				&lt;xs:element name="union-group" type="UnionGroupType" /&gt;
+				&lt;xs:element name="state" type="StateType" /&gt;
+				&lt;xs:element name="command" type="CommandType" /&gt;
+				&lt;xs:element name="explanation" type="CommandType" /&gt;
+				&lt;xs:element name="apply-type" type="ObjectApplyType" /&gt;
+			&lt;/xs:choice&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attributeGroup ref="ApplianceObjectAttribs" /&gt;
+		&lt;xs:attribute name="access" type="AccessType" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="ListGroupType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="labels" type="LabelDictionary" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:element name="active-if" type="ActiveIfType" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:choice minOccurs="1" maxOccurs="unbounded"&gt;
+				&lt;xs:choice minOccurs="0" maxOccurs="1"&gt;
+					&lt;xs:sequence&gt;
+						&lt;xs:element name="min" type="StaticOrReference" minOccurs="0" maxOccurs="1" /&gt;
+						&lt;xs:element name="max" type="StaticOrReference" minOccurs="0" maxOccurs="1" /&gt;
+					&lt;/xs:sequence&gt;
+					&lt;xs:element name="item-count" type="xs:integer" /&gt;
+				&lt;/xs:choice&gt;
+				&lt;xs:element name="selections" type="SelectionTypeType" minOccurs="0" maxOccurs="1" /&gt;
+				&lt;xs:element name="group" type="GroupType" /&gt;
+				&lt;xs:element name="list-group" type="ListGroupType" /&gt;
+				&lt;xs:element name="union-group" type="UnionGroupType" /&gt;
+				&lt;xs:element name="state" type="StateType" /&gt;
+				&lt;xs:element name="command" type="CommandType" /&gt;
+				&lt;xs:element name="explanation" type="CommandType" /&gt;
+				&lt;xs:element name="apply-type" type="ObjectApplyType" /&gt;
+			&lt;/xs:choice&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attributeGroup ref="ApplianceObjectAttribs" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="StaticOrReference"&gt;
+		&lt;xs:choice&gt;
+			&lt;xs:element name="constant" type="valueAttribNoContent" /&gt;
+			&lt;xs:element name="ref-value" type="stateAttribNoContent" /&gt;
+		&lt;/xs:choice&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="valueAttribNoContent"&gt;
+		&lt;xs:attribute name="value" type="xs:string" use="required" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="SelectionTypeType"&gt;
+		&lt;xs:attribute name="number" type="TypeNameType" use="required" /&gt;
+		&lt;xs:attribute name="access" type="AccessType" use="optional" default="read-write" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="ObjectApplyType"&gt;
+		&lt;xs:attribute name="type-name" type="xs:string" use="required"/&gt;
+		&lt;xs:attribute name="name" type="xs:string" use="optional" /&gt;
+		&lt;xs:attribute name="priority" type="PriorityType" use="optional" /&gt;
+		&lt;xs:attribute name="access" type="AccessType" use="optional" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="CommandType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="labels" type="LabelDictionary" /&gt;
+			&lt;xs:element name="active-if" type="ActiveIfType" minOccurs="0" maxOccurs="1" /&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attributeGroup ref="ApplianceObjectAttribs" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="StateType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:choice minOccurs="1" maxOccurs="1"&gt;
+				&lt;xs:element name="type" type="PrimitiveType" /&gt;
+				&lt;xs:element name="apply-type" type="ApplyPrimitiveType" /&gt;
+			&lt;/xs:choice&gt;
+			&lt;xs:element name="labels" type="LabelDictionary" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:element name="active-if" type="DependencyContent" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:choice minOccurs="0" maxOccurs="1"&gt;
+				&lt;xs:element name="required-if" type="DependencyContent" /&gt;
+				&lt;xs:element name="not-required" /&gt;
+			&lt;/xs:choice&gt;
+			&lt;xs:element name="default-value" type="StaticOrReference" minOccurs="0" maxOccurs="1"/&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attributeGroup ref="ApplianceObjectAttribs" /&gt;
+		&lt;xs:attribute name="access" type="AccessType" use="optional" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="ApplyPrimitiveType"&gt;
+		&lt;xs:attribute name="type-name" type="xs:string" use="required" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="PrimitiveType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:choice minOccurs="1" maxOccurs="1"&gt;
+				&lt;xs:element name="binary" type="BinaryType" /&gt;
+				&lt;xs:element name="boolean" /&gt;
+				&lt;xs:element name="enumerated" type="EnumeratedType" /&gt;
+				&lt;xs:element name="fixedpt" type="FixedPtType" /&gt;
+				&lt;xs:element name="floatingpt" type="FloatingPtType" /&gt;
+				&lt;xs:element name="integer" type="IntegerType" /&gt;
+				&lt;xs:element name="list-selection" type="ListSelectionType" /&gt;
+				&lt;xs:element name="string" type="StringType" /&gt;
+			&lt;/xs:choice&gt;
+			&lt;xs:element name="value-labels" type="ValueLabelsType" minOccurs="0" maxOccurs="1" /&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attribute name="type-name" type="xs:string" use="optional" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="ValueLabelsType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="map" type="MapType" minOccurs="1" maxOccurs="unbounded" /&gt;
+		&lt;/xs:sequence&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="MapType"&gt;
+		&lt;xs:all&gt;
+			&lt;xs:element name="labels" type="LabelDictionary" minOccurs="1" maxOccurs="1" /&gt;
+			&lt;xs:element name="active-if" type="ActiveIfType" minOccurs="0" maxOccurs="1" /&gt;
+		&lt;/xs:all&gt;
+		&lt;xs:attribute name="index" type="xs:string" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="StringType"&gt;
+		&lt;xs:all&gt;
+			&lt;xs:element name="min" type="StaticOrReference" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:element name="max" type="StaticOrReference" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:element name="average" type="StaticOrReference" minOccurs="0" maxOccurs="1" /&gt;
+		&lt;/xs:all&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="ListSelectionType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="active-if" type="ActiveIfType" minOccurs="0" maxOccurs="1" /&gt;
+		&lt;/xs:sequence&gt;
+		&lt;xs:attribute name="list" type="xs:string" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="FloatingPtType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="min" type="StaticOrReference" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:element name="max" type="StaticOrReference" minOccurs="0" maxOccurs="1" /&gt;
+		&lt;/xs:sequence&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="IntegerType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="min" type="StaticOrReference" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:element name="max" type="StaticOrReference" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:element name="incr" type="StaticOrReference" minOccurs="0" maxOccurs="1" /&gt;
+		&lt;/xs:sequence&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="FixedPtType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="pointpos" type="xs:integer" minOccurs="1" maxOccurs="1" /&gt;
+			&lt;xs:element name="min" type="StaticOrReference" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:element name="max" type="StaticOrReference" minOccurs="0" maxOccurs="1" /&gt;
+			&lt;xs:element name="incr" type="StaticOrReference" minOccurs="0" maxOccurs="1" /&gt;
+		&lt;/xs:sequence&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="EnumeratedType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:element name="item-count" type="xs:integer" minOccurs="1" maxOccurs="1" /&gt;
+		&lt;/xs:sequence&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="BinaryType"&gt;
+		&lt;xs:sequence&gt;
+			&lt;xs:any minOccurs="0" maxOccurs="unbounded" /&gt;
+		&lt;/xs:sequence&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="ActiveIfType"&gt;
+		&lt;xs:choice minOccurs="1" maxOccurs="unbounded"&gt;
+			&lt;xs:element name="or" type="DependencyContent" /&gt;
+			&lt;xs:element name="and" type="DependencyContent" /&gt;
+			&lt;xs:element name="not" type="NotType" /&gt;
+			&lt;xs:element name="apply-over" type="ApplyOverType" /&gt;
+			&lt;xs:element name="defined" type="stateAttribNoContent" /&gt;
+			&lt;xs:element name="undefined" type="stateAttribNoContent" /&gt;
+			&lt;xs:element name="equals" type="ValueDependencyType" /&gt;
+			&lt;xs:element name="greaterthan" type="ValueDependencyType" /&gt;
+			&lt;xs:element name="lessthan" type="ValueDependencyType" /&gt;
+		&lt;/xs:choice&gt;
+		&lt;xs:attribute name="ignore" type="IgnoreType" use="optional" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="DependencyContent"&gt;
+		&lt;xs:choice minOccurs="1" maxOccurs="unbounded"&gt;
+			&lt;xs:element name="or" type="DependencyContent" /&gt;
+			&lt;xs:element name="and" type="DependencyContent" /&gt;
+			&lt;xs:element name="not" type="NotType" /&gt;
+			&lt;xs:element name="apply-over" type="ApplyOverType" /&gt;
+			&lt;xs:element name="defined" type="stateAttribNoContent" /&gt;
+			&lt;xs:element name="undefined" type="stateAttribNoContent" /&gt;
+			&lt;xs:element name="equals" type="ValueDependencyType" /&gt;
+			&lt;xs:element name="greaterthan" type="ValueDependencyType" /&gt;
+			&lt;xs:element name="lessthan" type="ValueDependencyType" /&gt;
+		&lt;/xs:choice&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="ValueDependencyType"&gt;
+		&lt;xs:choice&gt;
+			&lt;xs:element name="constant" type="valueAttribNoContent" /&gt;
+			&lt;xs:element name="ref-value" type="stateAttribNoContent" /&gt;
+		&lt;/xs:choice&gt;
+		&lt;xs:attribute name="state" type="xs:string" use="required" /&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="NotType"&gt;
+		&lt;xs:choice minOccurs="1" maxOccurs="1"&gt;
+			&lt;xs:element name="or" type="DependencyContent" /&gt;
+			&lt;xs:element name="and" type="DependencyContent" /&gt;
+			&lt;xs:element name="apply-over" type="ApplyOverType" /&gt;
+			&lt;xs:element name="defined" type="stateAttribNoContent" /&gt;
+			&lt;xs:element name="undefined" type="stateAttribNoContent" /&gt;
+			&lt;xs:element name="equals" type="ValueDependencyType" /&gt;
+			&lt;xs:element name="greaterthan" type="ValueDependencyType" /&gt;
+			&lt;xs:element name="lessthan" type="ValueDependencyType" /&gt;
+		&lt;/xs:choice&gt;
+	&lt;/xs:complexType&gt;
+	&lt;xs:complexType name="ApplyOverType"&gt;
+		&lt;xs:choice minOccurs="1" maxOccurs="unbounded"&gt;
+			&lt;xs:element name="or" type="DependencyContent" /&gt;
+			&lt;xs:element name="and" type="DependencyContent" /&gt;
+			&lt;xs:element name="not" type="NotType" /&gt;
+			&lt;xs:element name="apply-over" type="ApplyOverType" /&gt;
+			&lt;xs:element name="defined" type="stateAttribNoContent" /&gt;
+			&lt;xs:element name="undefined" type="stateAttribNoContent" /&gt;
+			&lt;xs:element name="equals" type="ValueDependencyType" /&gt;
+			&lt;xs:element name="greaterthan" type="ValueDependencyType" /&gt;
+			&lt;xs:element name="lessthan" type="ValueDependencyType" /&gt;
+		&lt;/xs:choice&gt;
+		&lt;xs:attribute name="list" type="xs:string" use="required" /&gt;
+		&lt;xs:attribute name="true-if" type="TrueIfType" use="optional" /&gt;
+	&lt;/xs:complexType&gt;
+&lt;/xs:schema&gt;
+</PRE>
+
+<H3><A name=tagref>Tag Reference</A></H3>
+<P>This section describes all of the tags available in the specification 
+language and how they are used. </P>
+
+
+<H4><A name=tagindex>Tag Index</A></H4>
+<DL>
+  <DT>&lt;<B><A href="#active-if">active-if</A></B>&gt; 
+	<DD>Contains <a href="#cncptDepend">dependency information</a>
+	for an appliance object or a group of objects.  Defines an
+	<i>and</i> relation with all dependencies that are contained
+	within, unless they are grouped within a logical operation
+	block, such as &lt;<A href="#or">or</A>&gt;.
+  <DT>&lt;<B><A href="#and">and</A></B>&gt; 
+	<DD>Defines an <i>and</i> relation with the dependencies
+	that are contained within.
+  <DT>&lt;<B><A href="#apply-over">apply-over</A></B>&gt;
+        <DD>Applies dependency relations to a list of data.
+  <DT>&lt;<B><A href="#apply-type">apply-type</A></B>&gt; 
+	<DD>Allows the re-use of an existing type block within a
+	specification.
+  <DT>&lt;<B><A href="#binary">binary</A></B>&gt;
+        <DD>Binary type - encompasses any kind of binary data,
+	including images and sounds.  A Smart Template must be used to
+	appropriately interpret and render the binary data.
+  <DT>&lt;<B><A href="#boolean">boolean/</A></B>&gt; 
+	<DD>Boolean type - takes on true or false values.
+  <DT>&lt;<B><A href="#command">command</A></B>&gt; 
+	<DD>Defines a <a href="#cncptObjects">command</a> appliance
+	object.
+  <DT>&lt;<B><a href="#constant">constant</A></B>&gt;
+        <DD>Defines a constant value in any place where a reference
+	would also be accepted.
+  <DT>&lt;<B><a href="#default-value">default-value</A></B>&gt;
+        <DD>Specifies a default value for a state variable.  In an
+	interface generator, these values would be used when the UI
+	needs to prompt the user for a new value and could also be
+	used for demonstrational purposes.
+  <DT>&lt;<B><A href="#enumerated">enumerated</A></B>&gt; 
+  	<DD>Enumerated type - Define the number of items in the
+	enumeration using the &lt;<A
+	href="#item-count">item-count</A>&gt; tag. Labels can be
+	defined within the &lt;<A
+	href="#value-labels">value-labels</A>&gt; tag.  
+  <DT>&lt;<B><A href="#equals">equals</A></B>&gt; 
+	<DD>Used in conjunction with the &lt;<A
+	href="#active-if">active-if</A>&gt; tag to define equals <a
+	href="#cncptDepend">dependency information</a> for this state
+	variable.
+  <DT>&lt;<B><A href="#explanation">explanation</A></B>&gt; 
+	<DD>Defines an <a href="#cncptObjects">explanation</a>
+	appliance object. 
+  <DT>&lt;<B><A href="#fixedpt">fixedpt</A></B>&gt; 
+ 	<DD>Fixed Point type - for variables that take the form of
+	decimal values with a fixed decimal point location.  Minimum,
+	maximum and increment values can be defined using the &lt;<A
+	href="#minmax">min</A>&gt;, &lt;<A href="#minmax">max</A>&gt;,
+	and &lt;<A href="#incr">incr</A>&gt; tags.
+  <DT>&lt;<B><A href="#floatingpt">floatingpt</A></B>&gt; 
+ 	<DD>Floating Point type - for variables that take the form of
+	decimal values.  Minimum and maximum values can be
+	defined using the &lt;<A href="#minmax">min</A>&gt; and &lt;<A
+	href="#minmax">max</A>&gt; tags.
+  <DT>&lt;<B><A href="#greaterthan">greaterthan</A></B>&gt; 
+	<DD>Used in conjunction with the &lt;<A
+	href="#active-if">active-if</A>&gt; tag to define greaterthan
+	<a href="#cncptDepend">dependency information</a> for this
+	state variable.
+  <DT>&lt;<B><A href="#group">group</A></B>&gt; 
+	<DD>Used to define the nodes of the <a
+	href="#cncptGroup">group tree</a>.  
+  <DT>&lt;<B><A href="#groupings">groupings</A></B>&gt; 
+	<DD>Defines the section that includes the <a
+	href="#cncptGroup">group tree</a>.  
+  <DT>&lt;<B><A href="#incr">incr</A></B>&gt; 
+	<DD>Defines the increment that an integer or fixed point
+	variable must use.  This restriction means that the variable
+	must have a value equals to its minimum + n * increment, where
+	n is an integer.
+  <DT>&lt;<B><A href="#item-count">item-count</A></B>&gt; 
+	<DD>Used to denote how many values there are in an 
+	&lt;<A href="#enumerated">enumerated</A>&gt; type or a &lt;<A
+	href="#list-group">list-group</a>&gt;.  Labels for 
+	the items can be defined within the &lt;<A
+	href="#value-labels">value-labels</A>&gt; tag. 
+  <DT>&lt;<B><A href="#integer">integer</A></B>&gt; 
+ 	<DD>Integer type - for variables that take the form of
+	integers.  Minimum, maximum and increment values can be
+	defined using the &lt;<A href="#minmax">min</A>&gt;, &lt;<A
+	href="#minmax">max</A>&gt;, and &lt;<A
+	href="#incr">incr</A>&gt; tags.
+  <DT>&lt;<B><A href="#label">label</A></B>&gt; 
+	<DD>Defines a label to be included within a <a
+	href="#cncptLabels">label dictionary</a>.
+  <DT>&lt;<B><A href="#labels">labels</A></B>&gt; 
+	<DD>Defines a <a href="#cncptLabels">label dictionary</a> for
+	an appliance object or group.  The &lt;<A
+	href="#map">map</A>&gt; tag specifies a dictionary to be
+	associated with the specific value of a variable.
+  <DT>&lt;<B><A href="#lessthan">lessthan</A></B>&gt; 
+	<DD>Used in conjunction with the &lt;<A
+	href="#active-if">active-if</A>&gt; tag to define lessthan
+	<a href="#cncptDepend">dependency information</a> for this
+	state variable.
+  <DT>&lt;<B><A href="#list-group">list-group</A></B>&gt;
+        <DD>Specifies a special group that represents a list of data.
+	The variables contained in this group have multiple values for
+	every item in the list.
+  <DT>&lt;<B><A href="#map">map</A></B>&gt; 
+	<DD>Specifies a <a href="cncptLabels">label dictionary</a> for
+	the specific value of a variable.
+  <DT>&lt;<B><A href="#minmax">min</A></B>&gt; 
+	<DD>Defines the minimum value a numeric variable may take.
+  <DT>&lt;<B><A href="#minmax">max</A></B>&gt; 
+	<DD>Defines the maximum value a numeric variable may take.
+  <DT>&lt;<B><A href="#not">not</A></B>&gt;
+        <DD>Negates the value of a <a
+	href="#cncptDepend">dependency</a> equation.
+  <DT>&lt;<B><A href="#not-required">not-required</A></B>&gt;
+        <DD>Specifies that state variable's value is not required for
+	successful operation of an appliance.  If a value is required,
+	then the <a href="#required-if">required-if</a> element may be
+	used. 
+  <DT>&lt;<B><A href="#or">or</A></B>&gt; 
+	<DD>Defines an <i>or</i> relation with the dependencies
+	that are contained within.
+  <DT>&lt;<B><A href="#phonetic">phonetic</A></B>&gt; 
+	<DD>Provides pronunciation information for speech interfaces
+	that are based upon this specification language.  Many
+	pronunciations may be included in a <a
+	href="#cncptLabels">label dictionary</a>.
+  <DT>&lt;<B><A href="#pointpos">pointpos</A></B>&gt; 
+	<DD>Defines the position of the decimal point for a <a
+	href="#fixedpt">fixed point</a> type.
+  <DT>&lt;<B><A href="#ref-value">ref-value</A></B>&gt; 
+	<DD>Used to define a dynamic value for any of the value space
+	parameter tags except the <a href="#pointpos">pointpos</a>
+	tag that depends on the value of a numeric state variable.
+	E.g. a ref-value can be used to set the maximum of a numeric
+	state variable to be the value of another state variable.
+	ref-value elements may also be used with dependencies and in
+	several other locations.
+  <DT>&lt;<B><a href="#required-if">required-if</A></B>&gt;
+        <DD>Specifies the circumstances when a state variable's value
+	is required.  If this element and the <a
+	href="#not-required">not-required</A> element are omitted
+	from a state variable's definition, then a value is required
+	whenever the state variable is active.  Otherwise, a value is
+	required whenever the contents of this element are satisfied.
+  <DT>&lt;<B><A href="#selections">selections</A></B>&gt;
+        <DD>Defines the number of selections allowed in a list and
+	whether the user is allowed to modify the selection.
+  <DT>&lt;<B><A href="#spec">spec</A></B>&gt; 
+	<DD>Every specification begins with this tag.
+  <DT>&lt;<B><A href="#state">state</A></B>&gt; 
+	<DD>Defines a <a href="#cncptObjects">state</a> variable
+	appliance object. 
+  <DT>&lt;<B><A href="#string">string/</A></B>&gt; 
+  	<DD>String type - for variables that take the form of strings.
+  <DT>&lt;<B><A href="#text-to-speech">text-to-speech</A></B>&gt; 
+	<DD>Defines a text-to-speech entry to be included within a <a
+	href="#cncptLabels">label dictionary</a>.
+  <DT>&lt;<B><A href="#type">type</A></B>&gt; 
+	<DD>Describes the value space of a state variable (ex:
+	Boolean, Integer, etc...) and the labels
+	that its values take.
+  <DT>&lt;<B><A href="#types">types</A></B>&gt;
+        <DD>The first section of the specification in which authors
+	may define types that the re-use throughout a specification.
+  <DT>&lt;<B><A href="#union-group">union-group</A></B>&gt;
+        <DD>Specifies a special group in which only one of the
+	children may have a valid value.
+  <DT>&lt;<B><A href="#value-labels">value-labels</A></B>&gt; 
+	<DD>Contains one or more &lt;<A href="#map">map</A>&gt; 
+	tags that provide label dictionaries for specific values that
+	the variable might have.
+</DL>
+
+<H4><A name=tagdesc>Tag Descriptions</A></H4>
+<A name=spec><B>&lt;spec&gt;</B></A>
+	<PRE>&lt;spec name="Sample Specification" version="PUC/2.1"&gt;&lt;/spec&gt;</PRE>
+	<DL>
+  	  <DD>Every specification begins with this element.  The name
+	  specified in the <i>name</i> attribute is a machine-readable
+	  name for the parser.  The contained &lt;<A
+	  href="#labels">labels</A>&gt; element specifies
+	  human-readable names for the appliance. 
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>First element of the spec after the required XML header
+	    (E.g. &lt;?xml version="1.0" encoding="UTF-8"?&gt;)
+	    <DT><b>Parameters:</B>
+	    <ul><li><i>name</i> - <b>required</b> The name of the appliance defined
+	    in this specification</li><li><i>version</i> -
+	    <b>required</b> The version of the specification language
+	    being used.  Current valid values are "PUC/2.0",
+	    "PUC/2.1", and "PUC/2.2".  (This document describes
+	    PUC/2.2)</li></ul> 
+	    <DT><B>Must Contain:</B>
+	    <DD>
+	    &lt;<A href="#groupings">groupings</A>&gt;, &lt;<A
+	    href="#labels">labels</A>&gt;, &lt;<A
+	    href="#types">types</A>&gt;  
+	  </DL>
+	</DL>
+<P>
+<A name=types><B>&lt;types&gt;</B></A>
+        <PRE>&lt;types&gt;&lt;/types&gt;</PRE>
+	<DL>
+	  <DD>Contains snippets of specification that the author will
+          reuse in the <A href=#groupings>groupings</a> section.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;spec&gt; element
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href=#group>group</A>&gt;,
+	    &lt;<A href=#list-group>list-group</A>&gt;,
+	    &lt;<A href=#union-group>union-group</A>&gt;,
+	    &lt;<A href=#state>state</A>&gt;,
+	    &lt;<A href=#command>command</A>&gt;,
+	    &lt;<A href=#explanation>explanation</A>&gt;,
+	    &lt;<A href=#type>type</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=groupings><B>&lt;groupings&gt;</B></A>
+	<PRE>&lt;groupings&gt;&lt;/groupings&gt;</PRE>
+	<DL>
+  	  <DD>Contains the entire <a href="#cncptGroup">group
+  	  tree</a>. 
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;spec&gt; element
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#group">group</A>&gt;, &lt;<A
+	    href="#list-group">list-group</A>&gt;, &lt;<A
+	    href="#union-group">union-group</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=group><B>&lt;group&gt;</B></A>
+	<PRE>&lt;group name="GroupA" priority="10"&gt;&lt;/group&gt;</PRE>
+	<DL>
+  	  <DD>Defines the nodes of the <a href="#cncptGroup">group
+  	  tree</a>.   
+	  <P>
+	  Group nodes may be assigned a <a href="#cncptLabels">label
+	  dictionary</a> with the &lt;labels&gt; tag.  Group nodes may
+	  also specify dependencies for all their members using the
+	  &lt;active-if&gt; tag.  These dependencies are applied to
+	  the rest of the member's dependencies with an AND logical
+	  operation. 
+	  <P>
+	  <P>
+	  Each group has a unique name that is its local name
+	  concatenated with the names of all its parent groups.
+	  </P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;groupings&gt;, &lt;group&gt;,
+	    &lt;list-group&gt;, or &lt;union-group&gt; and
+	    &lt;<A href="#types">types</A>&gt; elements
+	    <DT><B>Parameters:</B>
+	    <ul>
+              <li><i>name</i> - <b>required</b> The local name of this
+	      group.
+	      <li><i>type-name</i> - required if within types section,
+	      optional otherwise, defines a type with the given name
+	      <li><i>is-a</i> - The Smart Template that represents
+	      this group and its children.
+	      <li><i>priority</i> - The priority this group should be
+	      assigned relative to other objects in its parent group. 
+	    </ul>
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#labels">labels</A>&gt;,  
+	    &lt;<A href="#active-if">active-if</A>&gt;,  
+	    &lt;<A href="#state">state</A>&gt;
+	    &lt;<A href="#command">command</A>&gt;, 
+	    &lt;<A href="#explanation">explanation</A>&gt;, 
+	    &lt;<A href="#group">group</A>&gt;,  
+	    &lt;<A href="#list-group">list-group</a>&gt;,
+	    &lt;<A href="#union-group">union-group</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=list-group><B>&lt;list-group&gt;</B></A>
+	<PRE>&lt;list-group name="ListGroupA" priority="10"&gt;&lt;/list-group&gt;</PRE>
+	<DL>
+  	  <DD>Defines a special node of the <a href="#cncptGroup">group
+  	  tree</a> that represents <a href="#cncptList">a list</a>.   
+	  <P>
+	  A list group has the all the same qualities of a regular
+	  group, but also may contain some extra elements for
+	  describing the features of the list.
+	  </P>
+	  <P>
+	  A list group automatically creates two states within
+	  itself.  The "Length" state stores the current length of the
+	  list.  If this state has an undefined value, then there are
+	  no items in the list.  The "Selection" state stores the
+	  current selection(s).  If multiple selections are allowed,
+	  then "Selection" is treated like another list-group,
+	  allowing list operators like &lt;<A
+	  href="#apply-over">apply-over</A>&gt; to be applied to it.
+	  </P>
+	  <P>
+	  Three elements are provided, item-count, min, and max, to
+	  allow the specification writer to pre-specify constraints on
+	  the size of the list.
+	  </P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;groupings&gt;, &lt;group&gt;,
+	    &lt;list-group&gt;, or &lt;union-group&gt; and
+	    &lt;<A href="#types">types</A>&gt; elements
+	    <DT><B>Parameters:</B>
+	    <ul>
+              <li><i>name</i> - <b>required</b> The local name of this
+	      group.
+	      <li><i>type-name</i> - required if within types section,
+	      optional otherwise, defines a type with the given name
+	      <li><i>is-a</i> - The Smart Template that represents
+	      this group and its children.
+	      <li><i>priority</i> - The priority this group should be
+	      assigned relative to other objects in its parent group. 
+	    </ul>
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#labels">labels</A>&gt;,  
+	    &lt;<A href="#active-if">active-if</A>&gt;,  
+	    &lt;<A href="#state">state</A>&gt;
+	    &lt;<A href="#command">command</A>&gt;, 
+	    &lt;<A href="#explanation">explanation</A>&gt;, 
+	    &lt;<A href="#group">group</A>&gt;,  
+	    &lt;<A href="#list-group">list-group</a>&gt;,
+	    &lt;<A href="#union-group">union-group</A>&gt;,
+	    &lt;<A href="#selection-type">selection-type</A>&gt;,
+	    &lt;<A href="#item-count">item-count</A>&gt;,
+	    &lt;<A href="#minmax">min</A>&gt;,
+	    &lt;<A href="#minmax">max</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=union-group><B>&lt;union-group&gt;</B></A>
+	<PRE>&lt;union-group name="UnionGroupA" access="read-only"&gt;&lt;/union-group&gt;</PRE>
+	<DL>
+  	  <DD>Defines a special node of the <a href="#cncptGroup">group
+  	  tree</a> that represents <a href="#cncptUnion">a union</a>.   
+	  <P>
+	  A union group has the all the same qualities of a regular
+	  group.  It does not contain any extra elements for
+	  describing the union.
+	  </P>
+	  <P>
+	  The union group automatically creates one state named
+	  "ChildUsed", which defines the active child variable/group.
+	  The access parameter of this state is defined by the
+	  <i>access</i> attribute of the union group element.
+	  </P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;groupings&gt;, &lt;group&gt;,
+	    &lt;list-group&gt;, or &lt;union-group&gt; and
+	    &lt;<A href="#types">types</A>&gt; elements
+	    <DT><B>Parameters:</B>
+	    <ul>
+              <li><i>name</i> - <b>required</b> The local name of this
+	      group.
+	      <li><i>type-name</i> - required if within types section,
+	      optional otherwise, defines a type with the given name
+	      <li><i>access</i> - Defines how users interact with the
+	      ChildUsed variable.  Possible values are
+	      <i>read-only</i> and <i>read-write</i>.
+	      <li><i>is-a</i> - The Smart Template that represents
+	      this group and its children.
+	      <li><i>priority</i> - The priority this group should be
+	      assigned relative to other objects in its parent group. 
+	    </ul>
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#labels">labels</A>&gt;,  
+	    &lt;<A href="#active-if">active-if</A>&gt;,  
+	    &lt;<A href="#state">state</A>&gt;
+	    &lt;<A href="#command">command</A>&gt;, 
+	    &lt;<A href="#explanation">explanation</A>&gt;, 
+	    &lt;<A href="#group">group</A>&gt;,  
+	    &lt;<A href="#list-group">list-group</a>&gt;,
+	    &lt;<A href="#union-group">union-group</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=selections><B>&lt;selections&gt;</B></A>
+	<PRE>&lt;selections number="one" access="read-only" /&gt;</PRE>
+	<DL>
+  	  <DD>Defines the number of selections available in a list and
+	  whether or not a user may change the current selection(s).
+	  </P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;list-group&gt; element
+	    <DT><B>Parameters:</B>
+	    <ul>
+              <li><i>number</i> - <b>required</b> The number of
+	      allowed selections.  Possible values are <i>one</i> and
+	      <i>multiple</i>.
+	      <li><i>access</i> - Defines how users interact with the
+	      ChildUsed variable.  Possible values are
+	      <i>read-only</i> and <i>read-write</i>.
+	    </ul>
+	  </DL>
+	</DL>
+<P>
+<A name=state><B>&lt;state&gt;</B></A>
+	<PRE>&lt;state name="StateName" access="read-write" priority="10"&gt;&lt;/state&gt;</PRE>
+	<DL>
+	<DD>Defines a state variable appliance object.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside &lt;<A href="#group">group</A>&gt;, &lt;<A
+	    href="#list-group">list-group</A>&gt;, <A
+	    href="#union-group">union-group</A>&gt;,  and
+	    &lt;<A href="#types">types</A>&gt; 
+	    <DT><B>Parameters:</B>
+	    <ul>
+	      <li><i>name</i> - <b>required</b> The name of the state
+	      variable.</li>
+	      <li><i>type-name</i> - required if within types section,
+	      optional otherwise, defines a type with the given name
+	      <li><i>priority</i> - The priority this state should be
+	      assigned relative to other objects in the same group. 
+	      <li><i>is-a</i> - The Smart Template that represents
+	      this group and its children.
+	      <li><i>access</i> - Defines how users interact with the
+	      ChildUsed variable.  Possible values are
+	      <i>read-only</i> and <i>read-write</i>.
+	    </ul>
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#active-if">active-if</A>&gt;,  
+	    &lt;<A href="#default-value">default-value</A>&gt;,
+	    &lt;<A href="#labels">labels</A>&gt;,  
+	    &lt;<A href="#not-required">not-required</A>&gt;,
+	    &lt;<A href="#required-if">required-if</a>&gt;,
+            &lt;<A href="#type">type</A>&gt;,
+	    &lt;<A href="#apply-type">apply-type</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=command><B>&lt;command&gt;</B></A>
+	<PRE>&lt;command name="CommandName" priority="10"&gt;&lt;/command&gt;</PRE>
+	<DL>
+  	  <DD>Defines a command appliance object.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside &lt;<A href="#group">group</A>&gt;, &lt;<A
+	    href="#list-group">list-group</A>&gt;, <A
+	    href="#union-group">union-group</A>&gt;, and
+	    &lt;<A href="#types">types</A>&gt; 
+	    <DT><b>Parameters:</b>
+	    <ul>
+	      <li><i>name</i> - <b>required</b> The name of the command.</li>
+	      <li><i>type-name</i> - required if within types section,
+	      optional otherwise, defines a type with the given name
+	      <li><i>priority</i> - The priority this state should be
+	      assigned relative to other objects in the same group. 
+	    </ul>
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#active-if">active-if</A>&gt;,  
+	    &lt;<A href="#labels">labels</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=explanation><B>&lt;explanation&gt;</B></A>
+	<PRE>&lt;explanation name="ExplanationName" priority="10"&gt;&lt;/explanation&gt;</PRE>
+	<DL>
+  	  <DD>Defines a explanation appliance object.  The labels
+  	  block, which is required for an explanation object, defines
+  	  the text that will be used for the explanation. 
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside &lt;<A href="#group">group</A>&gt;, &lt;<A
+	    href="#list-group">list-group</A>&gt;, <A
+	    href="#union-group">union-group</A>&gt; and
+	    &lt;<A href="#types">types</A>&gt; 
+	    <DT><b>Parameters:</b>
+	    <ul>
+	      <li><i>name</i> - <b>required</b> The name of the explanation.</li>
+	      <li><i>type-name</i> - required if within types section,
+	      optional otherwise, defines a type with the given name
+	      <li><i>priority</i> - The priority this state should be
+	      assigned relative to other objects in the same group. 
+	    </ul>
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#active-if">active-if</A>&gt;,  
+	    &lt;<A href="#labels">labels</A>&gt; 
+	  </DL>
+	</DL>
+<P>
+<A name=type><B>&lt;type&gt;</B></A>
+	<PRE>&lt;type name="TypeName"&gt;&lt;/type&gt;</PRE>
+	<DL>
+  	  <DD>Describes the value space of a state variable (ex:
+  	  Boolean, Integer, etc...) and the labels that its values
+	  take. 
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#state">state</A>&gt; and
+	    &lt;<A href="#types">types</A>&gt; tag
+	    <DT><b>Parameters:</b>
+	    <ul>
+	      <li><i>type-name</i> - The name of the type
+	      object. Required if this element is contained in a types 
+	      block. 
+	    </ul>	      
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#binary">binary</A>&gt;,
+	    &lt;<A href="#boolean">boolean</A>&gt;,
+	    &lt;<A href="#enumerated">enumerated</A>&gt;,
+	    &lt;<A href="#fixedpt">fixedpt</A>&gt;,
+	    &lt;<A href="#floatingpt">floatingpt</A>&gt;,
+	    &lt;<A href="#integer">integer</A>&gt;,
+	    &lt;<A href="#list-selection">list-selection</A>&gt;,
+	    &lt;<A href="#string">string</A>&gt;,
+	    &lt;<A href="#value-labels">value-labels</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=apply-type><B>&lt;apply-type&gt;</B></A>
+	<PRE>&lt;apply-type name="TypeName"/&gt;</PRE>
+	<DL>
+	<DD>Allows the re-use of an existing type block within a
+	specification.  Using this element is exactly the same as
+	cutting and pasting the type block.  No data will be shared
+	with other states or groups that apply the same type. The type
+	must have been declared earlier in the specification document.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside a &lt;<A href="#state">state</A>&gt;,&lt;<a
+	    href="#group">group</a>&gt;, &lt;<A
+	    href="#list-group">list-group</a>&gt;, or &lt;<a
+	    href="#union-group">union-group</a> tag
+	    <DT><B>Parameters:</B>
+	    <ul>
+	      <li><i>type-name</i> - <b>required</b> The name of the
+	      appliance object to reference.
+	      <li><i>name</i> - optional if this element is not inside
+	      a state element.
+	      <li><i>priority</i> - optional if this element is not
+	      inside a state element.
+	      <li><i>access</i> - optional if this element is not
+	      inside a state element and the type being applied is
+	      a state variable or a union-group.
+	    </ul>
+	  </DL>
+	</DL>
+<P>
+<A name="default-value"><B>&lt;default-value&gt;</B></A>
+	<PRE>&lt;default-value&gt;&lt;/default-value&gt;</PRE>
+	<DL>
+  	  <DD>Specifies a default value for a state variable.  In an
+	  interface generator, these values would be used when the UI 
+	  needs to prompt the user for a new value and could also be 
+	  used for demonstrational purposes.
+	  <p>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#state">state</A>&gt; element
+	    <DT><b>May Contain:</b>
+	    <DD>
+	    &lt;<a href="#constant">constant</a>&gt;,
+	    &lt;<a href="#ref-value">ref-value</a>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name="not-required"><B>&lt;not-required&gt;</B></A>
+        <PRE>&lt;not-required/&gt;</PRE
+	<DL>
+	  <DD>Specifies that the value of a state variable is not
+          required for successful operation of the appliance.  If the
+          value is required, then the <a
+          href="#required-if">required-if</a> element should be used
+          instead. 
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#state">state</A>&gt; element
+	  </DL>
+	</DL>
+<P>
+<A name=required-if><B>&lt;required-if&gt;</B></A>
+	<PRE>&lt;required-if&gt;&lt;/required-if&gt;</PRE>
+	<DL>
+  	  <DD>Contains <a href="#cncptDepend">dependency
+  	  information</a> that defines when the value of a state
+	  variable is required for successful operation of the
+	  appliance.  The content of this element is the same as the
+	  <a href="#active-if">active-if</A> element.  If neither this
+	  element nor the <A href=#not-required>not-required</a>
+	  element are specified within a state variable, the state
+	  will be required to have a value whenever it is active (as
+	  defined by the <a href=#active-if>active-if</a> section).
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#state">state</A>&gt; element
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#and">and</A>&gt;,
+	    &lt;<A href="#apply-over">apply-over</A>&gt;,
+	    &lt;<A href="#defined">defined</A>&gt;,
+	    &lt;<A href="#equals">equals</A>&gt;,
+	    &lt;<A href="#greaterthan">greaterthan</A>&gt;,
+	    &lt;<A href="#lessthan">lessthan</A>&gt;,
+	    &lt;<A href="#not">not</A>&gt;,
+	    &lt;<A href="#or">or</A>&gt;,
+	    &lt;<A href="#undefined">undefined</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=binary><B>&lt;binary/&gt;</B></A>
+	<PRE>&lt;binary/&gt;</PRE>
+	<DL>
+  	  <DD>Binary type - contains any kind of a binary data, such
+	  as sounds or images.  A Smart Template must be used with
+	  this type to ensure proper interpretation and rendering.
+	  <P>
+	  This type may contain arbitrary tags that act are parameters
+	  that particular Smart Templates will recognize.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A
+	    href="#type">type</A>&gt; element
+	    <DT><B>May Contain:</B>
+	    <DD>Any arbitrary tag.
+	  </DL>
+	</DL>
+<P>
+<A name=boolean><B>&lt;boolean/&gt;</B></A>
+	<PRE>&lt;boolean/&gt;</PRE>
+	<DL>
+  	  <DD>Boolean type - takes on true or false values.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A
+	    href="#type">type</A>&gt; element
+	  </DL>
+	</DL>
+<P>
+<A name=enumerated><B>&lt;enumerated&gt;</B></A>
+	<PRE>&lt;enumerated&gt;&lt;/enumerated&gt;</PRE>
+	<DL>
+  	  <DD>Enumerated type - Define the number of items this
+		composite type contains using the &lt;<A
+		href="#item-count">item-count</A>&gt; element.  Note:
+	        the &lt;<A href="#value-labels">value-labels</A>&gt;
+	        element must contain &lt;<A href="#map">map</A>&gt;
+	        elements that map each of the enumerated values with a
+	        label. So if there are 5 enumerated values in a
+	        particular enumerated type (denoted by
+		&lt;item-count&gt;5&lt;item-count/&gt;) the
+	        value-labels section must contain 5 different mappings
+	        of values to labels. 
+	  <p>
+	  Enumerated type values are treated as integers that range
+	  between 1 and the number of items in the type.  Zero is not
+	  a valid value for an enumerated type.  This is important
+	  when you specify an index to the &lt;map&gt; tag;
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A
+	    href="#type">type</A>&gt; element
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#item-count">item-count</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=item-count><B>&lt;item-count&gt;</B></A>
+	<PRE>&lt;item-count&gt;&lt;/item-count&gt;</PRE>
+	<DL>
+  	  <DD>Used to denote how many enumerated values there are in an 
+		&lt;<A href="#enumerated">enumerated</A>&gt; type.
+		Labels for the items can be defined within the &lt;<a
+		href="#value-labels">value-labels</a>&gt; tag.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A
+	    href="#enumerated">enumerated</A>&gt; and &lt;<A
+	    href="#list-group">list-group</A>&gt; elements
+	  </DL>
+	</DL>
+<P>
+<A name=fixedpt><B>&lt;fixedpt&gt;</B></A>
+	<PRE>&lt;fixedpt&gt;&lt;/fixedpt&gt;</PRE>
+	<DL>
+  	  <DD>Fixed Point type - for variables that take the form of
+	  decimal values with a fixed decimal point.  The location of
+	  the fixed decimal point is specified with the &lt;<A
+	  href="#pointpos">pointpos</A>&gt; element. Minimum,
+	  maximum, and increment values can be defined using the
+	  &lt;<A href="#minmax">min</A>&gt;, &lt;<A
+	  href="#minmax">max</A>&gt;, and &lt;<a
+	  href="#incr">incr</a>&gt; tags.  
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A
+	    href="#type">type</A>&gt; element
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#pointpos">pointpos</A>&gt;,
+	    &lt;<A href="#incr">incr</A>&gt;,
+	    &lt;<A href="#minmax">max</A>&gt;,
+	    &lt;<A href="#minmax">min</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=pointpos><B>&lt;pointpos&gt;</B></A>
+	<PRE>&lt;pointpos&gt;&lt;/pointpos&gt;</PRE>
+	<DL>
+  	  <DD>Defines the position of the decimal point for a <a
+  	  href="#fixedpt">fixed point</a> type.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#fixedpt">fixedpt</A>&gt; tag
+	  </DL>
+	</DL>
+<P>
+<A name=floatingpt><B>&lt;floatingpt&gt;</B></A>
+	<PRE>&lt;floatingpt&gt;&lt;/floatingpt&gt;</PRE>
+	<DL>
+  	  <DD>Floating Point type - for variables that take the form of
+	  decimal values.  Minimum and maximum values can be
+	  defined using the &lt;<A href="#minmax">min</A>&gt; and &lt;<A
+	  href="#minmax">max</A>&gt; tags.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A
+	    href="#type">type</A>&gt; element
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#minmax">max</A>&gt;,
+	    &lt;<A href="#minmax">min</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=integer><B>&lt;integer&gt;</B></A>
+	<PRE>&lt;integer&gt;&lt;/integer&gt;</PRE>
+	<DL>
+  	  <DD>Integer type - for variables that take the form of
+	  integers.  Minimum, maximum, and increment values can be
+	  defined using the &lt;<A href="#minmax">min</A>&gt;, &lt;<A
+	  href="#minmax">max</A>&gt;, and &lt;<a
+	  href="#incr">incr</a>&gt; tags. 
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A
+	    href="#type">type</A>&gt; element
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#incr">incr</A>&gt;,
+	    &lt;<A href="#minmax">max</A>&gt;,
+	    &lt;<A href="#minmax">min</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<a name=list-selection><B>&lt;list-selection&gt;</B></A>
+        <PRE>&lt;list-selection&gt;&lt;/list-selection&gt;</PRE>
+	<DL>
+	  <DD>List selection type - for variables that represent and
+          independent selection within a list elsewhere in the
+          specification.  This is particular useful in situations
+          where the some aspect of the appliance is configured as a
+          list, and then an item from this list must be selected often 
+          during normal operation (e.g. the channels on a VCR or TV).
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href=#type>type</A>&gt; element
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#active-if">active-if</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name="incr"><A name=minmax><B>&lt;incr&gt; ... &lt;max&gt; ... &lt;min&gt;</B></A></a>
+	<PRE>&lt;incr&gt;&lt;/incr&gt;
+&lt;max&gt;&lt;/max&gt;
+&lt;min&gt;&lt;/min&gt;</PRE>
+	<DL>
+  	  <DD>Describe minimum, maximum and increment values that the
+  	  variable may take.
+	  <p>
+	  The increment may not be defined for the floating point type.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#fixedpt">fixedpt</A>&gt;,
+	    &lt;<A href="#floatingpt">floatingpt</A>&gt; (except for
+	    incr), &lt;<A href="#integer">integer</A>&gt;, and &lt;<A
+	    href="#list-group">list-group</A>&gt; (except for incr)
+	    elements.  
+	    <DT><b>May Contain:</b>
+	    <DD>
+	    &lt;<a href="#constant">constant</a>&gt;,
+	    &lt;<a href="#ref-value">ref-value</a>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=string><B>&lt;string/&gt;</B></A>
+	<PRE>&lt;string/&gt;</PRE>
+	<DL>
+  	  <DD>String type - for variables that take the form of
+	  strings.  You can specify parameters about the length of the
+	  string to help out the interface generators.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A
+	    href="#type">type</A>&gt; element
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<a href="#minmax">min</a>&gt;,
+	    &lt;<a href="#minmax">max</a>&gt;,
+	    &lt;<a href="#average">average</a>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=average><B>&lt;average&gt;</B></A>
+	<PRE>&lt;average&gt;&lt;/average&gt;</PRE>
+	<DL>
+  	  <DD>Describe the average length of a string.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A
+	    href="#type">string</A>&gt; element
+	    <DT><B>May Contain:</B>
+	    &lt;<A href="#ref-value">ref-value</a>&gt;,
+	    &lt;<A href="#constant">constant</a>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=value-labels><B>&lt;value-labels&gt;</B></A>
+	<PRE>&lt;value-labels&gt;&lt;/value-labels&gt;</PRE>
+	<DL>
+  	  <DD>Contains one or more &lt;<a href="#map">map</a>&gt; tags
+  	  that provide <a href="#cncptLabels">label dictionaries</a>
+  	  for specific values that the variable might have.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#type">type</A>&gt; tag
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#map">map</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=map><B>&lt;map&gt;</B></A>
+	<PRE>&lt;map index="value"&gt;&lt;/map&gt;</PRE>
+	<DL>
+  	  <DD>Specifies a <a href="#cncptLabels">label dictionary</a>
+  	  for the specific value of a variable (specified by the index
+  	  parameter).
+	  <p>
+	  Certain values of a variable can also be enabled based on
+	  <a href="#cncptDepend">dependency information</a> which is
+	  specified in the enclosed &lt;<A
+	  href="#active-if">active-if</A>&gt; element.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A
+	    href="#value-labels">value-labels</A>&gt; element.
+	    <DT><b>Parameters:</b>
+	    <ul>
+	      <li><i>index</i> - <b>required</b> The value to
+	      associate this dictionary with</li>
+	    </ul>
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#labels">labels</A>&gt;,
+	    &lt;<A href="#active-if">active-if</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=labels><B>&lt;labels&gt;</B></A>
+	<PRE>&lt;labels&gt;&lt;/labels&gt;</PRE>
+	<DL>
+  	  <DD>Defines a <a href="#cncptLabels">label dictionary</a>
+  	  for an appliance object or group.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#command">command</A>&gt;, &lt;<A
+	    href="#explantation">explanation</A>&gt;, &lt;<A
+	    href="#group">group</A>&gt;, &lt;<A
+	    href="#list-group">list-group</A>&gt;, &lt;<A
+	    href="#union-group">union-group</A>&gt;, &lt;<A
+	    href="#state">state</A>&gt;, &lt;<A
+	    href="#spec">spec</A>&gt;, or &lt;<A
+	    href="#map">map</A>&gt; elements.  
+	    <DT><B>May Contain:</B>
+	    <DD>&lt;<A href="#label">label</A>&gt;,
+	    &lt;<a href="#ref-value">ref-value</a>&gt;,
+	    &lt;<a href="#phonetic">phonetic</a>&gt;,
+	    &lt;<a href="#text-to-speech">text-to-speech</a>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=text-to-speech><B>&lt;text-to-speech&gt;</B></A>
+	<PRE>&lt;text-to-speech text="&lt;whisper&gt;mute&lt;/whisper&gt;" recording="mute.au"/&gt;</PRE> 
+	<DL>
+  	  <DD>Defines a text-to-speech entry to be included within a
+	  <a href="#cncptLabels">label dictionary</a>.  The text
+	  parameter may contain embedded <a
+	  href="http://www.bell-labs.com/project/tts/sable.html">SABLE</a>
+	  markup tags. 
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#labels">labels</A>&gt; element
+	    <DT><B>Parameters:</B>
+	    <ul>
+	      <li><i>text</i> - <b>required</b> the text to be
+	      spoken.  May contain embedded <a
+	      href="http://www.bell-labs.com/project/tts/sable.html">SABLE</a>
+	      tags.</li> 
+	      <li><i>recording</i> - a recording of the text, if
+	      available</li> 
+	    </ul>
+	  </DL>
+	</DL>
+<P>
+<A name=label><B>&lt;label&gt;</B></A>
+	<PRE>&lt;label&gt;&lt;/label&gt;</PRE>
+	<DL>
+  	  <DD>Defines a label to be included within a <a
+  	  href="#cncptLabels">label dictionary</a>.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#labels">labels</A>&gt; element
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    string
+	  </DL>
+	</DL>
+<P>
+<A name=phonetic><B>&lt;phonetic&gt;</B></A>
+	<PRE>&lt;phonetic&gt;&lt;/phonetic&gt;</PRE>
+	<DL>
+  	  <DD>Defines a pronunciation to be included within a <a
+  	  href="#cncptLabels">label dictionary</a>.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#labels">labels</A>&gt; element
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    string of phonemes using the <a
+	    href="http://www.billnet.org/phon/arpabet.html">arpabet</a>
+	    representation 
+	  </DL>
+	</DL>
+<P>
+<A name=active-if><B>&lt;active-if&gt;</B></A>
+	<PRE>&lt;active-if ignore="all" | "parent"&gt;&lt;/active-if&gt;</PRE>
+	<DL>
+  	  <DD>Contains <a href="#cncptDepend">dependency
+  	  information</a> for an appliance object or group of
+  	  objects. Defines an <i>and</i> relation with all
+  	  dependencies that are contained within, unless they are
+  	  grouped within a logical operation block, such as
+  	  &lt;and&gt; or &lt;or&gt; tags.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#command">command</A>&gt;, &lt;<A
+	    href="#explantation">explanation</A>&gt;, &lt;<A
+	    href="#group">group</A>&gt;, &lt;<A
+	    href="#list-group">list-group</A>&gt;, &lt;<A
+	    href="#union-group">union-group</A>&gt;, &lt;<A
+	    href="#map">map</A>&gt;, &lt;<A
+	    href="#list-selection">list-selection</a>&gt;, or &lt;<A 
+	    href="#state">state</A>&gt; elements.  
+	    <DT><B>Parameters:</b>
+	    <ul>
+	      <li><i>ignore</i> - stop dependency inheritance through
+	      the group tree.  The possible options are to omit the
+	      option, <i>parent</i>, and <i>all</i>
+	    </ul>	    
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#and">and</A>&gt;,
+	    &lt;<A href="#apply-over">apply-over</A>&gt;,
+	    &lt;<A href="#defined">defined</A>&gt;,
+	    &lt;<A href="#equals">equals</A>&gt;,
+	    &lt;<A href="#greaterthan">greaterthan</A>&gt;,
+	    &lt;<A href="#lessthan">lessthan</A>&gt;,
+	    &lt;<A href="#not">not</A>&gt;,
+	    &lt;<A href="#or">or</A>&gt;,
+	    &lt;<A href="#undefined">undefined</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=apply-over><B>&lt;apply-over&gt;</B></A>
+	<PRE>&lt;apply-over list="SomeList" true-if="any"&gt;&lt;/apply-over&gt;</PRE>
+	<DL>
+  	  <DD>Used to apply <a href="#cncptDepends">dependency
+	  information</a> to lists of information.
+	  <P>
+	  There are three different ways that dependencies can be
+	  applied.  The apply-over block can be true if the
+	  dependencies are true for any item in the list, if they are
+	  true for all items in the list, or if they are true for no
+	  items in the list.  The particular choice is chosen with the
+	  true-if attribute.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#active-if">active-if</A>&gt;,
+	    &lt;<A href="#and">and</A>&gt;, &lt;<A
+	    href="#apply-over">apply-over</A>&gt;, &lt;<A
+	    href="#not">not</A>&gt;, or &lt;<A
+	    href="#or">or</A>&gt; elements.
+	    <DT><B>Parameters:</b>
+	    <ul>
+	      <li><i>list</i> - <b>required</b> The name of the list group
+	      that the dependencies are applied to it.
+	      <li><i>true-if</i> - Sets when the apply-over
+	      returns true.  The possible options are <i>any</i>,
+	      <i>all</i>, or <i>none</i>.
+	    </ul>	    
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#and">and</A>&gt;,
+	    &lt;<A href="#apply-over">apply-over</A>&gt;,
+	    &lt;<A href="#defined">defined</A>&gt;,
+	    &lt;<A href="#equals">equals</A>&gt;,
+	    &lt;<A href="#greaterthan">greaterthan</A>&gt;,
+	    &lt;<A href="#lessthan">lessthan</A>&gt;,
+	    &lt;<A href="#not">not</A>&gt;,
+	    &lt;<A href="#or">or</A>&gt;,
+	    &lt;<A href="#undefined">undefined</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=defined><B>&lt;defined&gt;</B></A>
+	<PRE>&lt;defined state="SomeState"/&gt;</PRE>
+	<DL>
+  	  <DD>Used in conjunction with the &lt;active-if&gt; tag to
+  	  define that some appliance object <a
+	  href="#cncptDepend">depends on</a> a state variable having a
+	  defined value.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#active-if">active-if</A>&gt;,
+	    &lt;<A href="#and">and</A>&gt;, &lt;<A
+	    href="#apply-over">apply-over</A>&gt;, &lt;<A
+	    href="#not">not</A>&gt;, or &lt;<A
+	    href="#or">or</A>&gt; elements.
+	    <DT><B>Parameters:</b>
+	    <ul>
+	      <li><i>state</i> - <b>required</b> The name of the state
+	    that is depended upon
+	    </ul>	    
+	  </DL>
+	</DL>
+<P>
+<A name=undefined><B>&lt;undefined&gt;</B></A>
+	<PRE>&lt;undefined state="SomeState"/&gt;</PRE>
+	<DL>
+  	  <DD>Used in conjunction with the &lt;active-if&gt; tag to
+  	  define that some appliance object <a
+	  href="#cncptDepend">depends on</a> a state variable not
+	  having a defined value.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#active-if">active-if</A>&gt;,
+	    &lt;<A href="#and">and</A>&gt;, &lt;<A
+	    href="#apply-over">apply-over</A>&gt;, &lt;<A
+	    href="#not">not</A>&gt;, or &lt;<A
+	    href="#or">or</A>&gt; elements.
+	    <DT><B>Parameters:</b>
+	    <ul>
+	      <li><i>state</i> - <b>required</b> The name of the state
+	    that is depended upon
+	    </ul>
+	  </DL>
+	</DL>
+<P>
+<A name=equals><B>&lt;equals&gt;</B></A>
+	<PRE>&lt;equals state="SomeState"&gt;value&lt;/equals&gt;</PRE>
+	<DL>
+  	  <DD>Used in conjunction with the &lt;active-if&gt; tag to
+  	  define equals <a href="#cncptDepend">dependency
+  	  information</a> for this state variable.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#active-if">active-if</A>&gt;,
+	    &lt;<A href="#and">and</A>&gt;, &lt;<A
+	    href="#apply-over">apply-over</A>&gt;, &lt;<A
+	    href="#not">not</A>&gt;, or &lt;<A
+	    href="#or">or</A>&gt; elements.
+	    <DT><B>Parameters:</b>
+	    <ul>
+	      <li><i>state</i> - <b>required</b> The name of the state
+	    that is depended upon
+	    </ul>	    
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#ref-value">ref-value</A>&gt;,
+	    &lt;<A href="#constant">constant</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=greaterthan><B>&lt;greaterthan&gt;</B></A>
+	<PRE>&lt;greaterthan state="SomeState"&gt;value&lt;/greaterthan&gt;</PRE>
+	<DL>
+  	  <DD>Used in conjunction with the &lt;active-if&gt; tag to
+  	  define greater-than <a href="#cncptDepend">dependency
+  	  information</a> for this state variable.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#active-if">active-if</A>&gt;,
+	    &lt;<A href="#and">and</A>&gt;, &lt;<A
+	    href="#apply-over">apply-over</A>&gt;, &lt;<A
+	    href="#not">not</A>&gt;, or &lt;<A
+	    href="#or">or</A>&gt; elements.
+	    <DT><B>Parameters:</b>
+	    <ul>
+	      <li><i>state</i> - <b>required</b> The name of the state
+	    that is depended upon
+	    </ul>	    
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#ref-value">ref-value</A>&gt;,
+	    &lt;<A href="#constant">constant</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=lessthan><B>&lt;lessthan&gt;</B></A>
+	<PRE>&lt;lessthan state="SomeState"&gt;value&lt;/lessthan&gt;</PRE>
+	<DL>
+  	  <DD>Used in conjunction with the &lt;active-if&gt; tag to
+  	  define less-than <a href="#cncptDepend">dependency
+  	  information</a> for this state variable.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#active-if">active-if</A>&gt;,
+	    &lt;<A href="#and">and</A>&gt;, &lt;<A
+	    href="#apply-over">apply-over</A>&gt;, &lt;<A
+	    href="#not">not</A>&gt;, or &lt;<A
+	    href="#or">or</A>&gt; elements.
+	    <DT><B>Parameters:</b>
+	    <ul>
+	      <li><i>state</i> - <b>required</b> The name of the state
+	    that is depended upon
+	    </ul>	    
+	    <DT><B>May Contain:</B>
+	    <DD>	    
+	    &lt;<A href="#ref-value">ref-value</A>&gt;,
+	    &lt;<A href="#constant">constant</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=and><B>&lt;and&gt;</B></A>
+	<PRE>&lt;and&gt;&lt;/and&gt;</PRE>
+	<DL>
+  	  <DD>Defines an <i>and</i> relation with the dependencies that
+  	  are contained within.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#active-if">active-if</A>&gt;,
+	    &lt;<A href="#and">and</A>&gt;, &lt;<A
+	    href="#apply-over">apply-over</A>&gt;, &lt;<A
+	    href="#not">not</A>&gt;, or &lt;<A
+	    href="#or">or</A>&gt; elements.
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#and">and</A>&gt;,
+	    &lt;<A href="#apply-over">apply-over</A>&gt;,
+	    &lt;<A href="#defined">defined</A>&gt;,
+	    &lt;<A href="#equals">equals</A>&gt;,
+	    &lt;<A href="#greaterthan">greaterthan</A>&gt;,
+	    &lt;<A href="#lessthan">lessthan</A>&gt;,
+	    &lt;<A href="#not">not</A>&gt;,
+	    &lt;<A href="#or">or</A>&gt;,
+	    &lt;<A href="#undefined">undefined</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=or><B>&lt;or&gt;</B></A>
+	<PRE>&lt;or&gt;&lt;/or&gt;</PRE>
+	<DL>
+  	  <DD>Defines an <i>or</i> relation with the dependencies that
+  	  are contained within.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#active-if">active-if</A>&gt;,
+	    &lt;<A href="#and">and</A>&gt;, &lt;<A
+	    href="#apply-over">apply-over</A>&gt;, &lt;<A
+	    href="#not">not</A>&gt;, or &lt;<A
+	    href="#or">or</A>&gt; elements.
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#and">and</A>&gt;,
+	    &lt;<A href="#apply-over">apply-over</A>&gt;,
+	    &lt;<A href="#defined">defined</A>&gt;,
+	    &lt;<A href="#equals">equals</A>&gt;,
+	    &lt;<A href="#greaterthan">greaterthan</A>&gt;,
+	    &lt;<A href="#lessthan">lessthan</A>&gt;,
+	    &lt;<A href="#not">not</A>&gt;,
+	    &lt;<A href="#or">or</A>&gt;,
+	    &lt;<A href="#undefined">undefined</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=not><B>&lt;not&gt;</B></A>
+	<PRE>&lt;not&gt;&lt;/not&gt;</PRE>
+	<DL>
+  	  <DD>Defines a <i>not</i> relation with the dependencies that
+  	  are contained within.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#active-if">active-if</A>&gt;,
+	    &lt;<A href="#and">and</A>&gt;, &lt;<A
+	    href="#apply-over">apply-over</A>&gt;, or &lt;<A
+	    href="#or">or</A>&gt; elements.
+	    <DT><B>May Contain:</B>
+	    <DD>
+	    &lt;<A href="#and">and</A>&gt;,
+	    &lt;<A href="#apply-over">apply-over</A>&gt;,
+	    &lt;<A href="#defined">defined</A>&gt;,
+	    &lt;<A href="#equals">equals</A>&gt;,
+	    &lt;<A href="#greaterthan">greaterthan</A>&gt;,
+	    &lt;<A href="#lessthan">lessthan</A>&gt;,
+	    &lt;<A href="#or">or</A>&gt;,
+	    &lt;<A href="#undefined">undefined</A>&gt;
+	  </DL>
+	</DL>
+<P>
+<A name=ref-value><B>&lt;ref-value&gt;</B></A>
+	<PRE>&lt;ref-value state="StateName"/&gt;</PRE>
+	<DL>
+  	  <DD>Used to define a numeric value for any of the value
+  	  space parameter tags, except the &lt;<a
+  	  href="#pointpos">pointpos</a>&gt; tag, that depends on the
+  	  value of a numeric state variable.  E.g. a ref-value can be
+  	  used to set the maximum of a numer state variable to be the
+  	  value of another state variable.
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#minmax">max</A>&gt;, &lt;<A
+	    href="#minmax">min</A>&gt;, &lt;<A
+	    href="#average">average</A>&gt;, and &lt;<A
+	    href="#incr">incr</A>&gt; elements.
+	    <DT><B>Parameters:</B>
+	    <ul>
+	      <li><i>state</i> - <b>required</b> The name of a state
+	      variable with a numeric type 
+	    <ul>
+	  </DL>
+	</DL>
+<P>
+<A name=constant><B>&lt;constant&gt;</B></A>
+	<PRE>&lt;constant value="12"&gt;</PRE>
+	<DL>
+  	  <DD>Used to define a constant value in any location where a
+	  reference would also be accepted (i.e. the &lt;<A
+	  href="#ref-value">ref-value</A>&gt; element).
+	  <P>
+	  <DD><DL>
+	    <DT><B>Placement:</B>
+	    <DD>Inside the &lt;<A href="#minmax">max</A>&gt;, &lt;<A
+	    href="#minmax">min</A>&gt;, &lt;<A
+	    href="#average">average</A>&gt; and &lt;<A
+	    href="#incr">incr</A>&gt; elements.
+	    <DT><B>Parameters:</B>
+	    <DD>
+	    <ul>
+	      <li><i>value</i> - <b>required</b> The constant value.
+	    </ul>
+	  </DL>
+	</DL>
+<P>
+
+<H3><A name=future>Future Work</A></H3>
+<P>
+In the future, we are planning to add several new features to the
+specification language. This section discusses a few of these
+features.
+</P>
+
+<H4><A name=futureHints>Hints</A></H4>
+
+<P>
+Sometimes when defining a particular function of an appliance, it
+seems useful to give the interface generator a hint of how to
+appropriately render that function. For example, the balance of the
+output between the right and left speakers has an inherent horizontal
+quality that should be maintained in the user interface. Currently,
+there is no way for the specification designer to provide the
+interface generator with this kind of meta-information that may be
+critical to generating a good interface. <I>Hints</I> are a generic
+solution to this problem.
+</P>
+<P>
+Unfortunately, the idea of a hint is a little too generic to support
+within the spec. While it is useful to have this information, the
+language should avoid allowing the specification designer to
+<I>over-specify</I> a device. This keeps the size of a device
+specification from getting excessively large, and also relieves the
+programmers of an interface generator from writing code to interpret a
+generic hint. A happy medium will need to be achieved.
+</P>
+
+<H4><A name=futureCmdState>Command/State Relationships</A></H4>
+
+<P>
+Some commands have an implicit relationship with state variables on
+the device. For example, the seek button on a radio must be
+represented as a command, because its affect on the radio station
+state variable can not be known a priori. However, it does affect a
+state variable in some way and this information could useful to the
+user interface. This will be included in an upcoming revision of the
+specification language.
+</P>
+
+<H3><a name="examplespec">Appendix A: Example Specification</A></H3>
+
+<P>
+This example specification is for a Mitsubishi HD2000 DVCR.
+</P>
+
+<PRE>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;spec xmlns="http://www.cs.cmu.edu/~pebbles/puc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cs.cmu.edu/~pebbles/puc puc.xsd" name="MitsubishiDVCR" version="PUC/2.2"&gt;
+  &lt;labels&gt;
+    &lt;label&gt;Mitsubishi DVCR&lt;/label&gt;
+  &lt;/labels&gt;
+  &lt;types&gt;
+	&lt;type type-name="OnOffType"&gt;
+		&lt;boolean/&gt;
+		&lt;value-labels&gt;
+			&lt;map index="false"&gt;
+				&lt;labels&gt;&lt;label&gt;Off&lt;/label&gt;&lt;/labels&gt;
+			&lt;/map&gt;
+			&lt;map index="true"&gt;
+				&lt;labels&gt;&lt;label&gt;On&lt;/label&gt;&lt;/labels&gt;
+			&lt;/map&gt;
+		&lt;/value-labels&gt;
+	&lt;/type&gt;
+	&lt;type type-name="YesNoType"&gt;
+		&lt;boolean/&gt;
+		&lt;value-labels&gt;
+			&lt;map index="false"&gt;
+				&lt;labels&gt;&lt;label&gt;Off&lt;/label&gt;&lt;/labels&gt;
+			&lt;/map&gt;
+			&lt;map index="true"&gt;
+				&lt;labels&gt;&lt;label&gt;On&lt;/label&gt;&lt;/labels&gt;
+			&lt;/map&gt;
+		&lt;/value-labels&gt;
+	&lt;/type&gt;
+    &lt;type type-name="InOutType"&gt;
+		&lt;boolean /&gt;
+        &lt;value-labels&gt;
+            &lt;map index="true"&gt;
+                &lt;labels&gt;
+	                &lt;label&gt;In&lt;/label&gt;
+                &lt;/labels&gt;
+            &lt;/map&gt;
+            &lt;map index="false"&gt;
+                &lt;labels&gt;
+		            &lt;label&gt;Out&lt;/label&gt;
+                &lt;/labels&gt;
+            &lt;/map&gt;
+        &lt;/value-labels&gt;
+    &lt;/type&gt;
+	&lt;type type-name="ManualAutoType"&gt;
+		&lt;boolean /&gt;
+		&lt;value-labels&gt;
+			&lt;map index="false"&gt;
+				&lt;labels&gt;
+					&lt;label&gt;Manual&lt;/label&gt;
+				&lt;/labels&gt;
+			&lt;/map&gt;
+			&lt;map index="true"&gt;
+				&lt;labels&gt;
+					&lt;label&gt;Auto&lt;/label&gt;
+				&lt;/labels&gt;
+			&lt;/map&gt;
+		&lt;/value-labels&gt;
+    &lt;/type&gt;
+  &lt;/types&gt;
+  &lt;groupings&gt;
+    &lt;!-- States --&gt;
+    &lt;group name="Base"&gt;
+      &lt;state name="Power" priority="10"&gt;
+        &lt;type&gt;
+          &lt;enumerated&gt;
+            &lt;item-count&gt;3&lt;/item-count&gt;
+          &lt;/enumerated&gt;
+          &lt;value-labels&gt;
+            &lt;map index="1"&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Off&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/map&gt;
+            &lt;map index="2"&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Standby&lt;/label&gt;
+              &lt;/labels&gt;
+              &lt;active-if&gt;
+                &lt;greaterthan state="Recordings.Length"&gt;
+                  &lt;constant value="0" /&gt;
+                &lt;/greaterthan&gt;
+              &lt;/active-if&gt;
+            &lt;/map&gt;
+            &lt;map index="3"&gt;
+              &lt;labels&gt;
+                &lt;label&gt;On&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/map&gt;
+          &lt;/value-labels&gt;
+        &lt;/type&gt;
+        &lt;labels&gt;
+          &lt;label&gt;Power&lt;/label&gt;
+        &lt;/labels&gt;
+      &lt;/state&gt;
+      &lt;group name="Status"&gt;
+        &lt;active-if&gt;
+          &lt;equals state="Power"&gt;
+            &lt;constant value="true" /&gt;
+          &lt;/equals&gt;
+          &lt;greaterthan state="Setup.Progress"&gt;
+            &lt;!-- Setup has progressed beyond the initial steps --&gt;
+            &lt;constant value="4" /&gt;
+          &lt;/greaterthan&gt;
+        &lt;/active-if&gt;
+        &lt;labels&gt;
+          &lt;label&gt;Status&lt;/label&gt;
+        &lt;/labels&gt;
+        &lt;group name="Clock" priority="3" is-a="date-time"&gt;
+          &lt;state name="ClockSet"&gt;
+            &lt;type&gt;
+              &lt;boolean /&gt;
+              &lt;value-labels&gt;
+                &lt;map index="false"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Manual&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="true"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Auto&lt;/label&gt;
+                  &lt;/labels&gt;
+                  &lt;active-if&gt;
+                    &lt;equals state="FoundClockChannel"&gt;
+                      &lt;constant value="true" /&gt;
+                    &lt;/equals&gt;
+                  &lt;/active-if&gt;
+                &lt;/map&gt;
+              &lt;/value-labels&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Clock Set&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;group name="Time" is-a="time-absolute"&gt;
+            &lt;state name="Time"&gt;
+              &lt;type&gt;
+                &lt;integer /&gt;
+              &lt;/type&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Clock&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+            &lt;state name="TimeZone"&gt;
+              &lt;type&gt;
+                &lt;enumerated&gt;
+                  &lt;item-count&gt;7&lt;/item-count&gt;
+                &lt;/enumerated&gt;
+                &lt;value-labels&gt;
+                  &lt;map index="1"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;Atlantic&lt;/label&gt;
+                      &lt;label&gt;GMT-4&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="2"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;Eastern&lt;/label&gt;
+                      &lt;label&gt;GMT-5&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="3"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;Central&lt;/label&gt;
+                      &lt;label&gt;GMT-6&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="4"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;Mountain&lt;/label&gt;
+                      &lt;label&gt;GMT-7&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="5"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;Pacific&lt;/label&gt;
+                      &lt;label&gt;GMT-8&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="6"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;Alaska&lt;/label&gt;
+                      &lt;label&gt;GMT-9&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="7"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;Hawaii&lt;/label&gt;
+                      &lt;label&gt;GMT-10&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                &lt;/value-labels&gt;
+              &lt;/type&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Time Zone&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+            &lt;state name="DaylightSavings"&gt;
+              &lt;apply-type type-name="YesNoType" /&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Daylight Savings Time&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+          &lt;/group&gt;
+          &lt;group name="Date" is-a="date"&gt;
+            &lt;state name="Month"&gt;
+              &lt;type&gt;
+                &lt;enumerated&gt;
+                  &lt;item-count&gt;12&lt;/item-count&gt;
+                &lt;/enumerated&gt;
+                &lt;value-labels&gt;
+                  &lt;map index="1"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;January&lt;/label&gt;
+                      &lt;label&gt;Jan&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="2"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;February&lt;/label&gt;
+                      &lt;label&gt;Feb&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="3"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;March&lt;/label&gt;
+                      &lt;label&gt;Mar&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="4"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;April&lt;/label&gt;
+                      &lt;label&gt;Apr&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="5"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;May&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="6"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;June&lt;/label&gt;
+                      &lt;label&gt;Jun&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="7"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;July&lt;/label&gt;
+                      &lt;label&gt;Jul&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="8"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;August&lt;/label&gt;
+                      &lt;label&gt;Aug&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="9"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;September&lt;/label&gt;
+                      &lt;label&gt;Sep&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="10"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;October&lt;/label&gt;
+                      &lt;label&gt;Oct&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="11"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;November&lt;/label&gt;
+                      &lt;label&gt;Nov&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="12"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;December&lt;/label&gt;
+                      &lt;label&gt;Dec&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                &lt;/value-labels&gt;
+              &lt;/type&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Month&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+            &lt;state name="Year"&gt;
+              &lt;type&gt;
+                &lt;integer&gt;
+                  &lt;min&gt;
+                    &lt;constant value="2000" /&gt;
+                  &lt;/min&gt;
+                  &lt;max&gt;
+                    &lt;constant value="2099" /&gt;
+                  &lt;/max&gt;
+                &lt;/integer&gt;
+              &lt;/type&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Year&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+            &lt;state name="Date"&gt;
+              &lt;type&gt;
+                &lt;integer&gt;
+                  &lt;min&gt;
+                    &lt;constant value="1" /&gt;
+                  &lt;/min&gt;
+                  &lt;max&gt;
+                    &lt;constant value="31" /&gt;
+                  &lt;/max&gt;
+                &lt;/integer&gt;
+                &lt;value-labels&gt;
+                  &lt;!-- I could bother with coding leap years in here, 
+										but I won't. Instead I'm choosing to leave that
+										up to the appliance. --&gt;
+                  &lt;map index="30"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;30&lt;/label&gt;
+                    &lt;/labels&gt;
+                    &lt;active-if&gt;
+                      &lt;not&gt;
+                        &lt;equals state="Month"&gt;
+                          &lt;constant value="2" /&gt;
+                        &lt;/equals&gt;
+                      &lt;/not&gt;
+                    &lt;/active-if&gt;
+                  &lt;/map&gt;
+                  &lt;map index="31"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;31&lt;/label&gt;
+                    &lt;/labels&gt;
+                    &lt;active-if&gt;
+                      &lt;equals state="Month"&gt;
+                        &lt;constant value="1" /&gt;
+                      &lt;/equals&gt;
+                      &lt;equals state="Month"&gt;
+                        &lt;constant value="3" /&gt;
+                      &lt;/equals&gt;
+                      &lt;equals state="Month"&gt;
+                        &lt;constant value="5" /&gt;
+                      &lt;/equals&gt;
+                      &lt;equals state="Month"&gt;
+                        &lt;constant value="7" /&gt;
+                      &lt;/equals&gt;
+                      &lt;equals state="Month"&gt;
+                        &lt;constant value="8" /&gt;
+                      &lt;/equals&gt;
+                      &lt;equals state="Month"&gt;
+                        &lt;constant value="10" /&gt;
+                      &lt;/equals&gt;
+                      &lt;equals state="Month"&gt;
+                        &lt;constant value="12" /&gt;
+                      &lt;/equals&gt;
+                    &lt;/active-if&gt;
+                  &lt;/map&gt;
+                &lt;/value-labels&gt;
+              &lt;/type&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Date&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+          &lt;/group&gt;
+        &lt;/group&gt;
+        &lt;group name="TapeStatus"&gt;
+          &lt;state name="TapeIn" access="read-only"&gt;
+			&lt;apply-type type-name="InOutType"/&gt;
+            &lt;labels&gt;
+              &lt;label&gt;VCR Tape&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;state name="TapeRecordable" access="read-only"&gt;
+            &lt;apply-type type-name="YesNoType"/&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Tape Recordable&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+        &lt;/group&gt;
+        &lt;state name="CopyProtected" access="read-only"&gt;
+          &lt;apply-type type-name="OnOffType" /&gt;
+          &lt;labels&gt;
+            &lt;label&gt;Digitally Copy Protected&lt;/label&gt;
+            &lt;label&gt;Copy Protected&lt;/label&gt;
+          &lt;/labels&gt;
+        &lt;/state&gt;
+      &lt;/group&gt;
+      &lt;group name="Controls"&gt;
+        &lt;active-if&gt;
+          &lt;equals state="Power"&gt;
+            &lt;constant value="true" /&gt;
+          &lt;/equals&gt;
+          &lt;greaterthan state="Setup.Progress"&gt;
+            &lt;constant value="4" /&gt;
+          &lt;/greaterthan&gt;
+        &lt;/active-if&gt;
+        &lt;labels&gt;
+          &lt;label&gt;Controls&lt;/label&gt;
+        &lt;/labels&gt;
+        &lt;group name="PlayControls" is-a="media-controls" priority="10"&gt;
+          &lt;active-if&gt;
+            &lt;equals state="TapeIn"&gt;
+              &lt;constant value="true" /&gt;
+            &lt;/equals&gt;
+          &lt;/active-if&gt;
+          &lt;state name="Mode" priority="10"&gt;
+            &lt;type&gt;
+              &lt;enumerated&gt;
+                &lt;item-count&gt;15&lt;/item-count&gt;
+              &lt;/enumerated&gt;
+              &lt;value-labels&gt;
+                &lt;map index="1"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Reverse High Speech Search&lt;/label&gt;
+                  &lt;/labels&gt;
+                  &lt;active-if&gt;
+                    &lt;equals state="DVHSActive"&gt;
+                      &lt;constant value="false" /&gt;
+                    &lt;/equals&gt;
+                  &lt;/active-if&gt;
+                &lt;/map&gt;
+                &lt;map index="2"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Reverse Search&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="3"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Reverse Fast Playback&lt;/label&gt;
+                  &lt;/labels&gt;
+                  &lt;active-if&gt;
+                    &lt;equals state="DVHSActive"&gt;
+                      &lt;constant value="false" /&gt;
+                    &lt;/equals&gt;
+                  &lt;/active-if&gt;
+                &lt;/map&gt;
+                &lt;map index="4"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Reverse Playback&lt;/label&gt;
+                  &lt;/labels&gt;
+                  &lt;active-if&gt;
+                    &lt;equals state="DVHSActive"&gt;
+                      &lt;constant value="false" /&gt;
+                    &lt;/equals&gt;
+                  &lt;/active-if&gt;
+                &lt;/map&gt;
+                &lt;map index="5"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Reverse Slow-Motion Playback&lt;/label&gt;
+                  &lt;/labels&gt;
+                  &lt;active-if&gt;
+                    &lt;equals state="DVHSActive"&gt;
+                      &lt;constant value="false" /&gt;
+                    &lt;/equals&gt;
+                  &lt;/active-if&gt;
+                &lt;/map&gt;
+                &lt;map index="6"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Pause&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="7"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Slow-Motion Playback&lt;/label&gt;
+                  &lt;/labels&gt;
+                  &lt;active-if&gt;
+                    &lt;equals state="DVHSActive"&gt;
+                      &lt;constant value="false" /&gt;
+                    &lt;/equals&gt;
+                  &lt;/active-if&gt;
+                &lt;/map&gt;
+                &lt;map index="8"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Play&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="9"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Fast Playback&lt;/label&gt;
+                  &lt;/labels&gt;
+                  &lt;active-if&gt;
+                    &lt;equals state="DVHSActive"&gt;
+                      &lt;constant value="false" /&gt;
+                    &lt;/equals&gt;
+                  &lt;/active-if&gt;
+                &lt;/map&gt;
+                &lt;map index="10"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Forward Search&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="11"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Forward High Speech Search&lt;/label&gt;
+                  &lt;/labels&gt;
+                  &lt;active-if&gt;
+                    &lt;equals state="DVHSActive"&gt;
+                      &lt;constant value="false" /&gt;
+                    &lt;/equals&gt;
+                  &lt;/active-if&gt;
+                &lt;/map&gt;
+                &lt;map index="12"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Rewind&lt;/label&gt;
+                    &lt;label&gt;REW&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="13"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Stop&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="14"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Fast-Forward&lt;/label&gt;
+                    &lt;label&gt;FFWD&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="15"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Record&lt;/label&gt;
+                  &lt;/labels&gt;
+                  &lt;active-if&gt;
+                    &lt;equals state="TapeRecordable"&gt;
+                      &lt;constant value="false" /&gt;
+                    &lt;/equals&gt;
+                  &lt;/active-if&gt;
+                &lt;/map&gt;
+              &lt;/value-labels&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Play Mode&lt;/label&gt;
+              &lt;label&gt;Mode&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;command name="Eject" priority="3"&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Eject&lt;/label&gt;
+            &lt;/labels&gt;
+            &lt;active-if&gt;
+              &lt;equals state="TapeIn"&gt;
+                &lt;constant value="true" /&gt;
+              &lt;/equals&gt;
+            &lt;/active-if&gt;
+          &lt;/command&gt;
+        &lt;/group&gt;
+        &lt;group name="Common" priority="9"&gt;
+          &lt;labels&gt;
+            &lt;label&gt;Common&lt;/label&gt;
+          &lt;/labels&gt;
+          &lt;state name="Counter" is-a="time-relative"&gt;
+            &lt;type&gt;
+              &lt;integer /&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Counter&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;group name="Input" priority="9"&gt;
+            &lt;state name="Source"&gt;
+              &lt;type&gt;
+                &lt;enumerated&gt;
+                  &lt;item-count&gt;4&lt;/item-count&gt;
+                &lt;/enumerated&gt;
+                &lt;value-labels&gt;
+                  &lt;map index="1"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;Antenna&lt;/label&gt;
+                      &lt;label&gt;ANT&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="2"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;Line 1&lt;/label&gt;
+                      &lt;label&gt;L1&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="3"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;Line 2&lt;/label&gt;
+                      &lt;label&gt;L2&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="4"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;IEEE 1394&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                &lt;/value-labels&gt;
+              &lt;/type&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Input&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+            &lt;state name="Channel"&gt;
+              &lt;type&gt;
+                &lt;list-selection list="ChannelList"&gt;
+                  &lt;active-if&gt;
+                    &lt;equals state="Active"&gt;
+                      &lt;constant value="true" /&gt;
+                    &lt;/equals&gt;
+                  &lt;/active-if&gt;
+                &lt;/list-selection&gt;
+              &lt;/type&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Channel&lt;/label&gt;
+              &lt;/labels&gt;
+              &lt;active-if&gt;
+                &lt;equals state="Source"&gt;
+                  &lt;constant value="1" /&gt;
+                &lt;/equals&gt;
+              &lt;/active-if&gt;
+            &lt;/state&gt;
+            &lt;state name="IEEE1394Input"&gt;
+              &lt;type&gt;
+                &lt;integer&gt;
+                  &lt;min&gt;
+                    &lt;constant value="1" /&gt;
+                  &lt;/min&gt;
+                  &lt;max&gt;
+                    &lt;constant value="5" /&gt;
+                  &lt;/max&gt;
+                &lt;/integer&gt;
+              &lt;/type&gt;
+              &lt;labels&gt;
+                &lt;label&gt;IEEE 1394 Input&lt;/label&gt;
+                &lt;label&gt;1394 Input&lt;/label&gt;
+              &lt;/labels&gt;
+              &lt;active-if&gt;
+                &lt;equals state="Source"&gt;
+                  &lt;constant value="4" /&gt;
+                &lt;/equals&gt;
+              &lt;/active-if&gt;
+            &lt;/state&gt;
+          &lt;/group&gt;
+          &lt;state name="DVHSActive" priority="6"&gt;
+            &lt;apply-type type-name="OnOffType" /&gt;
+            &lt;labels&gt;
+              &lt;label&gt;DVHS Active&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;state name="VCR/TV" priority="8"&gt;
+            &lt;type&gt;
+              &lt;boolean /&gt;
+              &lt;value-labels&gt;
+                &lt;map index="true"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;VCR&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="false"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;TV&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+              &lt;/value-labels&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;VCR/TV&lt;/label&gt;
+            &lt;/labels&gt;
+            &lt;active-if&gt;
+              &lt;equals state="RFConverter"&gt;
+                &lt;constant value="true" /&gt;
+              &lt;/equals&gt;
+            &lt;/active-if&gt;
+          &lt;/state&gt;
+        &lt;/group&gt;
+        &lt;group name="Record" priority="7"&gt;
+          &lt;labels&gt;
+            &lt;label&gt;Recording&lt;/label&gt;
+            &lt;label&gt;Record&lt;/label&gt;
+          &lt;/labels&gt;
+          &lt;state name="RecordSpeed"&gt;
+            &lt;type&gt;
+              &lt;enumerated&gt;
+                &lt;item-count&gt;4&lt;/item-count&gt;
+              &lt;/enumerated&gt;
+              &lt;value-labels&gt;
+                &lt;map index="1"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;High Speed&lt;/label&gt;
+                    &lt;label&gt;HS&lt;/label&gt;
+                  &lt;/labels&gt;
+                  &lt;active-if&gt;
+                    &lt;equals state="DVHSActive"&gt;
+                      &lt;constant value="true" /&gt;
+                    &lt;/equals&gt;
+                  &lt;/active-if&gt;
+                &lt;/map&gt;
+                &lt;map index="2"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Standard&lt;/label&gt;
+                    &lt;label&gt;STD&lt;/label&gt;
+                  &lt;/labels&gt;
+                  &lt;active-if&gt;
+                    &lt;equals state="DVHSActive"&gt;
+                      &lt;constant value="true" /&gt;
+                    &lt;/equals&gt;
+                  &lt;/active-if&gt;
+                &lt;/map&gt;
+                &lt;map index="3"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Standard Play&lt;/label&gt;
+                    &lt;label&gt;SP&lt;/label&gt;
+                  &lt;/labels&gt;
+                  &lt;active-if&gt;
+                    &lt;equals state="DVHSActive"&gt;
+                      &lt;constant value="false" /&gt;
+                    &lt;/equals&gt;
+                  &lt;/active-if&gt;
+                &lt;/map&gt;
+                &lt;map index="4"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Extended Play&lt;/label&gt;
+                    &lt;label&gt;EP&lt;/label&gt;
+                  &lt;/labels&gt;
+                  &lt;active-if&gt;
+                    &lt;equals state="DVHSActive"&gt;
+                      &lt;constant value="false" /&gt;
+                    &lt;/equals&gt;
+                  &lt;/active-if&gt;
+                &lt;/map&gt;
+              &lt;/value-labels&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Recording Mode&lt;/label&gt;
+            &lt;/labels&gt;
+            &lt;active-if&gt;
+              &lt;equals state="DVHSActive"&gt;
+                &lt;constant value="false" /&gt;
+              &lt;/equals&gt;
+            &lt;/active-if&gt;
+          &lt;/state&gt;
+          &lt;group name="Quick"&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Quick Recording&lt;/label&gt;
+              &lt;label&gt;Quick&lt;/label&gt;
+            &lt;/labels&gt;
+            &lt;state name="OneTouchRecording"&gt;
+              &lt;type&gt;
+                &lt;enumerated&gt;
+                  &lt;item-count&gt;10&lt;/item-count&gt;
+                &lt;/enumerated&gt;
+                &lt;value-labels&gt;
+                  &lt;map index="1"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;Off&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="2"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;30&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="3"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;60&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="4"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;90&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="5"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;120&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="6"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;150&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="7"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;180&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="8"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;210&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="9"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;240&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="10"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;End&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                &lt;/value-labels&gt;
+              &lt;/type&gt;
+              &lt;labels&gt;
+                &lt;label&gt;One-Touch Recording Length&lt;/label&gt;
+              &lt;/labels&gt;
+              &lt;active-if&gt;
+                &lt;equals state="PlayControls.Mode"&gt;
+                  &lt;constant value="15" /&gt;
+                &lt;/equals&gt;
+                &lt;not&gt;
+                  &lt;equals state="DelayedRecording"&gt;
+                    &lt;constant value="49" /&gt;
+                  &lt;/equals&gt;
+                &lt;/not&gt;
+              &lt;/active-if&gt;
+            &lt;/state&gt;
+            &lt;state name="DelayedRecording"&gt;
+              &lt;type&gt;
+                &lt;enumerated&gt;
+                  &lt;item-count&gt;49&lt;/item-count&gt;
+                &lt;/enumerated&gt;
+                &lt;value-labels&gt;
+                  &lt;map index="1"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;12:00am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="2"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;12:30am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="3"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;1:00am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="4"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;1:30am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="5"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;2:00am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="6"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;2:30am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="7"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;3:00am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="8"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;3:30am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="9"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;4:00am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="10"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;4:30am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="11"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;5:00am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="12"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;5:30am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="13"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;6:00am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="14"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;6:30am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="15"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;7:00am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="16"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;7:30am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="17"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;8:00am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="18"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;8:30am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="19"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;9:00am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="20"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;9:30am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="21"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;10:00am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="22"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;10:30am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="23"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;11:00am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="24"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;11:30am&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="25"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;12:00pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="26"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;12:30pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="27"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;1:00pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="28"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;1:30pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="29"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;2:00pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="30"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;2:30pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="31"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;3:00pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="32"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;3:30pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="33"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;4:00pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="34"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;4:30pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="35"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;5:00pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="36"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;5:30pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="37"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;6:00pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="38"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;6:30pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="39"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;7:00pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="40"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;7:30pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="41"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;8:00pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="42"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;8:30pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="43"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;9:00pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="44"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;9:30pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="45"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;10:00pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="46"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;10:30pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="47"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;11:00pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="48"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;11:30pm&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="49"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;Off&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                &lt;/value-labels&gt;
+              &lt;/type&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Delayed Record Start Time&lt;/label&gt;
+                &lt;label&gt;Delayed Record&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+          &lt;/group&gt;
+          &lt;command name="AddIndexMark"&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Add Index Mark&lt;/label&gt;
+            &lt;/labels&gt;
+            &lt;active-if&gt;
+              &lt;equals state="PlaybackControls.Mode"&gt;
+                &lt;!-- Record --&gt;
+                &lt;constant value="15" /&gt;
+              &lt;/equals&gt;
+            &lt;/active-if&gt;
+          &lt;/command&gt;
+        &lt;/group&gt;
+        &lt;group name="Search" priority="5"&gt;
+          &lt;labels&gt;
+            &lt;label&gt;Search&lt;/label&gt;
+          &lt;/labels&gt;
+          &lt;state name="QuickSearchTime"&gt;
+            &lt;type&gt;
+              &lt;enumerated&gt;
+                &lt;item-count&gt;7&lt;/item-count&gt;
+              &lt;/enumerated&gt;
+              &lt;value-labels&gt;
+                &lt;map index="1"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;0&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="2"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;30 sec&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="3"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;1 min&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="4"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;1:30&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="5"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;2 min&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="6"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;2:30&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="7"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;3 min&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+              &lt;/value-labels&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Quick Search Time&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;group name="ToLocation"&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Location-Based Search&lt;/label&gt;
+              &lt;label&gt;Location-Based&lt;/label&gt;
+            &lt;/labels&gt;
+            &lt;command name="GotoCounterZero"&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Search To Counter Zero&lt;/label&gt;
+                &lt;label&gt;Search To Zero&lt;/label&gt;
+              &lt;/labels&gt;
+              &lt;active-if&gt;
+                &lt;not&gt;
+                  &lt;equals state="Counter"&gt;
+                    &lt;constant value="0" /&gt;
+                  &lt;/equals&gt;
+                &lt;/not&gt;
+              &lt;/active-if&gt;
+            &lt;/command&gt;
+            &lt;command name="SearchToBlank"&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Search To Blank&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/command&gt;
+          &lt;/group&gt;
+          &lt;group name="IndexCommands"&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Index-Based Search&lt;/label&gt;
+              &lt;label&gt;Index Mark Search&lt;/label&gt;
+              &lt;label&gt;Index Search&lt;/label&gt;
+            &lt;/labels&gt;
+            &lt;command name="IndexSearchForward"&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Index Search Forward&lt;/label&gt;
+                &lt;label&gt;Forward&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/command&gt;
+            &lt;command name="IndexSearchReverse"&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Index Search Reverse&lt;/label&gt;
+                &lt;label&gt;Reverse&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/command&gt;
+          &lt;/group&gt;
+        &lt;/group&gt;
+        &lt;group name="Specialty" priority="3"&gt;
+          &lt;labels&gt;
+            &lt;label&gt;Specialty&lt;/label&gt;
+          &lt;/labels&gt;
+          &lt;state name="DisplayMode"&gt;
+            &lt;type&gt;
+              &lt;enumerated&gt;
+                &lt;item-count&gt;3&lt;/item-count&gt;
+              &lt;/enumerated&gt;
+              &lt;value-labels&gt;
+                &lt;map index="1"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Off&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="2"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Timeguage/Remaining Time&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="3"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Clock&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+              &lt;/value-labels&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Display Mode&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;command name="ResetCounter"&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Reset Counter&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/command&gt;
+          &lt;command name="StartRepeatPlayback"&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Start Repeat Playback&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/command&gt;
+        &lt;/group&gt;
+      &lt;/group&gt;
+      &lt;group name="Setup"&gt;
+        &lt;active-if&gt;
+          &lt;equals state="Power"&gt;
+            &lt;constant value="true" /&gt;
+          &lt;/equals&gt;
+        &lt;/active-if&gt;
+        &lt;labels&gt;
+          &lt;label&gt;Setup&lt;/label&gt;
+        &lt;/labels&gt;
+        &lt;state name="Progress" access="read-only"&gt;
+          &lt;type&gt;
+            &lt;enumerated&gt;
+              &lt;item-count&gt;6&lt;/item-count&gt;
+            &lt;/enumerated&gt;
+            &lt;value-labels&gt;
+              &lt;map index="1"&gt;
+                &lt;labels&gt;
+                  &lt;label&gt;Not Setup&lt;/label&gt;
+                &lt;/labels&gt;
+              &lt;/map&gt;
+              &lt;map index="2"&gt;
+                &lt;labels&gt;
+                  &lt;label&gt;1st Step in Progress&lt;/label&gt;
+                &lt;/labels&gt;
+              &lt;/map&gt;
+              &lt;map index="3"&gt;
+                &lt;labels&gt;
+                  &lt;label&gt;1st Step Complete&lt;/label&gt;
+                &lt;/labels&gt;
+              &lt;/map&gt;
+              &lt;map index="4"&gt;
+                &lt;labels&gt;
+                  &lt;label&gt;Select Lineup&lt;/label&gt;
+                &lt;/labels&gt;
+              &lt;/map&gt;
+              &lt;map index="5"&gt;
+                &lt;labels&gt;
+                  &lt;label&gt;Completed&lt;/label&gt;
+                &lt;/labels&gt;
+              &lt;/map&gt;
+              &lt;map index="6"&gt;
+                &lt;labels&gt;
+                  &lt;label&gt;Failed&lt;/label&gt;
+                &lt;/labels&gt;
+              &lt;/map&gt;
+            &lt;/value-labels&gt;
+          &lt;/type&gt;
+          &lt;labels&gt;
+            &lt;label&gt;AllSet Progress&lt;/label&gt;
+          &lt;/labels&gt;
+        &lt;/state&gt;
+        &lt;group name="InputConfig"&gt;
+          &lt;labels&gt;
+            &lt;label&gt;Input Configuration&lt;/label&gt;
+            &lt;label&gt;Input Config&lt;/label&gt;
+            &lt;label&gt;Input&lt;/label&gt;
+          &lt;/labels&gt;
+          &lt;state name="AntennaSource"&gt;
+            &lt;type&gt;
+              &lt;enumerated&gt;
+                &lt;item-count&gt;4&lt;/item-count&gt;
+              &lt;/enumerated&gt;
+              &lt;value-labels&gt;
+                &lt;map index="1"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Cable&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="2"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Cable Box&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="3"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Digital Cable&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="4"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Antenna&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+              &lt;/value-labels&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Antenna Source&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;state name="BrandCode"&gt;
+            &lt;type&gt;
+              &lt;integer&gt;
+                &lt;min&gt;
+                  &lt;constant value="1" /&gt;
+                &lt;/min&gt;
+                &lt;max&gt;
+                  &lt;constant value="99" /&gt;
+                &lt;/max&gt;
+              &lt;/integer&gt;
+              &lt;!-- should probably include the brand names here in 
+								value-labels, but I'm lazy --&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Brand Code (refer to manual)&lt;/label&gt;
+              &lt;label&gt;Brand Code&lt;/label&gt;
+            &lt;/labels&gt;
+            &lt;active-if&gt;
+              &lt;equals state="AntennaSource"&gt;
+                &lt;constant value="2" /&gt;
+              &lt;/equals&gt;
+              &lt;equals state="AntennaSource"&gt;
+                &lt;constant value="3" /&gt;
+              &lt;/equals&gt;
+            &lt;/active-if&gt;
+          &lt;/state&gt;
+          &lt;state name="CableBoxChannel"&gt;
+            &lt;type&gt;
+              &lt;enumerated&gt;
+                &lt;item-count&gt;15&lt;/item-count&gt;
+              &lt;/enumerated&gt;
+              &lt;value-labels&gt;
+                &lt;map index="1"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;L1&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="2"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;L2&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="3"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;1&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="4"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;2&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="5"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;3&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="6"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;4&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="7"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;5&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="8"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;6&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="9"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;7&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="10"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;8&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="11"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;9&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="12"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;10&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="13"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;11&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="14"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;12&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="15"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;13&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+              &lt;/value-labels&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Cable Box Output Channel&lt;/label&gt;
+              &lt;label&gt;Cable Box Channel&lt;/label&gt;
+            &lt;/labels&gt;
+            &lt;active-if&gt;
+              &lt;equals state="AntennaSource"&gt;
+                &lt;constant value="2" /&gt;
+              &lt;/equals&gt;
+              &lt;equals state="AntennaSource"&gt;
+                &lt;constant value="3" /&gt;
+              &lt;/equals&gt;
+              &lt;defined state="BrandCode" /&gt;
+            &lt;/active-if&gt;
+          &lt;/state&gt;
+          &lt;state name="ZipCode" is-a="address"&gt;
+            &lt;type&gt;
+              &lt;integer&gt;
+                &lt;min&gt;
+                  &lt;constant value="10000" /&gt;
+                &lt;/min&gt;
+                &lt;max&gt;
+                  &lt;constant value="99999" /&gt;
+                &lt;/max&gt;
+              &lt;/integer&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Zip Code&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;list-group name="Lineups" priority="2"&gt;
+            &lt;active-if&gt;
+              &lt;equals state="SetupProgress"&gt;
+                &lt;constant value="4" /&gt;
+              &lt;/equals&gt;
+            &lt;/active-if&gt;
+            &lt;selections number="one" /&gt;
+            &lt;list-group name="Channels"&gt;
+              &lt;min&gt;
+                &lt;constant value="1" /&gt;
+              &lt;/min&gt;
+              &lt;max&gt;
+                &lt;constant value="125" /&gt;
+              &lt;/max&gt;
+              &lt;selections number="one" access="read-only" /&gt;
+              &lt;state name="Station" access="read-only"&gt;
+                &lt;type&gt;
+                  &lt;string&gt;
+                    &lt;min&gt;
+                      &lt;constant value="3" /&gt;
+                    &lt;/min&gt;
+                    &lt;max&gt;
+                      &lt;constant value="5" /&gt;
+                    &lt;/max&gt;
+                  &lt;/string&gt;
+                &lt;/type&gt;
+                &lt;labels&gt;
+                  &lt;label&gt;Station&lt;/label&gt;
+                &lt;/labels&gt;
+              &lt;/state&gt;
+              &lt;state name="Channel" access="read-only"&gt;
+                &lt;type&gt;
+                  &lt;integer&gt;
+                    &lt;min&gt;
+                      &lt;constant value="1" /&gt;
+                    &lt;/min&gt;
+                    &lt;max&gt;
+                      &lt;constant value="125" /&gt;
+                    &lt;/max&gt;
+                  &lt;/integer&gt;
+                &lt;/type&gt;
+              &lt;/state&gt;
+            &lt;/list-group&gt;
+          &lt;/list-group&gt;
+          &lt;list-group name="ChannelList" priority="3"&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Active Channels&lt;/label&gt;
+            &lt;/labels&gt;
+            &lt;item-count&gt;125&lt;/item-count&gt;
+            &lt;selections number="one" /&gt;
+            &lt;state name="Active"&gt;
+              &lt;apply-type type-name="OnOffType" /&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Active&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+          &lt;/list-group&gt;
+          &lt;state name="FoundClockChannel" access="read-only"&gt;
+            &lt;!-- State that defines whether the VCR found a channel with
+							time information that would allow it to set the clock
+							automatically. --&gt;
+            &lt;apply-type type-name="YesNoType" /&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Found Clock Channel&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;state name="SatReceiverCode"&gt;
+            &lt;type&gt;
+              &lt;enumerated&gt;
+                &lt;item-count&gt;9&lt;/item-count&gt;
+              &lt;/enumerated&gt;
+              &lt;value-labels&gt;
+                &lt;map index="1"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Off&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="2"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;1&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="3"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;2&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="4"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;3&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="5"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;4&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="6"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;5&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="7"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;6&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="8"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;7&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="9"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;8&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+              &lt;/value-labels&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Satellite Receiver Code&lt;/label&gt;
+              &lt;label&gt;Sat. Receiver Code&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;group name="InputEnables"&gt;
+            &lt;state name="FrontInput"&gt;
+              &lt;apply-type type-name="OnOffType" /&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Front S-Input&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+            &lt;state name="RearInput"&gt;
+              &lt;apply-type type-name="OnOffType" /&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Rear S-Input&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+            &lt;state name="RearThrough"&gt;
+              &lt;apply-type type-name="OnOffType" /&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Rear S-Through&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+          &lt;/group&gt;
+        &lt;/group&gt;
+        &lt;group name="OutputConfig"&gt;
+          &lt;labels&gt;
+            &lt;label&gt;Output Configuration&lt;/label&gt;
+            &lt;label&gt;Output COnfig&lt;/label&gt;
+            &lt;label&gt;Output&lt;/label&gt;
+          &lt;/labels&gt;
+          &lt;state name="ChannelOutput" priority="1"&gt;
+            &lt;type&gt;
+              &lt;enumerated&gt;
+                &lt;item-count&gt;2&lt;/item-count&gt;
+              &lt;/enumerated&gt;
+              &lt;value-labels&gt;
+                &lt;map index="1"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Channel 3&lt;/label&gt;
+                    &lt;label&gt;Ch 3&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="2"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Channel 4&lt;/label&gt;
+                    &lt;label&gt;Ch 4&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+              &lt;/value-labels&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Antenna Output Channel&lt;/label&gt;
+              &lt;label&gt;Output Channel&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;state name="RFConverter" priority="1"&gt;
+            &lt;apply-type type-name="OnOffType"/&gt;
+            &lt;labels&gt;
+              &lt;label&gt;RF Converter Status&lt;/label&gt;
+              &lt;label&gt;RF Converter&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;state name="Monitor"&gt;
+            &lt;type&gt;
+              &lt;enumerated&gt;
+                &lt;item-count&gt;4&lt;/item-count&gt;
+              &lt;/enumerated&gt;
+              &lt;value-labels&gt;
+                &lt;map index="1"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Stereo&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="2"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;L&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="3"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;R&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="4"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Mono&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+              &lt;/value-labels&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Audio Monitor&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+        &lt;/group&gt;
+        &lt;group name="RecordConfig"&gt;
+          &lt;labels&gt;
+            &lt;label&gt;Record Configuration&lt;/label&gt;
+            &lt;label&gt;Record Config&lt;/label&gt;
+            &lt;label&gt;Record&lt;/label&gt;
+          &lt;/labels&gt;
+          &lt;group name="PerfecTape" priority="1"&gt;
+            &lt;labels&gt;
+              &lt;label&gt;PerfecTape&lt;/label&gt;
+            &lt;/labels&gt;
+            &lt;state name="AutoRecordMode"&gt;
+			  &lt;apply-type type-name="ManualAutoType"/&gt;
+              &lt;labels&gt;
+                &lt;label&gt;PerfecTape Record Mode&lt;/label&gt;
+                &lt;label&gt;Record Mode&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+            &lt;command name="RunTest"&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Run PerfecTape Test&lt;/label&gt;
+              &lt;/labels&gt;
+              &lt;active-if&gt;
+                &lt;equals state="TapeIn"&gt;
+                  &lt;constant value="true" /&gt;
+                &lt;/equals&gt;
+                &lt;equals state="TapeRecordable"&gt;
+                  &lt;constant value="true" /&gt;
+                &lt;/equals&gt;
+              &lt;/active-if&gt;
+            &lt;/command&gt;
+          &lt;/group&gt;
+          &lt;group name="SVHSSetup"&gt;
+            &lt;state name="SVHSRecord"&gt;
+              &lt;type&gt;
+                &lt;boolean /&gt;
+                &lt;value-labels&gt;
+                  &lt;map index="false"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;Off&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="true"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;Auto&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                &lt;/value-labels&gt;
+              &lt;/type&gt;
+              &lt;labels&gt;
+                &lt;label&gt;S-VHS Record&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+            &lt;state name="S-ETRecord"&gt;
+              &lt;apply-type type-name="OnOffType" /&gt;
+              &lt;labels&gt;
+                &lt;label&gt;S-ET Record&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+          &lt;/group&gt;
+          &lt;group name="Audio"&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Audio&lt;/label&gt;
+            &lt;/labels&gt;
+            &lt;state name="AudioRecording"&gt;
+              &lt;type&gt;
+                &lt;enumerated&gt;
+                  &lt;item-count&gt;2&lt;/item-count&gt;
+                &lt;/enumerated&gt;
+                &lt;value-labels&gt;
+                  &lt;map index="1"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;Stereo+SAP&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                  &lt;map index="2"&gt;
+                    &lt;labels&gt;
+                      &lt;label&gt;Stereo&lt;/label&gt;
+                    &lt;/labels&gt;
+                  &lt;/map&gt;
+                &lt;/value-labels&gt;
+              &lt;/type&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Normal Audio Recording&lt;/label&gt;
+                &lt;label&gt;Audio Recording&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+          &lt;/group&gt;
+          &lt;group name="Video"&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Video&lt;/label&gt;
+            &lt;/labels&gt;
+            &lt;group name="TapeType"&gt;
+              &lt;state name="Analog"&gt;
+                &lt;type&gt;
+                  &lt;enumerated&gt;
+                    &lt;item-count&gt;5&lt;/item-count&gt;
+                  &lt;/enumerated&gt;
+                  &lt;value-labels&gt;
+                    &lt;map index="1"&gt;
+                      &lt;labels&gt;
+                        &lt;label&gt;T-120&lt;/label&gt;
+                      &lt;/labels&gt;
+                    &lt;/map&gt;
+                    &lt;map index="2"&gt;
+                      &lt;labels&gt;
+                        &lt;label&gt;T-160&lt;/label&gt;
+                      &lt;/labels&gt;
+                    &lt;/map&gt;
+                    &lt;map index="3"&gt;
+                      &lt;labels&gt;
+                        &lt;label&gt;T-180&lt;/label&gt;
+                      &lt;/labels&gt;
+                    &lt;/map&gt;
+                    &lt;map index="4"&gt;
+                      &lt;labels&gt;
+                        &lt;label&gt;T-200&lt;/label&gt;
+                      &lt;/labels&gt;
+                    &lt;/map&gt;
+                    &lt;map index="5"&gt;
+                      &lt;labels&gt;
+                        &lt;label&gt;T-210&lt;/label&gt;
+                      &lt;/labels&gt;
+                    &lt;/map&gt;
+                  &lt;/value-labels&gt;
+                &lt;/type&gt;
+                &lt;labels&gt;
+                  &lt;label&gt;Tape Type&lt;/label&gt;
+                &lt;/labels&gt;
+                &lt;active-if&gt;
+                  &lt;equals state="DVHSActive"&gt;
+                    &lt;constant value="false" /&gt;
+                  &lt;/equals&gt;
+                &lt;/active-if&gt;
+              &lt;/state&gt;
+              &lt;state name="Digital"&gt;
+                &lt;type&gt;
+                  &lt;enumerated&gt;
+                    &lt;item-count&gt;4&lt;/item-count&gt;
+                  &lt;/enumerated&gt;
+                  &lt;value-labels&gt;
+                    &lt;map index="1"&gt;
+                      &lt;labels&gt;
+                        &lt;label&gt;DF-300&lt;/label&gt;
+                      &lt;/labels&gt;
+                    &lt;/map&gt;
+                    &lt;map index="2"&gt;
+                      &lt;labels&gt;
+                        &lt;label&gt;DF-360&lt;/label&gt;
+                      &lt;/labels&gt;
+                    &lt;/map&gt;
+                    &lt;map index="3"&gt;
+                      &lt;labels&gt;
+                        &lt;label&gt;DF-420&lt;/label&gt;
+                      &lt;/labels&gt;
+                    &lt;/map&gt;
+                    &lt;map index="4"&gt;
+                      &lt;labels&gt;
+                        &lt;label&gt;DF-480&lt;/label&gt;
+                      &lt;/labels&gt;
+                    &lt;/map&gt;
+                  &lt;/value-labels&gt;
+                &lt;/type&gt;
+                &lt;labels&gt;
+                  &lt;label&gt;DVHS Tape Type&lt;/label&gt;
+                &lt;/labels&gt;
+                &lt;active-if&gt;
+                  &lt;equals state="DVHSActive"&gt;
+                    &lt;constant value="true" /&gt;
+                  &lt;/equals&gt;
+                &lt;/active-if&gt;
+              &lt;/state&gt;
+            &lt;/group&gt;
+            &lt;state name="3DYC"&gt;
+              &lt;apply-type type-name="OnOffType" /&gt;
+              &lt;labels&gt;
+                &lt;label&gt;3D-Y/C&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+            &lt;state name="DNRTBC"&gt;
+              &lt;apply-type type-name="OnOffType" /&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Digital Noise Reduction + Time Base Correction&lt;/label&gt;
+                &lt;label&gt;DNR+TBC&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/state&gt;
+          &lt;/group&gt;
+        &lt;/group&gt;
+        &lt;group name="PlaybackConfig"&gt;
+          &lt;labels&gt;
+            &lt;label&gt;Playback Configuration&lt;/label&gt;
+            &lt;label&gt;Playback Config&lt;/label&gt;
+            &lt;label&gt;Playback&lt;/label&gt;
+          &lt;/labels&gt;
+          &lt;state name="PlaybackMode"&gt;
+            &lt;type&gt;
+              &lt;enumerated&gt;
+                &lt;item-count&gt;4&lt;/item-count&gt;
+              &lt;/enumerated&gt;
+              &lt;value-labels&gt;
+                &lt;map index="1"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Auto&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="2"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Normal&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="3"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Soft&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="4"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Sharp&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+              &lt;/value-labels&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;PerfecTape Playback Mode&lt;/label&gt;
+              &lt;label&gt;PerfecTape Playback&lt;/label&gt;
+              &lt;label&gt;PerfecTape&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+        &lt;/group&gt;
+        &lt;group name="Misc"&gt;
+          &lt;labels&gt;
+            &lt;label&gt;Miscellaneous&lt;/label&gt;
+            &lt;label&gt;Misc&lt;/label&gt;
+          &lt;/labels&gt;
+          &lt;state name="AutoPowerSave" priority="1"&gt;
+            &lt;!-- This state controls whether the VCR automatically shuts
+							off after being idle for 30 minutes --&gt;
+            &lt;apply-type type-name="OnOffType" /&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Auto Power Save&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;state name="RentalXPress" priority="1"&gt;
+            &lt;!-- If this feature is on, the VCR will automatically rewind
+							tapes that are not write protected when more than 30 
+							seconds of blank tape in encountered. --&gt;
+            &lt;apply-type type-name="OnOffType" /&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Auto Rewind Feature (RentalXPress)&lt;/label&gt;
+              &lt;label&gt;RentalXPress&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;state name="SearchWithPicture" priority="1"&gt;
+            &lt;!-- With this feature on, you will see pictures from the 
+							tape when searching using FWD/REW.  Default at factory
+							is on. --&gt;
+            &lt;apply-type type-name="OnOffType" /&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Search with Picture&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;state name="VCRRemoteType" priority="1"&gt;
+            &lt;!-- This VCR supports two different sets of codes for its
+							IR remote control.  This state controls which set of 
+							codes that it will respond to. --&gt;
+            &lt;type&gt;
+              &lt;enumerated&gt;
+                &lt;item-count&gt;2&lt;/item-count&gt;
+              &lt;/enumerated&gt;
+              &lt;value-labels&gt;
+                &lt;map index="1"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;VCR-A&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="2"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;VCR-B&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+              &lt;/value-labels&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;VCR Remote Type&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;state name="ChildLock" priority="1"&gt;
+            &lt;!-- Sets the state of the child lock.  Not clear if this
+							should be controllable through the PUC. --&gt;
+            &lt;apply-type type-name="OnOffType" /&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Child Lock&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+        &lt;/group&gt;
+      &lt;/group&gt;
+      &lt;group name="AnalogTimedRecordings"&gt;
+        &lt;active-if&gt;
+          &lt;equals state="Power"&gt;
+            &lt;constant value="true" /&gt;
+          &lt;/equals&gt;
+          &lt;greaterthan state="Setup.Progress"&gt;
+            &lt;constant value="4" /&gt;
+          &lt;/greaterthan&gt;
+        &lt;/active-if&gt;
+        &lt;labels&gt;
+          &lt;label&gt;Timed Recording (Analog Only)&lt;/label&gt;
+          &lt;label&gt;Timed Recording&lt;/label&gt;
+          &lt;label&gt;Timers&lt;/label&gt;
+        &lt;/labels&gt;
+        &lt;list-group name="Recordings"&gt;
+          &lt;max&gt;
+            &lt;constant value="8" /&gt;
+          &lt;/max&gt;
+          &lt;selections number="one" access="read-write" /&gt;
+          &lt;!-- &lt;sortable/&gt; --&gt;
+          &lt;state name="Conflict" access="read-only"&gt;
+            &lt;apply-type type-name="OnOffType" /&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Conflict&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;state name="VCRPlus"&gt;
+            &lt;type&gt;
+              &lt;!-- probably could use a more specific type here --&gt;
+              &lt;integer /&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;VCR+ Code&lt;/label&gt;
+              &lt;label&gt;VCR+&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;state name="Channel"&gt;
+            &lt;type&gt;
+              &lt;integer&gt;
+                &lt;min&gt;
+                  &lt;constant value="1" /&gt;
+                &lt;/min&gt;
+                &lt;max&gt;
+                  &lt;constant value="127" /&gt;
+                &lt;/max&gt;
+              &lt;/integer&gt;
+              &lt;value-labels&gt;
+                &lt;map index="126"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;L1&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="127"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;L2&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+              &lt;/value-labels&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Channel&lt;/label&gt;
+              &lt;label&gt;Ch&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;state name="Day"&gt;
+            &lt;type&gt;
+              &lt;integer&gt;
+                &lt;min&gt;
+                  &lt;constant value="1" /&gt;
+                &lt;/min&gt;
+                &lt;max&gt;
+                  &lt;constant value="31" /&gt;
+                &lt;/max&gt;
+              &lt;/integer&gt;
+              &lt;value-labels&gt;
+                &lt;map index="31"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;31&lt;/label&gt;
+                  &lt;/labels&gt;
+                  &lt;active-if&gt;
+                    &lt;equals state="Clock.Date.Month"&gt;
+                      &lt;constant value="1" /&gt;
+                    &lt;/equals&gt;
+                    &lt;equals state="Clock.Date.Month"&gt;
+                      &lt;constant value="3" /&gt;
+                    &lt;/equals&gt;
+                    &lt;equals state="Clock.Date.Month"&gt;
+                      &lt;constant value="5" /&gt;
+                    &lt;/equals&gt;
+                    &lt;equals state="Clock.Date.Month"&gt;
+                      &lt;constant value="7" /&gt;
+                    &lt;/equals&gt;
+                    &lt;equals state="Clock.Date.Month"&gt;
+                      &lt;constant value="8" /&gt;
+                    &lt;/equals&gt;
+                    &lt;equals state="Clock.Date.Month"&gt;
+                      &lt;constant value="10" /&gt;
+                    &lt;/equals&gt;
+                    &lt;equals state="Clock.Date.Month"&gt;
+                      &lt;constant value="12" /&gt;
+                    &lt;/equals&gt;
+                  &lt;/active-if&gt;
+                &lt;/map&gt;
+              &lt;/value-labels&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Day&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;state name="StartTime" is-a="time-absolute"&gt;
+            &lt;type&gt;
+              &lt;string /&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Start Time&lt;/label&gt;
+              &lt;label&gt;Start&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;state name="StopTime" is-a="time-absolute"&gt;
+            &lt;type&gt;
+              &lt;string /&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Stop Time&lt;/label&gt;
+              &lt;label&gt;Stop&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+          &lt;state name="RecordSpeed"&gt;
+            &lt;type&gt;
+              &lt;enumerated&gt;
+                &lt;item-count&gt;3&lt;/item-count&gt;
+              &lt;/enumerated&gt;
+              &lt;value-labels&gt;
+                &lt;map index="1"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Standard Play&lt;/label&gt;
+                    &lt;label&gt;SP&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="2"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Extended Play&lt;/label&gt;
+                    &lt;label&gt;EP&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+                &lt;map index="3"&gt;
+                  &lt;labels&gt;
+                    &lt;label&gt;Automatic&lt;/label&gt;
+                    &lt;label&gt;Auto&lt;/label&gt;
+                  &lt;/labels&gt;
+                &lt;/map&gt;
+              &lt;/value-labels&gt;
+            &lt;/type&gt;
+            &lt;labels&gt;
+              &lt;label&gt;Record Speed&lt;/label&gt;
+              &lt;label&gt;Speed&lt;/label&gt;
+            &lt;/labels&gt;
+          &lt;/state&gt;
+        &lt;/list-group&gt;
+        &lt;command name="AddRecording" is-a="list-insert"&gt;
+          &lt;labels&gt;
+            &lt;label&gt;Add Recording&lt;/label&gt;
+            &lt;label&gt;Add&lt;/label&gt;
+          &lt;/labels&gt;
+          &lt;active-if&gt;
+            &lt;lessthan state="Recordings.Length"&gt;
+              &lt;constant value="8" /&gt;
+            &lt;/lessthan&gt;
+          &lt;/active-if&gt;
+        &lt;/command&gt;
+        &lt;command name="DeleteRecording" is-a="list-delete"&gt;
+          &lt;labels&gt;
+            &lt;label&gt;Delete&lt;/label&gt;
+          &lt;/labels&gt;
+          &lt;active-if&gt;
+            &lt;defined state="Recordings.Selection" /&gt;
+          &lt;/active-if&gt;
+        &lt;/command&gt;
+      &lt;/group&gt;
+    &lt;/group&gt;
+  &lt;/groupings&gt;
+&lt;/spec&gt;
+</PRE>
+
+<!-- <h3><a name="references">References</a></h3>--></BODY></HTML>

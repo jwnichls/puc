@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spec name="Powerpoint" version="PUC/2.1">
+  <labels>
+    <label>Powerpoint</label>
+  </labels>
+  <groupings>
+    <group name="CurrentSlide">
+      <state name="SlideImage" access="read-only" is-a="image">
+        <type>
+          <binary />
+        </type>
+        <labels>
+          <label>Current Slide</label>
+        </labels>
+      </state>
+      <state name="SlideNotes">
+        <type>
+          <string>
+            <min>
+              <static value="0" />
+            </min>
+            <average>
+              <static value="500" />
+            </average>
+            <max>
+              <static value="65536" />
+            </max>
+          </string>
+        </type>
+        <labels>
+          <label>Slide Notes</label>
+        </labels>
+      </state>
+    </group>
+    <group name="SlideControls">
+      <command name="StartPresentation">
+        <labels>
+          <label>Start Presentation</label>
+          <label>Start</label>
+        </labels>
+      </command>
+      <command name="ResumePresentation">
+        <labels>
+          <label>Resume Presentation</label>
+          <label>Resume</label>
+        </labels>
+      </command>
+      <command name="EndPresentation">
+        <labels>
+          <label>End Presentation</label>
+          <label>End</label>
+        </labels>
+      </command>
+      <group name="Controls" is-a="media-controls">
+        <command name="PrevTrack">
+          <labels>
+            <label>Previous Slide</label>
+            <label>Prev Slide</label>
+            <label>Previous</label>
+            <label>Prev</label>
+          </labels>
+        </command>
+        <command name="NextTrack">
+          <labels>
+            <label>Next Slide</label>
+            <label>Next</label>
+          </labels>
+        </command>
+      </group>
+      <state name="SlideNumber">
+        <type>
+          <integer>
+            <min>
+              <refvalue state="FirstSlide" />
+            </min>
+            <max>
+              <refvalue state="LastSlide" />
+            </max>
+          </integer>
+        </type>
+        <labels>
+          <label>Slide Number</label>
+          <label>Slide #</label>
+          <label>Slide</label>
+        </labels>
+      </state>
+      <state name="FirstSlide">
+        <type>
+          <integer />
+        </type>
+      </state>
+      <state name="LastSlide">
+        <type>
+          <integer />
+        </type>
+      </state>
+    </group>
+    <group name="Slides">
+      <list-group name="SlideList">
+        <state name="Name">
+          <type>
+            <string />
+          </type>
+          <labels>
+            <label>Slide Name</label>
+          </labels>
+        </state>
+      </list-group>
+    </group>
+    <group name="DemoApps">
+      <list-group name="Apps">
+        <state name="Icon" is-a="image">
+          <type>
+            <binary />
+          </type>
+          <labels>
+            <label>Icon</label>
+          </labels>
+        </state>
+        <state name="Name">
+          <type>
+            <string>
+              <min>
+                <static value="0" />
+              </min>
+              <average>
+                <static value="15" />
+              </average>
+              <max>
+                <static value="100" />
+              </max>
+            </string>
+          </type>
+          <labels>
+            <label>Name</label>
+          </labels>
+        </state>
+      </list-group>
+    </group>
+  </groupings>
+</spec>

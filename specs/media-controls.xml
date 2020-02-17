@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spec name="Test" version="PUC/2.1">
+  <labels>
+    <label>media-controls Test</label>
+  </labels>
+  <groupings>
+    <group name="Controls" is-a="media-controls">
+      <state name="Mode">
+        <type>
+          <enumerated>
+            <item-count>6</item-count>
+          </enumerated>
+          <value-labels>
+            <map index="1">
+              <labels>
+                <label>Play</label>
+              </labels>
+            </map>
+            <map index="2">
+              <labels>
+                <label>Pause</label>
+              </labels>
+            </map>
+            <map index="3">
+              <labels>
+                <label>Stop</label>
+              </labels>
+            </map>
+            <map index="4">
+              <labels>
+                <label>Rewind</label>
+              </labels>
+            </map>
+            <map index="5">
+              <labels>
+                <label>Fast-Forward</label>
+              </labels>
+            </map>
+            <map index="6">
+              <labels>
+                <label>Record</label>
+              </labels>
+            </map>
+          </value-labels>
+        </type>
+        <labels>
+          <label>Transport Controls</label>
+        </labels>
+      </state>
+      <group name="Track">
+        <command name="NextTrack">
+          <labels>
+            <label>Next Track</label>
+          </labels>
+        </command>
+        <command name="PrevTrack">
+          <labels>
+            <label>Prev Track</label>
+          </labels>
+        </command>
+      </group>
+    </group>
+  </groupings>
+</spec>

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spec name="Test" version="PUC/2.1">
+  <labels>
+    <label>Image Test</label>
+  </labels>
+  <groupings>
+    <group name="Image">
+      <state name="Image" is-a="image" access="read-only">
+        <type>
+          <binary>
+            <arbitrary-scaling />
+          </binary>
+        </type>
+        <labels>
+          <label>Test Image</label>
+        </labels>
+      </state>
+    </group>
+  </groupings>
+</spec>

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE spec SYSTEM "gadget.dtd">
+<gadget>
+
+<!--
+THIS IS THE INTERIM SPEECH FORMAT, incompatible with the PUC SPEC
+
+List of States
+
+READ ONLY STATES
+
+PowerState:		boolean {Off,On}
+
+DeviceModeState:	enumerated (2) {Camera, VCR}
+MediaState:		enumerated (4) {VHS, DV, Unknown, NoMedia}
+AVCVersionState:	string
+CaptureFrameRateState:	fixedpt
+PortState:		string
+
+TimecodeState:		string
+
+READ-WRITE STATE
+
+TransportModeState:	enumerated (6) {Play, Stop, Pause, FF, Rew, Record}
+
+
+List of Commands
+
+StepForward
+StepBack
+
+-->
+  
+  <node>
+    <label>
+      <canonical>digital video</canonical>
+      <alias>digital video camera</alias>
+      <alias>digital camera</alias>
+      <alias>camera</alias>
+      <alias>d v</alias>
+      <alias>digital video device</alias>
+      <alias>d v device</alias>
+      <response>digital camera here</response>
+    </label>
+
+    <node>
+      <action name="ActivePageState">
+	<var>1</var>
+      </action>
+
+      <node>
+        <label>
+	  <canonical>play mode</canonical>
+	  <alias>mode</alias>
+	</label>
+
+	<node>
+	  <action name="TransportModeState">
+	    <label>
+	      <canonical>play</canonical>
+	      <state>playing</state>
+	    </label>
+	    <var>1</var>
+	  </action>
+	</node>
+
+	<node>
+	  <action name="TransportModeState">
+	    <label>
+	      <canonical>stop</canonical>
+	      <state>stopped</state>
+	    </label>
+	    <var>2</var>
+	  </action>
+	</node>
+
+	<node>
+	  <action name="TransportModeState">
+	    <label>
+	      <canonical>pause</canonical>
+	    </label>
+	    <var>3</var>
+	  </action>
+	</node>
+
+	<node>
+	  <action name="TransportModeState">
+	    <label>
+	      <canonical>fast forward</canonical>
+	      <alias>fast forwards</alias>
+	      <state>fast forwarding</state>
+	    </label>
+	    <var>4</var>
+	  </action>
+	</node>
+
+	<node>
+	  <action name="TransportModeState">
+	    <label>
+	      <canonical>rewind</canonical>
+	      <state>rewinding</state>
+	    </label>
+	    <var>5</var>
+	  </action>
+	</node>
+
+	<node>
+	  <action name="TransportModeState">
+	    <label>
+	      <canonical>record</canonical>
+	      <state>recording</state>
+	    </label>
+	    <var>6</var>
+	  </action>
+	</node>
+      </node> <!--transportmode-->
+
+      <node>
+        <action name="StepForward">
+	  <label>
+	    <canonical>step forward</canonical>
+	    <alias>step forwards</alias>
+	    <alias>forward</alias>
+	    <alias>forwards</alias>
+	  </label>
+	</action>
+      </node>
+
+      <node>
+        <action name="StepBack">
+	  <label>
+	    <canonical>step backward</canonical>
+	    <alias>step backwards</alias>
+	    <alias>backward</alias>
+	    <alias>backwards</alias>
+	    <alias>back</alias>
+	  </label>
+	</action>
+      </node>
+
+      <node>
+        <action name="Refresh">
+	  <label>
+	    <canonical>refresh</canonical>
+	  </label>
+	</action>
+      </node>
+    </node> <!--control-->
+
+    <node>
+      <action name="ActivePageState">
+	<var>2</var>
+      </action>
+
+      <node>
+        <label>
+	  <canonical>device mode</canonical>
+	</label>
+
+	<node>
+	  <action name="DeviceModeState" readonly="true">
+	    <label>
+	      <canonical>camera</canonical>
+	    </label>
+	    <var>false</var>
+	  </action>
+	</node>
+
+	<node>
+	  <action name="DeviceModeState" readonly="true">
+	    <label>
+	      <canonical>v c r</canonical>
+	    </label>
+	    <var>true</var>
+	  </action>
+	</node>
+      </node> <!--device mode-->
+
+      <node>
+        <label>
+	  <canonical>media type</canonical>
+	  <alias>media</alias>
+	</label>
+	
+	<node>
+	  <action name="MediaState" readonly="true">
+	    <label>
+	      <canonical>v h s</canonical>
+	    </label>
+	    <var>1</var>
+	  </action>
+	</node>
+
+	<node>
+	  <action name="MediaState" readonly="true">
+	    <label>
+	      <canonical>digital video</canonical>
+	    </label>
+	    <var>2</var>
+	  </action>
+	</node>
+
+	<node>
+	  <action name="MediaState" readonly="true">
+	    <label>
+	      <canonical>unknown</canonical>
+	    </label>
+	    <var>3</var>
+	  </action>
+	</node>
+
+	<node>
+	  <action name="MediaState" readonly="true">
+	    <label>
+	      <canonical>none</canonical>
+	    </label>
+	    <var>4</var>
+	  </action>
+	</node>
+      </node> <!--media state-->
+    </node> <!--info-->
+  </node> <!--dv-->
+</gadget>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<spec name="WMP9" version="PUC/2.0">
+
+  <labels>
+    <label>Windows Media Player</label>
+  </labels>
+
+<!--
+List of States
+
+READ ONLY STATES
+
+WMPVersion:	 string
+StatusString:    string
+CurrentTitle:	 string
+CurrentLength:	 string
+CurrentDuration: integer
+
+READ-WRITE STATES
+
+PlaybackStatus:	 enumerated (3) {Play, Pause, Stop}
+CurrentPosition: integer (bounded by CurrentDuration)
+Volume:	         integer (0-100)
+Mute:            boolean
+
+List of Commands
+
+PrevTrack
+NextTrack
+
+-->
+
+ <groupings>
+
+  <group name="Root">
+
+    <group name="PlayControls" is-a="media-controls" priority="10">
+
+      <labels>
+        <label>Play Control</label>
+        <label>Control</label>
+      </labels>
+
+      <state name="Mode" priority="7">
+        <type>
+          <enumerated>
+            <item-count>3</item-count>
+          </enumerated>
+          <valueLabels>
+            <map index="1">
+              <label>Stop</label>
+            </map>
+            <map index="2">
+              <label>Play</label>
+            </map>
+            <map index="3">
+              <label>Pause</label>
+            </map>
+          </valueLabels>
+        </type>
+
+        <labels>
+          <label>Mode</label>
+        </labels>
+      </state>
+
+      <group name="TrackManipulation">
+
+        <command name="PrevTrack">
+          <labels>
+            <label>Prev</label>
+          </labels>
+
+	  <active-if>
+	    <equals state="PreviousAvailable">true</equals>
+	  </active-if>
+        </command>
+
+        <command name="NextTrack">
+          <labels>
+            <label>Next</label>
+          </labels>
+
+	  <active-if>
+	    <equals state="NextAvailable">true</equals>
+	  </active-if>
+        </command>
+
+      </group>
+
+      <group name="TrackManipulationAvailable">
+        <state name="NextAvailable" access="ReadOnly">
+	  <type>
+	    <boolean/>
+	  </type>
+	</state>
+
+        <state name="PreviousAvailable" access="ReadOnly">
+	  <type>
+	    <valueSpace>
+	      <boolean/>
+	    </valueSpace>
+	  </type>
+	</state>
+      </group>
+    </group>
+
+    <group name="MoreControls">
+      <state name="Shuffle">
+	<type>
+	  <boolean/>
+	</type>
+      
+        <labels>
+          <label>Shuffle</label>
+	</labels>
+      </state>
+
+      <state name="Loop">
+        <type>
+          <boolean/>
+        </type>
+
+        <labels>
+          <label>Loop</label>
+	</labels>
+      </state>
+    </group>
+
+    <group name="SongInfo">
+      <state name="CurrentTitle" access="ReadOnly" priority="3">
+          <type>
+            <string/>
+          </type>
+
+          <labels>
+            <label>Current Title</label>
+            <label>Title</label>
+          </labels>
+      </state>
+
+      <state name="CurrentPosition" is-a="time-duration" priority="3">
+        <type>
+          <integer>
+            <min>0</min>
+            <max><refvalue state="CurrentDuration"/></max>
+          </integer>
+        </type>
+
+        <labels>
+          <label>Time</label>
+        </labels>
+      </state>
+
+      <state name="CurrentDuration" is-a="time-duration" access="ReadOnly" priority="0">
+        <type>
+	  <integer/>
+        </type>
+      </state>
+    </group>
+
+    <group name="AudioControls">
+      <state name="Volume" priority="3">
+          <type>
+            <integer>
+              <min>1</min>
+              <max>100</max>
+            </integer>
+          </type>
+
+          <labels>
+            <label>Volume</label>
+          </labels>
+      </state>
+
+      <state name="Mute" priority="3">
+        <type>
+	  <boolean/>
+	</type>
+
+	<labels>
+	  <label>Mute</label>
+	</labels>
+      </state>
+    </group>
+
+    <group name="Info" priority="2">
+      <labels>
+        <label>Media Player Info</label>
+        <label>WMP Info</label>
+	<label>Info</label>
+      </labels>
+
+      <state name="StatusString" access="ReadOnly" priority="6">
+        <type>
+	  <string/>
+	</type>
+
+	<labels>
+	  <label>Status</label>
+	</labels>
+      </state>
+
+      <state name="WMPVersion" access="ReadOnly" priority="2">
+          <type>
+            <string/>
+          </type>
+
+          <labels>
+            <label>Version</label>
+          </labels>
+      </state>
+
+    </group>
+   </group>
+ </groupings>
+
+</spec>

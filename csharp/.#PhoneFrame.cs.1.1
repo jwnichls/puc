@@ -1,0 +1,534 @@
+using System;
+using System.Collections;
+using System.Data;
+using System.Drawing;
+using System.Net;
+using System.Threading;
+using System.Windows.Forms;
+
+using PUC;
+using PUC.Communication;
+using PUC.Parsers;
+using PUC.PersistentData;
+using PUC.Rules;
+using PUC.Rules.BuildList;
+using PUC.Rules.SpecScan;
+using PUC.UIGeneration;
+
+
+namespace PhonePUC
+{
+	/// <summary>
+	/// Summary description for Form1.
+	/// </summary>
+	public class PUCFrame : System.Windows.Forms.Form, IPUCFrame
+	{
+		public const string VERSION_STRING = "PUC v2.0";
+		
+		private ArrayList _appliances;
+		private Appliance _currentAppliance;
+		private ArrayList _servers;
+		private Queue     _uiEventQueue;
+
+		private Mutex     _mutex;
+
+		private bool      _recentMenuItems;
+
+		protected PhoneConnectDlg _connectDialog;
+		protected PhoneOptionsDlg _optionsDialog;
+
+		protected MeasureStringControl _measureCtl;
+
+		private System.Windows.Forms.MenuItem menuItem4;
+		private System.Windows.Forms.MenuItem menuItem6;
+		private System.Windows.Forms.MenuItem menuItem10;
+		private System.Windows.Forms.MenuItem menuItem11;
+		private System.Windows.Forms.MenuItem actionItem;
+		private System.Windows.Forms.Panel logPanel;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.TextBox logBox;
+		private System.Windows.Forms.MenuItem pucMenu;
+		private System.Windows.Forms.MenuItem openItem;
+		private System.Windows.Forms.MenuItem logItem;
+		private System.Windows.Forms.Timer eventQueueTimer;
+		private System.Windows.Forms.MenuItem disconnectItem;
+		private System.Windows.Forms.MenuItem recentMenu;
+		private System.Windows.Forms.MenuItem serverMenu;
+		private System.Windows.Forms.MenuItem deviceMenu;
+		private System.Windows.Forms.MenuItem optionsItem;
+		private System.Windows.Forms.MainMenu mainMenu1;
+
+		public PUCFrame()
+		{
+			//
+			// Required for Windows Form Designer support
+			//
+			InitializeComponent();
+
+			Globals.Init( VERSION_STRING, "\\Storage\\PUC\\pucdata.xml", this );
+
+			_uiEventQueue = new Queue();
+
+			_appliances = new ArrayList();
+			_servers = new ArrayList();
+
+			this.Text = Globals.GetVersionString();
+			AddLogLine( Globals.GetVersionString() + " Starting..." );
+
+			this.logPanel.Size = this.ClientSize;
+			this.logBox.Size = new System.Drawing.Size( this.logPanel.Size.Width, 
+				this.logPanel.Size.Height - 
+				this.logBox.Location.Y );
+
+			_connectDialog = new PhoneConnectDlg( this );
+			_optionsDialog = new PhoneOptionsDlg();
+
+			_mutex = new Mutex();
+			
+			_measureCtl = new MeasureStringControl();
+			this.Controls.Add( _measureCtl );
+			_measureCtl.Location = new Point( 0, 0 );
+			_measureCtl.Size = new Size( 0, 0 );
+			_measureCtl.Enabled = false;
+
+			SetupRecentList();
+
+			SetupRulePhases();
+			
+			UIGeneratorCore.ObjectRegistry = WidgetRegistryParser.Parse( Globals.GetWidgetRegistryFileName() );
+
+			SetupSmartCIOManager();
+		}
+
+		protected void SetupRecentList()
+		{
+			DataStore store = Globals.GetDataStore();
+
+			int count = store.GetIntData( Globals.RECENT_COUNT_ATTR );
+
+			MenuItem item;
+
+			if ( count <= 0 )
+			{
+				if ( _recentMenuItems )
+				{
+					recentMenu.MenuItems.Clear();
+
+					item = new MenuItem();
+					item.Text = "None";
+					item.Enabled = false;
+					recentMenu.MenuItems.Add( item );
+				}
+
+				return;
+			}
+
+			_recentMenuItems = true;
+			recentMenu.MenuItems.Clear();
+
+			for( int i = 0; i < count; i++ )
+			{
+				string server = store.GetStringData( Globals.RECENT_SERVER_PRFX + i );
+
+				item = new MenuItem();
+				item.Text = server;
+
+				item.Click += new EventHandler(this.recentItem_Click);
+
+				recentMenu.MenuItems.Add( item );
+			}
+		}
+
+		protected void SetupRulePhases()
+		{
+			UIGeneratorCore.RulePhases.Capacity = 2;
+
+			/*
+			 * Phase 1: Scan the specification for units and also any  
+			 * information that may be helpful for determining structure.
+			 */
+			SpecScanPhase phaseOne = new SpecScanPhase();
+			
+			phaseOne.AddRule( new UnitFindingRule() );
+			phaseOne.AddRule( new MutualExclusionRule() );
+
+			UIGeneratorCore.RulePhases.Add( phaseOne );
+
+			/*
+			 * Phase 2: Modify the specification based upon information
+			 * found in the previous phase, and inferences made during this
+			 * phase.
+			 */
+			BuildListPhase phaseTwo = new BuildListPhase();
+
+			phaseTwo.AddRule( new PutAllObjectsInListRule() );
+
+			UIGeneratorCore.RulePhases.Add( phaseTwo );
+		}
+
+		protected void SetupSmartCIOManager() 
+		{
+			UIGeneratorCore.SmartCIOMgr = new PUC.CIO.SmartCIOManager();
+
+			//
+			// TODO: As SmartCIOs are implemented, they should be
+			// added to the SmartCIOManager here.
+			//
+		}
+
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		protected override void Dispose( bool disposing )
+		{
+			base.Dispose( disposing );
+		}
+		#region Windows Form Designer generated code
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
+			this.mainMenu1 = new System.Windows.Forms.MainMenu();
+			this.actionItem = new System.Windows.Forms.MenuItem();
+			this.pucMenu = new System.Windows.Forms.MenuItem();
+			this.openItem = new System.Windows.Forms.MenuItem();
+			this.menuItem4 = new System.Windows.Forms.MenuItem();
+			this.logItem = new System.Windows.Forms.MenuItem();
+			this.optionsItem = new System.Windows.Forms.MenuItem();
+			this.menuItem6 = new System.Windows.Forms.MenuItem();
+			this.recentMenu = new System.Windows.Forms.MenuItem();
+			this.menuItem10 = new System.Windows.Forms.MenuItem();
+			this.serverMenu = new System.Windows.Forms.MenuItem();
+			this.menuItem11 = new System.Windows.Forms.MenuItem();
+			this.deviceMenu = new System.Windows.Forms.MenuItem();
+			this.disconnectItem = new System.Windows.Forms.MenuItem();
+			this.logPanel = new System.Windows.Forms.Panel();
+			this.logBox = new System.Windows.Forms.TextBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.eventQueueTimer = new System.Windows.Forms.Timer();
+			// 
+			// mainMenu1
+			// 
+			this.mainMenu1.MenuItems.Add(this.actionItem);
+			this.mainMenu1.MenuItems.Add(this.pucMenu);
+			// 
+			// actionItem
+			// 
+			this.actionItem.Text = "Open";
+			// 
+			// pucMenu
+			// 
+			this.pucMenu.MenuItems.Add(this.openItem);
+			this.pucMenu.MenuItems.Add(this.menuItem4);
+			this.pucMenu.MenuItems.Add(this.logItem);
+			this.pucMenu.MenuItems.Add(this.optionsItem);
+			this.pucMenu.MenuItems.Add(this.menuItem6);
+			this.pucMenu.MenuItems.Add(this.recentMenu);
+			this.pucMenu.MenuItems.Add(this.serverMenu);
+			this.pucMenu.MenuItems.Add(this.deviceMenu);
+			this.pucMenu.Text = "Menu";
+			// 
+			// openItem
+			// 
+			this.openItem.Text = "Open";
+			this.openItem.Click += new System.EventHandler(this.openItem_Click);
+			// 
+			// menuItem4
+			// 
+			this.menuItem4.Text = "-";
+			// 
+			// logItem
+			// 
+			this.logItem.Checked = true;
+			this.logItem.Text = "Logging Pane";
+			this.logItem.Click += new System.EventHandler(this.logItem_Click);
+			// 
+			// optionsItem
+			// 
+			this.optionsItem.Text = "Options...";
+			this.optionsItem.Click += new System.EventHandler(this.optionsItem_Click);
+			// 
+			// menuItem6
+			// 
+			this.menuItem6.Text = "-";
+			// 
+			// recentMenu
+			// 
+			this.recentMenu.MenuItems.Add(this.menuItem10);
+			this.recentMenu.Text = "Recent Servers";
+			// 
+			// menuItem10
+			// 
+			this.menuItem10.Enabled = false;
+			this.menuItem10.Text = "None";
+			// 
+			// serverMenu
+			// 
+			this.serverMenu.MenuItems.Add(this.menuItem11);
+			this.serverMenu.Text = "Current Servers";
+			// 
+			// menuItem11
+			// 
+			this.menuItem11.Enabled = false;
+			this.menuItem11.Text = "None";
+			// 
+			// deviceMenu
+			// 
+			this.deviceMenu.MenuItems.Add(this.disconnectItem);
+			this.deviceMenu.Text = "Devices";
+			// 
+			// disconnectItem
+			// 
+			this.disconnectItem.Enabled = false;
+			this.disconnectItem.Text = "Disconnect";
+			this.disconnectItem.Click += new System.EventHandler(this.disconnectItem_Click);
+			// 
+			// logPanel
+			// 
+			this.logPanel.Controls.Add(this.logBox);
+			this.logPanel.Controls.Add(this.label1);
+			this.logPanel.Size = new System.Drawing.Size(160, 184);
+			// 
+			// logBox
+			// 
+			this.logBox.Location = new System.Drawing.Point(0, 24);
+			this.logBox.Multiline = true;
+			this.logBox.Size = new System.Drawing.Size(160, 160);
+			this.logBox.Text = "";
+			// 
+			// label1
+			// 
+			this.label1.Size = new System.Drawing.Size(160, 24);
+			this.label1.Text = "PUC Log:";
+			// 
+			// eventQueueTimer
+			// 
+			this.eventQueueTimer.Enabled = true;
+			this.eventQueueTimer.Tick += new System.EventHandler(this.eventQueueTimer_Tick);
+			// 
+			// PUCFrame
+			// 
+			this.Controls.Add(this.logPanel);
+			this.Menu = this.mainMenu1;
+			this.Text = "PUC v2.0";
+
+		}
+		#endregion
+
+		/// <summary>
+		/// The main entry point for the application.
+		/// </summary>
+
+		static void Main() 
+		{
+			Application.Run(new PUCFrame());
+		}
+
+		public void shutdown() 
+		{
+			Application.Exit();
+		}
+
+		public void AddLogLine( string text )
+		{
+			AddLogText( text  + "\r\n" );
+		}
+
+		public void AddLogText( string text )
+		{
+			// logBox.ReadOnly = false;
+			string nstr = logBox.Text.Insert( logBox.TextLength, text );
+			logBox.Text = nstr;
+			logBox.SelectionStart = logBox.TextLength;
+			logBox.ScrollToCaret();
+			// logBox.ReadOnly = true;
+		}
+
+		private void recentItem_Click(object sender, System.EventArgs e)
+		{
+			IPAddress ipAddr = null;
+
+			try
+			{
+				ipAddr = IPAddress.Parse( ((MenuItem)sender).Text );
+			}
+			catch( Exception )
+			{
+			}
+
+			Globals.AddLogLine( "Attempting to open server at " + ((MenuItem)sender).Text + "..." );
+
+			ServerInfo server = new ServerInfo( ipAddr, Globals.GetFrame(), false );
+
+			Globals.GetFrame().AddServer( server );
+		}
+		
+		public MenuItem GetServerMenu()
+		{
+			return serverMenu;
+		}
+
+		public void AddActiveAppliance( Appliance a )
+		{
+			_appliances.Add( a );
+
+			DeviceSwitcher d = new DeviceSwitcher( a );
+			a.GetMenuItem().Click += new EventHandler(d.DeviceMenuClicked);
+			deviceMenu.MenuItems.Add( a.GetMenuItem() );
+
+			a.SetUIGenerator( new PUC.UIGeneration.UIGenerator() );
+
+			SetCurrentAppliance ( a );
+
+			a.GetUIGenerator().Size = this.ClientSize;
+			a.GetUIGenerator().Location = new System.Drawing.Point( 0, 0 );
+			// a.GetUIGenerator().Menu = this.Menu;
+			// a.GetUIGenerator().Text = a.GetName();
+
+			a.GetUIGenerator().GenerateUI( a );
+		}
+
+		public void SetCurrentAppliance( Appliance a )
+		{
+			if ( _currentAppliance != null )
+			{
+				Controls.Remove( _currentAppliance.GetUIGenerator() );
+				_currentAppliance.GetMenuItem().Checked = false;
+			}
+			else
+				disconnectItem.Enabled = true;
+
+			HideLogPanel();
+			_currentAppliance = a;
+			_currentAppliance.GetMenuItem().Checked = true;
+			Controls.Add( _currentAppliance.GetUIGenerator() );
+			_currentAppliance.GetUIGenerator().Visible = true;
+			_currentAppliance.GetUIGenerator().BringToFront();
+		}
+
+		
+		public void AddServer( ServerInfo s ) 
+		{
+			if ( _servers.Count == 0 )
+				serverMenu.MenuItems.Clear();
+
+			_servers.Add( s );
+
+			string serverString = s.GetIPAddress().ToString();
+
+			DataStore store = Globals.GetDataStore();
+
+			int count = store.GetIntData( Globals.RECENT_COUNT_ATTR );
+			int max = store.GetIntData( Globals.RECENT_SERVER_ATTR );
+
+			store.BeginSet();
+
+			string[] servers = new string[ count ];
+			for( int i = 0; i < count; i++ )
+				servers[ i ] = store.GetStringData( Globals.RECENT_SERVER_PRFX + i );
+
+			int idx = 0;
+			for( ; idx < count; idx++ )
+			{
+				if ( serverString == servers[ idx ] )
+					break;
+			}
+
+			for( int i = idx; i > 0; i-- )
+			{
+				string lastServer = store.GetStringData( Globals.RECENT_SERVER_PRFX + ( i - 1 ) );
+				store.Set( Globals.RECENT_SERVER_PRFX + i, lastServer );
+			}
+
+			store.Set( Globals.RECENT_SERVER_PRFX + 0, serverString );
+
+			if ( count < max && idx == count )
+				store.Set( Globals.RECENT_COUNT_ATTR, count + 1 );
+
+			store.CommitSet();
+
+			SetupRecentList();
+		}
+
+		public void AddEventCallback( IEventDispatcher ed )
+		{
+			_mutex.WaitOne();
+
+			_uiEventQueue.Enqueue( ed );
+
+			_mutex.ReleaseMutex();
+		}
+
+		public void HideLogPanel()
+		{
+			// logItem.Checked = logPanel.Visible = false;
+			Controls.Remove( logPanel );
+
+			if ( _currentAppliance != null )
+				Controls.Add( _currentAppliance.GetUIGenerator() );
+		}
+
+		public void ShowLogPanel()
+		{
+			logItem.Checked = logPanel.Visible = true;
+
+			if ( _currentAppliance != null )
+				Controls.Remove( _currentAppliance.GetUIGenerator() );
+
+			Controls.Add( logPanel );
+			logPanel.BringToFront();
+			logBox.Focus();
+			logBox.SelectionStart = logBox.TextLength;
+			logBox.ScrollToCaret();
+			logBox.Focus();
+			this.BringToFront();
+		}
+
+		public SizeF MeasureString( string str, Font f )
+		{
+			return _measureCtl.MeasureString( str, f );
+		}
+
+		private void logItem_Click(object sender, System.EventArgs e)
+		{
+			logItem.Checked = logPanel.Visible = !logItem.Checked;
+			if ( logPanel.Visible )
+				logPanel.BringToFront();		
+		}
+
+		private void openItem_Click(object sender, System.EventArgs e)
+		{
+			_connectDialog.ShowDialog();
+		}
+
+		private void optionsItem_Click(object sender, System.EventArgs e)
+		{
+			_optionsDialog.ShowDialog();
+		}
+
+		private void eventQueueTimer_Tick(object sender, System.EventArgs e)
+		{
+			while( _uiEventQueue.Count > 0 ) 
+				((IEventDispatcher)_uiEventQueue.Dequeue()).Dispatch();
+		}
+
+		private void disconnectItem_Click(object sender, System.EventArgs e)
+		{
+			Appliance a = _currentAppliance;
+			_appliances.Remove( a );
+			if ( _appliances.Count > 0 )
+				SetCurrentAppliance( (Appliance)_appliances[ 0 ] );
+			else
+			{
+				_currentAppliance = null;
+				disconnectItem.Enabled = false;
+				ShowLogPanel();
+			}
+
+			deviceMenu.MenuItems.Remove( a.GetMenuItem() );
+			a.GetServer().Unload( a );
+		}
+	}
+}

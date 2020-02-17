@@ -1,0 +1,72 @@
+General Bugs:
+-------------
+* Need a better edit control for manipulating structured data
+* Multiple list selections is currently unimplemented
+* Implicit dependencies among list items is currently unimplemented
+* what are some more list patterns that should be implemented?
+* list manipulation smart templates
+
+
+PocketPC PUC
+------------
+* Need a rule specifically for read-only mutual exclusive situations
+  (tabs don't quite work) - see problems with elevator and Denali
+  climate control  
+* Way to better layout the generic list view?  The scrollbar in its 
+  current form doesn't really make sense.
+* Method for dealing with multi-line widgets
+   - Multi-line string widget
+   - Label sizing bug?  I wonder if sometime the labels are automatically 
+     wrapped, which leads the layout algorithm to make a mistake because
+     it is only considered width.
+* Rules that search for common patterns across overlapping panels and
+  create similar layouts on each panel
+* Generalize the existing Fix Layout rule
+
+
+Debug Server
+------------
+* DebugServer doesn't size panels properly
+* Need a method for assigning values for undefined variables if they
+  are have a cyclic dependency (maybe dependencies don't apply in the
+  DebugServer?) 
+* need method for debugging with binary and list data
+* unlabeled appliance objects should use name as label
+* semi-automated regression testing
+
+
+Smartphone
+----------
+* proper support for the back button
+* boolean list-item widget
+* rule for grouping widget list items
+* one-dimensional read-only list support
+* Need to modify mutual-exclusion rules so that unavailable items are
+  not shown (see problem with elevator) - might be related to
+  read-only mutual exclusion case
+
+
+Desktop PUC
+-----------
+* Appliances should each appear in different window
+* better list support - one-dimensional read-only cases don't work
+
+
+New Appliances
+--------------
+* UPnP device to talk with Rhapsody UPnP server
+* Build a device that controls whether the video output is on or not
+  on a laptop (another multi-appliance system with powerpoint,
+  lighting and projector control).
+
+
+PUC Documentation
+-----------------
+* PUC/2.2 language features in specification docs?
+
+
+Fixed
+-----
+* Ability to run PUCProxy for one device (probably a separate app)
+* Device discovery messages are undocumented
+* password in elevator sim not working (dependency problem?)

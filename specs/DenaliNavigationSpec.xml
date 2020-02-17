@@ -1,0 +1,1524 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--This is a spec for the GM Yukon Denali 2003 model's Navigation System Unit
+by Rajesh Seenichamy
+-->
+
+
+<spec name="Denali" version="PUC/2.0">
+
+  <labels>
+	  <label>GMC Denali Navigation Unit</label>
+	</labels>
+
+	<groupings>
+		<group name="Ignition"> <!--Ignition-->
+			<state name="IgnitionState">
+      			<type name="OnOff">
+						  <boolean/>
+        			<valueLabels>
+          				<map index="false">
+            				<label>Off</label>
+          				</map>
+          				<map index="true">
+            				<label>On</label>
+	  					</map>
+					</valueLabels>
+      			</type>
+				<labels>
+					<label>Ignition</label>
+     			</labels>
+          	</state>
+          	<group name="Config"> <!--Config/Screen Setup button-->
+          		<active-if>
+					<equals state="IgnitionState">true</equals>
+				</active-if>
+				<state name="ContrastState">
+					<type name="ScreenType">
+						<integer>
+							<min>0</min>
+							<max>40</max>
+						</integer>
+					</type>
+					
+					<labels>
+						<label>Contrast</label>
+					</labels>
+				</state>
+				<state name="BrightnessState">
+					<apply-type name="ScreenType"/>
+					
+					<labels>
+						<label>Brightness</label>
+					</labels>
+				</state>
+				<state name="ScreenColorState">
+					<type>
+						<enumerated>
+							<item-count>3</item-count>
+						</enumerated>
+						
+						<valueLabels>
+							<map index="1">
+								<label>Auto</label>
+							</map>
+							<map index="2">
+								<label>Day</label>
+							</map>
+							<map index="3">
+								<label>Night</label>
+							</map>
+						</valueLabels>
+					</type>
+					
+					<labels>
+						<label>Screen Color</label>
+					</labels>
+				</state>
+				<state name="BeepState">
+					<type>
+						<enumerated>
+							<item-count>2</item-count>
+						</enumerated>
+						
+						<valueLabels>
+							<map index="1">
+								<label>On</label>
+							</map>
+							<map index="2">
+								<label>Off</label>
+							</map>
+						</valueLabels>
+					</type>
+					
+					<labels>
+						<label>Beep</label>
+					</labels>
+				</state>
+				
+				<state name="VolumeControlState">
+      				<apply-type name="OnOff"/>
+					
+					<labels>
+						<label>Voice Volume Control</label>
+						<label>Voice Vol Ctrl</label>
+     				</labels>
+          		</state>	
+				
+				<state name="VoiceVolumeState">
+					<active-if>
+						<equals state="VolumeControlState">true</equals>
+					</active-if>
+					
+					<type name="VolumeType">
+						<integer>
+							<min>0</min>
+							<max>50</max>
+						</integer>
+					</type>
+					
+					<labels>
+						<label>Voice Volume</label>
+						<label>Voice Vol</label>
+					</labels>
+				</state>
+				
+				<command name="DisplayOff">
+					<labels>
+						<label>Display OFF</label>
+					</labels>
+				</command>
+				
+				<state name="UnitsState">
+					<type>
+						<enumerated>
+							<item-count>2</item-count>
+						</enumerated>
+						
+						<valueLabels>
+							<map index="1">
+								<label>miles</label>
+							</map>
+							<map index="2">
+								<label>Kilometer</label>
+							</map>
+						</valueLabels>
+					</type>
+					
+					<labels>
+						<label>Units</label>
+					</labels>
+				</state>
+				
+          	</group> <!--End Config button-->
+          	
+          	<group name="Nav"> <!--Navigation System Group-->
+          		<active-if>
+					<equals state="IgnitionState">true</equals>
+				</active-if>
+				
+          		<labels>
+          			<label>Navigation System</label>
+          			<label>Nav. System</label>
+          			<label>Nav. Sys.</label>
+          		</labels>
+          		
+          		<group name="System"> <!--Navigation System Screen-->
+          		
+          			<command name="ZoomIn">
+          				<labels>
+          					<label>Zoom In</label>
+          				</labels>
+          			</command>
+          			
+          			<command name="ZoomOut">
+          				<labels>
+          					<label>Zoom Out</label>
+          				</labels>
+          			</command>
+          			
+          			<command name="NavigationKey">
+          				<labels>
+          					<label>Navigation</label>
+          				</labels>
+          			</command>
+          			
+          			<command name="NavigationRepeat">
+          				<labels>
+          					<label>NAV Repeat</label>
+          					<label>NAV RPT</label>
+          				</labels>
+          			</command>
+          			       			
+          		</group> <!--End Navigation System Screen-->
+          		
+          		<group name="Options"> <!--Navigation Menu options list-->
+          		
+          			<command name="SuspendGuidance">
+          				<labels>
+          					<label>Suspend Guidance</label>
+          				</labels>
+          			</command>
+          		
+          			<command name="RouteOverview">
+          				<labels>
+          					<label>Route Overview</label>
+          				</labels>
+          			</command>
+          			
+          			<command name="RoutePreview">
+          				<labels>
+          					<label>Route Preview</label>
+          				</labels>
+          			</command>
+          			
+          			<command name="DVD">
+          				<labels>
+          					<label>DVD</label>
+          				</labels>
+          			</command>
+          			
+          			<group name="Route"> <!--Edit Route-->
+          				<labels>
+          					<label>Edit Route</label>
+          				</labels>
+          				
+          				<state name="SearchConditionState">
+          					<type>
+								<enumerated>
+									<item-count>3</item-count>
+								</enumerated>
+							
+								<valueLabels>
+									<map index="1">
+										<label>Fastest</label>
+									</map>
+									<map index="2">
+										<label>Shortest</label>
+									</map>
+									<map index="3">
+										<label>Alternative</label>
+									</map>
+								</valueLabels>
+							</type>
+						
+							<labels>
+								<label>Search Cond.</label>
+							</labels>				
+          				</state>
+          				
+          				<group name="Prefs"> <!--Route Preference-->
+          					<labels>
+          						<label>Route Preference</label>
+          					</labels>
+          					
+          					<state name="FreewayState">
+          						<type name="UseAvoid">
+        								<boolean/>
+        							<valueLabels>
+          								<map index="false">
+            								<label>Avoid</label>
+          								</map>
+          								<map index="true">
+            								<label>Use</label>
+	  									</map>
+									</valueLabels>
+      							</type>
+								<labels>
+									<label>Freeway</label>
+     							</labels>	
+          					</state>
+          					
+          					<state name="TollRoadState">
+          						<apply-type name="UseAvoid"/>
+   								<labels>
+									<label>Toll Road</label>
+     							</labels>	
+          					</state>
+          					
+          					<state name="FerryState">
+          						<apply-type name="UseAvoid"/>
+   								<labels>
+									<label>Ferry</label>
+     							</labels>	
+          					</state>
+          					
+          					<state name="RestrictedRoadState">
+          						<apply-type name="UseAvoid"/>
+   								<labels>
+									<label>Restricted Road</label>
+									<label>Restrict. Road</label>
+									<label>Restrict.Rd.</label>
+     							</labels>	
+          					</state>
+          					
+          				</group> <!--End Route Preference-->
+          				
+          				<group name="Destination"> <!--Destination-->
+          					<labels>
+          						<label>Destination</label>
+          						<label>Dest.</label>
+          					</labels>
+          					<command name="DestAdd">
+          						<labels>
+          							<label>Dest. Add</label>
+          						</labels>
+          					</command>
+          					<command name="DestReorder">
+          						<labels>
+          							<label>Dest. Reorder</label>
+          						</labels>
+          					</command>
+          					<command name="DestDelete">
+          						<labels>
+          							<label>Dest. Delete</label>
+          						</labels>
+          					</command>
+          				</group> <!--End Destination-->
+          				
+          				<group name="PreferredRoad"> <!--Set preferred road-->
+          					<labels>
+          						<label>Preferred road</label>
+          						<label>Pref. Road</label>
+          					</labels>
+          					<command name="PrefRoadAdd">
+          						<labels>
+          							<label>Pref.Road Add</label>
+          						</labels>
+          					</command>
+          					<command name="PrefRoadReorder">
+          						<labels>
+          							<label>Pref.Road Reorder</label>
+          						</labels>
+          					</command>
+          					<command name="PrefRoadDelete">
+          						<labels>
+          							<label>Pref.Raod Delete</label>
+          						</labels>
+          					</command>
+          				</group> <!--End Set preferred road-->
+          				
+          			</group> <!--End Edit Route-->
+          		
+          			<group name="Map"> <!--Map Appearance-->
+          				<labels>
+          					<label>Map Appearance</label>
+          				</labels>
+          				<state name="MapOrientationState">
+          					<type>
+									<enumerated>
+										<item-count>3</item-count>
+									</enumerated>
+							
+								<valueLabels>
+									<map index="1">
+										<label>North Up</label>
+									</map>
+									<map index="2">
+										<label>Heading Up</label>
+									</map>
+									<map index="3">
+										<label>3D view</label>
+									</map>
+								</valueLabels>
+							</type>
+						
+							<labels>
+								<label>Map Orientation</label>
+								<label>Map Orient.</label>
+							</labels>	
+          				</state>
+          				
+          				<state name="GuidanceModeState">
+          					<type>
+									<enumerated>
+										<item-count>3</item-count>
+									</enumerated>
+							
+								<valueLabels>
+									<map index="1">
+										<label>Arrow</label>
+									</map>
+									<map index="2">
+										<label>Turn List</label>
+									</map>
+									<map index="3">
+										<label>Map</label>
+									</map>
+								</valueLabels>
+							</type>
+						
+							<labels>
+								<label>Guidance Mode</label>
+								<label>Guide Mode</label>
+							</labels>	
+          				</state>
+          				
+          				<state name="MapModeState">
+          					<type>
+								
+									<enumerated>
+										<item-count>2</item-count>
+									</enumerated>
+								
+							
+								<valueLabels>
+									<map index="1">
+										<label>Single</label>
+									</map>
+									<map index="2">
+										<label>Split screen</label>
+									</map>
+								</valueLabels>
+							</type>
+						
+							<labels>
+								<label>Map Mode</label>
+							</labels>	
+          				</state>
+          				
+          			</group> <!--End Map Appearance-->
+          			
+          			<group name="Setup"> <!--Nav Setup-->
+          				<labels>
+          					<label>Nav Setup</label>
+          				</labels>
+          				
+          				<state name="SeasonalRestrictState">
+          					<apply-type name="OnOff"/>
+							<labels>
+								<label>Seasonal Restrict.</label>
+								<label>Seasonal Rest.</label>
+     						</labels>
+          				</state>
+          				
+          				<state name="TravelTimeState">
+          					<apply-type name="OnOff"/>
+							<labels>
+								<label>Est. Travel Time</label>
+								<label>Travel Time</label>
+     						</labels>
+          				</state>
+          				
+          				<state name="VehicleSpeedState">
+          					<apply-type name="OnOff"/>
+							<labels>
+								<label>Est. Vehicle Speed</label>
+								<label>Vehicle Speed</label>
+     						</labels>
+          				</state>
+          				
+          				<state name="AutoRerouteState">
+          					<apply-type name="OnOff"/>
+							<labels>
+								<label>Auto reroute</label>
+     						</labels>
+          				</state>
+          				
+          			</group> <!--End Nav Setup-->
+          			
+          			<group name="Memory"> <!--Memory Points-->
+          				<group name="Points">
+          					<labels>
+	          					<label>Memory Points</label>
+    	      				</labels>
+    	      				
+    	      				<command name="MemoryPtRegister">
+    	      					<labels>
+    	      						<label>Mem Pt Register</label>
+    	      					</labels>
+    	      				</command>
+    	      				<command name="MemoryPtEdit">
+    	      					<labels>
+    	      						<label>Mem Pt Edit</label>
+    	      					</labels>
+    	      				</command>
+    	      				<command name="MemoryPtDelete">
+    	      					<labels>
+    	      						<label>Mem Pt Delete</label>
+    	      					</labels>
+    	      				</command>
+          				</group>
+          				
+          				<group name="Presets">
+          					<labels>
+          						<label>Preset dest.</label>
+          					</labels>
+          					
+          					<command name="PresetDestRegister">
+    	      					<labels>
+    	      						<label>Preset Register</label>
+    	      					</labels>
+    	      				</command>
+    	      				<command name="PresetDestEdit">
+    	      					<labels>
+    	      						<label>Preset Edit</label>
+    	      					</labels>
+    	      				</command>
+    	      				<command name="PresetDestDelete">
+    	      					<labels>
+    	      						<label>Preset Delete</label>
+    	      					</labels>
+    	      				</command>
+          				</group>          				
+          				
+          				<group name="Avoid">
+          					<labels>
+          						<label>Areas to avoid</label>
+          					</labels>
+          					<command name="AreasToAvoidRegister">
+    	      					<labels>
+    	      						<label>Areas Avoid Register</label>
+    	      					</labels>
+    	      				</command>
+    	      				<command name="AreasToAvoidEdit">
+    	      					<labels>
+    	      						<label>Areas Avoid Edit</label>
+    	      					</labels>
+    	      				</command>
+    	      				<command name="AreasToAvoidDelete">
+    	      					<labels>
+    	      						<label>Areas Avoid Delete</label>
+    	      					</labels>
+    	      				</command>
+          				</group>          				         				
+          			</group> <!--End Memory Points-->
+          		</group> <!--Navigation Menu options list-->
+          		
+          		<group name="Destination"> <!--Destination-->
+          			<labels>
+          				<label>Destination</label>
+          			</labels>
+          			
+          			<state name="DestinationOptionsState">
+          				<type>
+          					
+          						<enumerated>
+          							<item-count>9</item-count>
+          						</enumerated>
+          					
+          					<valueLabels>
+          						<map index="1">
+          							<label>Point of interest</label>
+          						</map>
+          						<map index="2">
+          							<label>Address</label>
+          						</map>
+          						<map index="3">
+          							<label>Memory Points</label>
+          						</map>
+          						<map index="4">
+          							<label>Previous destination</label>
+          						</map>
+          						<map index="5">
+          							<label>Intersection</label>
+          						</map>
+          						<map index="6">
+          							<label>Emergency</label>
+          						</map>
+          						<map index="7">
+          							<label>Freeway Ent./Exit</label>
+          						</map>
+          						<map index="8">
+          							<labels>
+	          							<label>Previous Start Pt. Dest.</label>
+	          							<label>Last Start Pt. Dest.</label>
+	          							<label>Last Start Dest.</label>
+	          						</labels>
+          						</map>
+          						<map index="9">
+          							<label>Home Destination</label>
+          						</map>
+          					</valueLabels>
+          				</type>
+          				<labels>
+          					<label>Destination Options</label>
+          					<label>Dest. Lists</label>
+          				</labels>
+          			</state>
+          			      			
+          			<group name="POI"> <!--Point of interest-->
+          				<active-if>
+							<equals state="DestinationOptionsState">1</equals>
+						</active-if>
+          				<labels>
+          					<label>Point of interest</label>
+          				</labels>
+          				
+          				<state name="InputPOINameState">
+          					<type>
+          						
+          							<string/>
+          						
+          					</type>
+          					
+          					<labels>
+          						<label>POI Name</label>
+          					</labels>
+          				</state>
+          				
+          				<state name="CategoryState">
+          					<type>
+								
+									<enumerated>
+										<item-count>4</item-count>
+									</enumerated>
+								
+							
+								<valueLabels>
+									<map index="1">
+										<label>Hotel</label>
+									</map>
+									<map index="2">
+										<label>ATM</label>
+									</map>
+									<map index="3">
+										<label>Restaurant</label>
+									</map>
+									<map index="4">
+										<label>Gas Station</label>
+									</map>
+								</valueLabels>
+							</type>
+						
+							<labels>
+								<label>Category</label>
+							</labels>	
+          				</state>
+          				
+          				<state name="InputCityNameState">
+          					<type>
+          						
+          							<string/>
+          						
+          					</type>
+          					
+          					<labels>
+          						<label>City</label>
+          					</labels>
+          				</state>
+          				   				
+          			</group> <!--End Point of interest-->
+          			
+          			<group name="Address"> <!--Address-->
+          				<active-if>
+							<equals state="DestinationOptionsState">2</equals>
+						</active-if>
+          				<labels>
+          					<label>Address</label>
+          				</labels>	
+          				
+          				<state name="HouseNumberState">
+          					<type>
+          						
+          							<string/>
+          						
+          					</type>
+          					
+          					<labels>
+          						<label>House No.</label>
+          					</labels>
+          				</state>
+          				
+          				<state name="StreetNameState">
+          					<type>
+          						
+          							<string/>
+          						
+          					</type>
+          					
+          					<labels>
+          						<label>Street</label>
+          					</labels>
+          				</state>
+          				
+          				<state name="CityNameState">
+          					<type>
+          						
+          							<string/>
+          						
+          					</type>
+    						<labels>
+          						<label>City</label>
+          					</labels>
+          				</state>
+          			</group> <!--End Address-->
+          			<group name="MemoryPoints"> <!--Memory Points Destination Entry-->
+          				<active-if>
+							<equals state="DestinationOptionsState">3</equals>
+						</active-if>
+          				<labels>
+          					<label>Memory Points Destination Entry</label>
+          					<label>Memory Pts. Dest. Entry</label>
+          					<label>Memory Pts Dest</label>
+          				</labels>
+						<state name="MemoryPointsState">
+							<type>
+								
+									<enumerated>
+										<item-count>30</item-count>
+									</enumerated>
+								
+								<valueLabels>
+									<map index="1">
+										<refstring state="MemoryPoint1State" />
+									</map>
+									<map index="2">
+										<refstring state="MemoryPoint2State" />
+									</map>
+									<map index="3">
+										<refstring state="MemoryPoint3State" />
+									</map>
+									<map index="4">
+										<refstring state="MemoryPoint4State" />
+									</map>
+									<map index="5">
+										<refstring state="MemoryPoint5State" />
+									</map>
+									<map index="6">
+										<refstring state="MemoryPoint6State" />
+									</map>
+									<map index="7">
+										<refstring state="MemoryPoint7State" />
+									</map>
+									<map index="8">
+										<refstring state="MemoryPoint8State" />
+									</map>
+									<map index="9">
+										<refstring state="MemoryPoint9State" />
+									</map>
+									<map index="10">
+										<refstring state="MemoryPoint10State" />
+									</map>
+									<map index="11">
+										<refstring state="MemoryPoint11State" />
+									</map>
+									<map index="12">
+										<refstring state="MemoryPoint12State" />
+									</map>
+									<map index="13">
+										<refstring state="MemoryPoint13State" />
+									</map>
+									<map index="14">
+										<refstring state="MemoryPoint14State" />
+									</map>
+									<map index="15">
+										<refstring state="MemoryPoint15State" />
+									</map>
+									<map index="16">
+										<refstring state="MemoryPoint16State" />
+									</map>
+									<map index="17">
+										<refstring state="MemoryPoint17State" />
+									</map>
+									<map index="18">
+										<refstring state="MemoryPoint18State" />
+									</map>	
+									<map index="19">
+										<refstring state="MemoryPoint19State" />
+									</map>
+									<map index="20">
+										<refstring state="MemoryPoint20State" />
+									</map>
+									<map index="21">
+										<refstring state="MemoryPoint21State" />
+									</map>
+									<map index="22">
+										<refstring state="MemoryPoint22State" />
+									</map>
+									<map index="23">
+										<refstring state="MemoryPoint23State" />
+									</map>
+									<map index="24">
+										<refstring state="MemoryPoint24State" />
+									</map>
+									<map index="25">
+										<refstring state="MemoryPoint25State" />
+									</map>
+									<map index="26">
+										<refstring state="MemoryPoint26State" />
+									</map>
+									<map index="27">
+										<refstring state="MemoryPoint27State" />
+									</map>
+									<map index="28">
+										<refstring state="MemoryPoint28State" />
+									</map>
+									<map index="29">
+										<refstring state="MemoryPoint29State" />
+									</map>
+									<map index="30">
+										<refstring state="MemoryPoint30State" />
+									</map>
+								</valueLabels>
+							</type>
+							<labels>
+								<label>Memory Points</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint1State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #1</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint2State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #2</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint3State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #3</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint4State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #4</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint5State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #5</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint6State" access="ReadOnly">
+							<type>
+								
+								<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #6</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint7State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #7</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint8State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #8</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint9State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #9</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint10State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #10</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint11State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #11</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint12State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #12</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint13State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #13</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint14State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+									<label>Memory Pt. #14</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint15State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #15</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint16State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #16</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint17State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #17</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint18State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #18</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint19State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #19</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint20State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #20</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint21State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #21</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint22State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #22</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint23State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #23</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint24State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #24</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint25State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #25</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint26State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #26</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint27State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #27</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint28State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #28</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint29State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #29</label>
+							</labels>
+						</state>
+						<state name="MemoryPoint30State" access="ReadOnly">
+							<type>
+								
+									<string />
+								
+							</type>
+							<labels>
+								<label>Memory Pt. #30</label>
+							</labels>
+						</state>
+          			</group> <!--End Memory Points Destination Entry-->
+          			<group name="PreviousDest"> <!--Previous Destination Entry-->
+          				<active-if>
+							<equals state="DestinationOptionsState">4</equals>
+						</active-if>
+          				<labels>
+          					<label>Previous Destination</label>
+          						<label>Previous Dest.</label>
+          					</labels>
+          					<state name="PreviousDestinationsState">
+								<type>
+									
+										<enumerated>
+											<item-count>20</item-count>
+										</enumerated>
+									
+									<valueLabels>
+										<map index="1">
+											<refstring state="PreviousDestination1State" />
+										</map>
+										<map index="2">
+											<refstring state="PreviousDestination2State" />
+										</map>
+										<map index="3">
+											<refstring state="PreviousDestination3State" />
+										</map>
+										<map index="4">
+											<refstring state="PreviousDestination4State" />
+										</map>
+										<map index="5">
+											<refstring state="PreviousDestination5State" />
+										</map>
+										<map index="6">
+											<refstring state="PreviousDestination6State" />
+										</map>
+										<map index="7">
+											<refstring state="PreviousDestination7State" />
+										</map>
+										<map index="8">
+											<refstring state="PreviousDestination8State" />
+										</map>
+										<map index="9">
+											<refstring state="PreviousDestination9State" />
+										</map>
+										<map index="10">
+											<refstring state="PreviousDestination10State" />
+										</map>
+										<map index="11">
+											<refstring state="PreviousDestination11State" />
+										</map>
+										<map index="12">
+											<refstring state="PreviousDestination12State" />
+										</map>
+										<map index="13">
+											<refstring state="PreviousDestination13State" />
+										</map>
+										<map index="14">
+											<refstring state="PreviousDestination14State" />
+										</map>
+										<map index="15">
+											<refstring state="PreviousDestination15State" />
+										</map>
+										<map index="16">
+											<refstring state="PreviousDestination16State" />
+										</map>
+										<map index="17">
+											<refstring state="PreviousDestination17State" />
+										</map>
+										<map index="18">
+											<refstring state="PreviousDestination18State" />
+										</map>	
+										<map index="19">
+											<refstring state="PreviousDestination19State" />
+										</map>
+										<map index="20">
+											<refstring state="PreviousDestination20State" />
+										</map>
+									</valueLabels>
+								</type>
+								<labels>
+									<label>Previous Destinations</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination1State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #1</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination2State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #2</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination3State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #3</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination4State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #4</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination5State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #5</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination6State" access="ReadOnly">
+								<type>
+									
+									<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #6</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination7State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #7</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination8State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #8</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination9State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #9</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination10State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #10</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination11State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #11</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination12State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #12</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination13State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #13</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination14State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #14</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination15State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #15</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination16State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #16</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination17State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #17</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination18State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #18</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination19State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #19</label>
+								</labels>
+							</state>
+							<state name="PreviousDestination20State" access="ReadOnly">
+								<type>
+									
+										<string />
+									
+								</type>
+								<labels>
+									<label>Prev. Dest. #20</label>
+								</labels>
+							</state>
+          				</group> <!--Previous Destination Entry-->
+          				<group name="Intersection"> <!--Intersection Destination Entry-->
+          					<active-if>
+								<equals state="DestinationOptionsState">5</equals>
+							</active-if>
+          					<labels>
+          						<label>Intersection Destination Entry</label>
+          						<label>Intersection</label>
+          					</labels>
+          					<state name="FirstStreetState">
+          						<type>
+          							
+          								<string/>
+          							
+          						</type>
+          						<labels>
+          							<label>First St.</label>
+          							<label>1st Street</label>
+          						</labels>
+          					</state>
+          					<state name="SecondStreetState">
+          						<type>
+          							
+          								<string/>
+          							
+          						</type>
+          						<labels>
+          							<label>Second St.</label>
+          							<label>2nd Street</label>
+          						</labels>
+          					</state>
+          				</group> <!--End Intersection Destination Entry-->
+          				<group name="Emergency"> <!--Emergency Destination Entry-->
+          					<active-if>
+								<equals state="DestinationOptionsState">6</equals>
+							</active-if>
+          					<labels>
+          						<label>Emergency Destination Entry</label>
+          						<label>Emergency Dest. Entry</label>
+          						<label>Emergency Dest.</label>
+          					</labels>
+          					<state name="EmergencyListState">
+          						<type>
+									
+										<enumerated>
+											<item-count>2</item-count>
+										</enumerated>
+									
+									<valueLabels>
+										<map index="1">
+											<label>Police Station</label>
+										</map>
+										<map index="2">
+											<label>Hospital</label>
+										</map>
+									</valueLabels>
+								</type>
+								<labels>
+									<label>Emergency Dest.</label>
+								</labels>	
+          					</state>
+          				</group> <!--End Emergency Destination Entry-->
+          				<group name="Freeway"> <!--Freeway Entrance/Exit Destination Entry-->
+          					<active-if>
+								<equals state="DestinationOptionsState">7</equals>
+							</active-if>
+          					<labels>
+          						<label>Freeway Ent./Exit</label>
+          					</labels>
+          					<state name="FreewayEntExitState">
+          						<type>
+          							
+          								<string/>
+          							
+          						</type>
+          						<labels>
+          							<label>Freeway Name</label>
+          						</labels>
+          					</state>
+          					<state name="EntranceExitState">
+          						<type>
+									
+										<enumerated>
+											<item-count>2</item-count>
+										</enumerated>
+									
+									<valueLabels>
+										<map index="1">
+											<label>Entrance</label>
+										</map>
+										<map index="2">
+											<label>Exit</label>
+										</map>
+									</valueLabels>
+								</type>
+								<labels>
+									<label>Entrance/Exit</label>
+								</labels>	
+          					</state>
+          				</group> <!--End Freeway Entrance/Exit Destination Entry-->
+          				<group name="PreviousStart"> <!--Previous Start Point Destination Entry-->
+          					<active-if>
+								<equals state="DestinationOptionsState">8</equals>
+							</active-if>
+          					<labels>
+          						<label>Previous Start Point</label>
+          						<label>Last Start Point</label>
+          						<label>Last Start Pt.</label>
+          					</labels>
+          					<state name="PreviousStartPointState" access="ReadOnly">
+          						<type>
+									
+										<string/>
+									
+								</type>
+								<labels>
+									<label>Last Start Pt.</label>
+								</labels>
+          					</state>
+          				</group> <!--End Previous Start Point Destination Entry-->
+          				<group name="Home"> <!--Home Destination Entry-->
+          					<active-if>
+								<equals state="DestinationOptionsState">9</equals>
+							</active-if>
+          					<labels>
+          						<label>Home Destination</label>
+          					</labels>
+          					<state name="HomeDestinationState" access="ReadOnly">
+          						<type>
+									
+										<string/>
+									
+								</type>
+								<labels>
+									<label>Home Dest.</label>
+								</labels>
+          					</state>
+          			</group> <!--End Home Destination Entry-->
+          		</group> <!--End Destination-->
+          	</group> <!--End Navigation System Group-->
+        </group> <!--End Ignition-->
+	</groupings>
+</spec>

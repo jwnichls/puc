@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE spec SYSTEM "http://www.cs.cmu.edu/~jeffreyn/controller/pucspec.dtd">
+
+<!-- This is specification of the Audio ReQuest Pro home MP3 appliance. -->
+
+<spec name="Audio ReQuest Pro">
+<groupings>
+<group>
+    <state name="PowerState" priority="10">
+        <type name="OnOffType">
+            <valueSpace>
+                <boolean/>
+            </valueSpace>
+            <valueLabels>
+                <map index="false">
+                    <label>Off</label>
+                </map>
+                <map index="true">
+                    <label>On</label>
+                </map>
+            </valueLabels>
+        </type>
+        <labels>
+            <label>Power</label>
+        </labels>
+    </state>
+
+    <group>
+        <active-if>
+            <equals state="PowerState">true</equals>
+        </active-if>
+        <state name="ViewState">
+            <type>
+                <valueSpace>
+                    <enumerated>
+                        <items>2</items>
+                    </enumerated>
+                </valueSpace>
+                <valueLabels>
+                    <map index="1">
+                        <label>Song List</label>
+                    </map>
+                    <map index="2">
+                        <label>Player</label>
+                    </map>
+                </valueLabels>
+            </type>
+
+            <labels>
+                <label>View</label>
+            </labels>
+        </state>
+
+        <group>
+            <active-if>
+                <equals state="ViewState">1</equals>
+            </active-if>
+
+<!--
+            <command name="NavigateUpCommand">
+                <labels>
+                    <label>Up</label>
+                </labels>
+            </command>
+            <command name="NavigateDownCommand">
+                <labels>
+                    <label>Down</label>
+                </labels>
+            </command>
+            <command name="NavigateLeftCommand">
+                <labels>
+                    <label>Left</label>
+                </labels>
+            </command>
+            <command name="NavigateRightCommand">
+                <labels>
+                    <label>Right</label>
+                </labels>
+            </command>
+            <command name="NavigateEnterCommand">
+                <labels>
+                    <label>Enter</label>
+                </labels>
+            </command>
+-->
+
+            <command name="NavigateLeftCommand">
+                <labels>
+                    <label>Back</label>
+                </labels>
+            </command>
+            <group>
+            <command name="PageUpCommand">
+                <labels>
+                    <label>Scroll Up</label>
+                </labels>
+            </command>
+            <state name="ListItem0" access="ReadOnly">
+                <type><valueSpace><string/></valueSpace></type>
+                <labels><label>|</label></labels>
+            </state>
+            <command name="PlayListItem0">
+                <labels>
+                    <label>Play</label>
+                </labels>
+            </command>
+            <state name="ListItem1" access="ReadOnly">
+                <type><valueSpace><string/></valueSpace></type>
+                <labels><label>|</label></labels>
+            </state>
+            <command name="PlayListItem1">
+                <labels>
+                    <label>Play</label>
+                </labels>
+            </command>
+            <state name="ListItem2" access="ReadOnly">
+                <type><valueSpace><string/></valueSpace></type>
+                <labels><label>|</label></labels>
+            </state>
+            <command name="PlayListItem2">
+                <labels>
+                    <label>Play</label>
+                </labels>
+            </command>
+            <state name="ListItem3" access="ReadOnly">
+                <type><valueSpace><string/></valueSpace></type>
+                <labels><label>|</label></labels>
+            </state>
+            <command name="PlayListItem3">
+                <labels>
+                    <label>Play</label>
+                </labels>
+            </command>
+            <state name="ListItem4" access="ReadOnly">
+                <type><valueSpace><string/></valueSpace></type>
+                <labels><label>|</label></labels>
+            </state>
+            <command name="PlayListItem4">
+                <labels>
+                    <label>Play</label>
+                </labels>
+            </command>
+            <state name="ListItem5" access="ReadOnly">
+                <type><valueSpace><string/></valueSpace></type>
+                <labels><label>|</label></labels>
+            </state>
+            <command name="PlayListItem5">
+                <labels>
+                    <label>Play</label>
+                </labels>
+            </command>
+            <state name="ListItem6" access="ReadOnly">
+                <type><valueSpace><string/></valueSpace></type>
+                <labels><label>|</label></labels>
+            </state>
+            <command name="PlayListItem6">
+                <labels>
+                    <label>Play</label>
+                </labels>
+            </command>
+            <state name="ListItem7" access="ReadOnly">
+                <type><valueSpace><string/></valueSpace></type>
+                <labels><label>|</label></labels>
+            </state>
+            <command name="PlayListItem7">
+                <labels>
+                   <!-- <refstring state="ListItem7"/> -->
+                   <label>Play</label>
+                </labels>
+            </command>
+            <command name="PageDownCommand">
+                <labels>
+                    <label>Scroll Down</label>
+                </labels>
+            </command>
+            </group>
+        </group>
+
+        <group>
+            <active-if>
+                <equals state="ViewState">2</equals>
+            </active-if>
+
+            <state name="PlayMode">
+                <type>
+                    <valueSpace>
+                        <custom>playcontrol</custom>
+                    </valueSpace>
+                </type>
+
+                <labels>
+                    <label>Play Status</label>
+                    <label>Status</label>
+                </labels>
+            </state>
+            <command name="RandomSongCommand">
+                <labels>
+                    <label>Play a Random Song</label>
+                    <label>Random Song</label>
+                </labels>
+            </command>
+            <command name="PreviousSongCommand">
+                <labels>
+                    <label>Play Previous Song</label>
+                    <label>Previous Song</label>
+                </labels>
+            </command>
+            <state name="CurrentSong" access="ReadOnly">
+                <type><valueSpace><string/></valueSpace></type>
+                <labels><label>Song</label></labels>
+            </state>
+            <state name="CurrentArtist" access="ReadOnly">
+                <type><valueSpace><string/></valueSpace></type>
+                <labels><label>Artist</label></labels>
+            </state>
+            <state name="CurrentAlbum" access="ReadOnly">
+                <type><valueSpace><string/></valueSpace></type>
+                <labels><label>Album</label></labels>
+            </state>
+            <state name="CurrentPlaylist" access="ReadOnly">
+                <type><valueSpace><string/></valueSpace></type>
+                <labels><label>Playlist</label></labels>
+            </state>
+            <state name="NextSong" access="ReadOnly">
+                <type><valueSpace><string/></valueSpace></type>
+                <labels><label>Next Song</label></labels>
+            </state>
+            <command name="NextSongCommand">
+                <labels>
+                    <label>Play Next Song</label>
+                    <label>Next Song</label>
+                </labels>
+            </command>
+
+            <state name="RepeatState">
+                <type><valueSpace><boolean/></valueSpace></type>
+                <labels><label>Repeat</label></labels>
+            </state>
+            <state name="ShuffleState">
+                <type><valueSpace><boolean/></valueSpace></type>
+                <labels><label>Shuffle</label></labels>
+            </state>
+            <state name="IntroState">
+                <type><valueSpace><boolean/></valueSpace></type>
+                <labels><label>Intro</label></labels>
+            </state>
+
+        </group>
+    </group>
+</group>
+</groupings>
+</spec>
+

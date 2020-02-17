@@ -1,2 +1,13 @@
-# puc
-My Ph.D. work on the Personal Universal Controller
+# Personal Universal Controller (PUC)
+
+The Personal Universal Controller (PUC) is [my Ph.D. work](http://www.jeffreynichols.com/) from 2000-2006. This repository contains most, if not all, of the code written as part of my thesis. There is a mix of different source types in this repository, primarly Java and C#.  The initial version of the PUC was written in Java, and then it was subsequently rewritten in C# to run more easily on the mobile devices of that era, specifically Microsoft PocketPC and Smartphone devices.
+
+The personal universal controller was a project that explored the issues that arise when a handheld is used as remote control to manipulate all of the devices in the world around us. Our primary focus was creating a specification language that can define any device and an automatic user interface generator that can create control panels from this specification language. [This paper](http://www.cs.cmu.edu/~pebbles/papers/pebblesControlIEEE.pdf) is a good overview of the Pebbles project that discusses my work in some detail. [This paper](http://www.jeffreynichols.com/papers/pucUIST2002.pdf) best describes the basics of the PUC system. [Our evaluation of the PUC system](http://www.jeffreynichols.com/papers/viability-chi2007-final.pdf) found that automatically generated interfaces could be better than hand-designed interface in some cases.
+
+I extended the PUC with a layer called [Uniform](http://www.cs.cmu.edu/~jeffreyn/uniform/) that automatically generates remote control interfaces that are consistent with past interfaces that the user has seen. This system works for interfaces generated on both a PocketPC and mobile phone interface. [See some screenshots here.](http://www.cs.cmu.edu/~jeffreyn/uniform/) An [evaluation](http://www.jeffreynichols.com/papers/viability-chi2007-final.pdf) found that users performed better with the interfaces generated for consistency than with normal interfaces.
+
+I also built [the Huddle system](http://www.cs.cmu.edu/~jeffreyn/huddle/) for automatically creating combined interfaces for systems of multiple appliances. Huddle uses a model of content flow to understand the tasks that users will want to perform with the system of appliances. Based on the model, Huddle creates two kinds of interfaces: a Flow-Based Interface that allows users to accomplish their high-level goals and four kinds of Aggregate User Interfaces that give users task-specific low-level control of the appliances.
+
+# A Warning
+
+This code has sat unmaintained since late 2006. If you can find a version of Visual Studio .NET from that era, then you will likely be able to build the C# codebase. I suspect it is unlikely to run on my more modern systems.

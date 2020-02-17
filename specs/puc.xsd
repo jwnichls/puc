@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.cs.cmu.edu/~pebbles/puc"
+	xmlns="http://www.cs.cmu.edu/~pebbles/puc" elementFormDefault="qualified" attributeFormDefault="qualified">
+
+	<!-- Attributes -->
+	<xs:attribute name="name" type="xs:string" />
+	<xs:attribute name="index" type="xs:string" />
+	<xs:attribute name="list" type="xs:string" />
+	<xs:attribute name="state" type="xs:string" />
+	<xs:attribute name="is-a" type="xs:string" />
+	<xs:attribute name="text" type="xs:string" />
+	<xs:attribute name="recording" type="xs:string" />
+	<xs:attribute name="value" type="xs:string" />
+
+	<xs:attribute name="access" default="read-write">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="read-only" />
+				<xs:enumeration value="read-write" />
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:attribute>
+
+	<xs:attribute name="ignore" default="none">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="none" />
+				<xs:enumeration value="parent" />
+				<xs:enumeration value="all" />
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:attribute>
+
+	<xs:attribute name="version">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="PUC/2.0" />
+				<xs:enumeration value="PUC/2.1" />
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:attribute>
+
+	<xs:attribute name="type-name" default="one">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="one" />
+				<xs:enumeration value="multiple" />
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:attribute>
+
+	<xs:attribute name="priority" default="0">
+		<xs:simpleType>
+			<xs:restriction base="xs:integer">
+				<xs:minInclusive value="0" />
+				<xs:maxInclusive value="10" />
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:attribute>
+
+	<xs:attribute name="true-if" default="any">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="any" />
+				<xs:enumeration value="all" />
+				<xs:enumeration value="none" />
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:attribute>
+
+
+	<!-- Simple Elements -->
+
+	<xs:element name="item-count" type="xs:integer" />
+	<xs:element name="pointpos" type="xs:integer" />
+	<xs:element name="label" type="xs:string" />
+	<xs:element name="phonetic" type="xs:string" />
+
+
+	<!-- State Attribute, No Content Elements -->
+
+	<xs:complexType name="stateAttribNoContent">
+		<xs:attribute ref="state" use="required" />
+	</xs:complexType>
+
+	<xs:element name="refvalue" type="stateAttribNoContent" />
+	<xs:element name="refstring" type="stateAttribNoContent" />
+
+	<xs:element name="static">
+		<xs:complexType>
+			<xs:attribute ref="value" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- Selection Type Element (Two Attrib, No Content) -->
+
+	<xs:element name="selection-type">
+		<xs:complexType>
+			<xs:attribute ref="type-name" use="required" />
+			<xs:attribute ref="access" use="optional" default="read-write" />
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- Dependency Relation Elements -->
+
+	<xs:complexType name="StaticOrReference">
+		<xs:choice>
+			<xs:element ref="static" />
+			<xs:element ref="refvalue" />
+		</xs:choice>
+	</xs:complexType>
+
+	<xs:element name="defined" type="stateAttribNoContent" />
+	<xs:element name="undefined" type="stateAttribNoContent" />
+
+	<xs:element name="equals">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="StaticOrReference">
+					<xs:attribute ref="state" use="required" />
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="lessthan">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="StaticOrReference">
+					<xs:attribute ref="state" use="required" />
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="greaterthan">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="StaticOrReference">
+					<xs:attribute ref="state" use="required" />
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- Dependency Operator Relations -->
+
+	<xs:complexType name="DependencyContent">
+		<xs:sequence>
+			<xs:choice minOccurs="1" maxOccurs="unbounded">
+				<xs:element ref="or" />
+				<xs:element ref="and" />
+				<xs:element ref="not" />
+				<xs:element ref="apply-over" />
+				<xs:element ref="defined" />
+				<xs:element ref="undefined" />
+				<xs:element ref="equals" />
+				<xs:element ref="greaterthan" />
+				<xs:element ref="lessthan" />
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name="or" type="DependencyContent" />
+	<xs:element name="and" type="DependencyContent" />
+
+	<xs:element name="not">
+		<xs:complexType>
+			<xs:choice minOccurs="1" maxOccurs="1">
+				<xs:element ref="or" />
+				<xs:element ref="and" />
+				<xs:element ref="apply-over" />
+				<xs:element ref="defined" />
+				<xs:element ref="undefined" />
+				<xs:element ref="equals" />
+				<xs:element ref="greaterthan" />
+				<xs:element ref="lessthan" />
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="apply-over">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="DependencyContent">
+					<xs:attribute ref="list" use="required" />
+					<xs:attribute ref="true-if" use="optional" />
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="active-if">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="DependencyContent">
+					<xs:attribute ref="ignore" use="optional" />
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- Label Dictionary Elements -->
+
+	<xs:element name="text-to-speech">
+		<xs:complexType>
+			<xs:attribute ref="text" />
+			<xs:attribute ref="recording" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="labels">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice minOccurs="1" maxOccurs="unbounded">
+					<xs:element ref="label" minOccurs="1" />
+					<xs:element ref="refstring" />
+					<xs:element ref="phonetic" />
+					<xs:element ref="text-to-speech" />
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- Value Space Elements -->
+
+	<xs:element name="min" type="StaticOrReference" />
+	<xs:element name="max" type="StaticOrReference" />
+	<xs:element name="incr" type="StaticOrReference" />
+	<xs:element name="average" type="StaticOrReference" />
+
+	<xs:element name="binary">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:any minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="boolean" />
+
+	<xs:element name="enumerated">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="item-count" minOccurs="1" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="NumericParameters">
+		<xs:sequence>
+			<xs:element ref="min" minOccurs="0" maxOccurs="1" />
+			<xs:element ref="max" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="NumericIncrParameters">
+		<xs:complexContent>
+			<xs:extension base="NumericParameters">
+				<xs:sequence>
+					<xs:element ref="incr" minOccurs="0" maxOccurs="1" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="integer" type="NumericIncrParameters" />
+	<xs:element name="floatingpt" type="NumericParameters" />
+
+	<xs:element name="fixedpt">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="NumericIncrParameters">
+					<xs:all>
+						<xs:element ref="pointpos" minOccurs="1" maxOccurs="1" />
+					</xs:all>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="list-selection">
+		<xs:complexType>
+			<xs:attribute ref="list" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="string">
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="min" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="max" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="average" minOccurs="0" maxOccurs="1" />
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- Value Labels Elements -->
+
+	<xs:element name="map">
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="labels" minOccurs="1" maxOccurs="1" />
+				<xs:element name="active-if" type="DependencyContent" minOccurs="0" maxOccurs="1" />
+			</xs:all>
+			<xs:attribute ref="index" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="value-labels">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="map" minOccurs="1" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- Type Elements -->
+
+	<xs:element name="type">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice minOccurs="1" maxOccurs="1">
+					<xs:element ref="binary" />
+					<xs:element ref="boolean" />
+					<xs:element ref="enumerated" />
+					<xs:element ref="fixedpt" />
+					<xs:element ref="floatingpt" />
+					<xs:element ref="integer" />
+					<xs:element ref="list-selection" />
+					<xs:element ref="string" />
+				</xs:choice>
+				<xs:element ref="value-labels" minOccurs="0" maxOccurs="1" />
+			</xs:sequence>
+			<xs:attribute ref="name" use="optional" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="apply-type">
+		<xs:complexType>
+			<xs:attribute ref="name" use="required" />
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- Appliance Object Elements -->
+
+	<xs:attributeGroup name="ApplianceObjectAttribs">
+		<xs:attribute ref="name" use="required" />
+		<xs:attribute ref="is-a" use="optional" />
+		<xs:attribute ref="priority" use="optional" />
+	</xs:attributeGroup>
+
+	<xs:element name="state">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice minOccurs="1" maxOccurs="1">
+					<xs:element ref="type" />
+					<xs:element ref="apply-type" />
+				</xs:choice>
+				<xs:element ref="labels" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="active-if" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="ApplianceObjectAttribs" />
+			<xs:attribute ref="access" use="optional" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="command">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="labels" />
+				<xs:element ref="active-if" />
+			</xs:sequence>
+			<xs:attributeGroup ref="ApplianceObjectAttribs" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="explanation">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="labels" />
+				<xs:element ref="active-if" />
+			</xs:sequence>
+			<xs:attributeGroup ref="ApplianceObjectAttribs" />
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- Grouping Elements -->
+
+	<xs:complexType name="GroupingType">
+		<xs:sequence>
+			<xs:element ref="labels" minOccurs="0" maxOccurs="1" />
+			<xs:element ref="active-if" minOccurs="0" maxOccurs="1" />
+			<xs:choice minOccurs="1" maxOccurs="unbounded">
+				<xs:element ref="group" />
+				<xs:element ref="list-group" />
+				<xs:element ref="union-group" />
+				<xs:element ref="state" />
+				<xs:element ref="command" />
+				<xs:element ref="explanation" />
+			</xs:choice>
+		</xs:sequence>
+		<xs:attributeGroup ref="ApplianceObjectAttribs" />
+	</xs:complexType>
+
+	<xs:element name="group" type="GroupingType" />
+
+	<xs:element name="union-group">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="GroupingType">
+					<xs:attribute ref="access"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="list-group">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="GroupingType">
+					<xs:sequence>
+						<xs:choice minOccurs="0" maxOccurs="1">
+							<xs:sequence>
+								<xs:element ref="min" minOccurs="0" maxOccurs="1" />
+								<xs:element ref="max" minOccurs="0" maxOccurs="1" />
+							</xs:sequence>
+							<xs:element ref="item-count" />
+						</xs:choice>
+						<xs:element ref="selection-type" minOccurs="0" maxOccurs="1" />
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- Top-Level Elements -->
+
+	<xs:element name="groupings">
+		<xs:complexType>
+			<xs:choice minOccurs="1" maxOccurs="unbounded">
+				<xs:element ref="group" />
+				<xs:element ref="list-group" />
+				<xs:element ref="union-group" />
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="spec">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="labels" />
+				<xs:element ref="groupings" />
+			</xs:sequence>
+			<xs:attribute ref="name" />
+			<xs:attribute ref="version" />
+		</xs:complexType>
+	</xs:element>
+	
+</xs:schema>

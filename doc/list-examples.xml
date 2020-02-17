@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol">
+	<server-information-request />
+</message>
+
+<?xml version="1.0" encoding="utf-8" ?> 
+<message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol">
+	<server-information>
+		<server-name>Test Server</server-name>
+		<device>
+			<name>Simple Media Player</name>
+			<port>5180</port>
+		</device>
+	</server-information>
+</message>
+
+<?xml version="1.0" encoding="utf-8" ?> 
+<message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol">
+	<spec-request/>
+</message>
+
+<?xml version="1.0" encoding="utf-8" ?> 
+<message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol">
+	<device-spec>
+		<spec>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;spec name="MediaPlayer" version="PUC/2.1" xmlns="http://www.cs.cmu.edu/~pebbles/puc"&gt;
+  &lt;labels&gt;
+    &lt;label&gt;Media Player&lt;/label&gt;
+  &lt;/labels&gt;
+  &lt;groupings&gt;
+    &lt;group name="Controls" is-a="media-controls"&gt;
+      &lt;labels&gt;
+        &lt;label&gt;Play Controls&lt;/label&gt;
+        &lt;label&gt;Play Mode&lt;/label&gt;
+        &lt;text-to-speech text="Play Mode" recording="playmode.au" /&gt;
+      &lt;/labels&gt;
+      &lt;state name="Mode"&gt;
+        &lt;type&gt;
+          &lt;enumerated&gt;
+            &lt;item-count&gt;3&lt;/item-count&gt;
+          &lt;/enumerated&gt;
+          &lt;value-labels&gt;
+            &lt;map index="1"&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Stop&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/map&gt;
+            &lt;map index="2"&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Play&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/map&gt;
+            &lt;map index="3"&gt;
+              &lt;labels&gt;
+                &lt;label&gt;Pause&lt;/label&gt;
+              &lt;/labels&gt;
+            &lt;/map&gt;
+          &lt;/value-labels&gt;
+        &lt;/type&gt;
+        &lt;labels&gt;
+          &lt;label&gt;Mode&lt;/label&gt;
+        &lt;/labels&gt;
+      &lt;/state&gt;
+      &lt;group name="TrackControls"&gt;
+        &lt;command name="PrevTrack"&gt;
+          &lt;labels&gt;
+            &lt;label&gt;Prev&lt;/label&gt;
+          &lt;/labels&gt;
+          &lt;active-if&gt;
+            &lt;greaterthan state="PList.Selection"&gt;
+              &lt;static value="0"/&gt; 
+            &lt;/greaterthan&gt;
+          &lt;/active-if&gt;
+        &lt;/command&gt;
+        &lt;command name="NextTrack"&gt;
+          &lt;labels&gt;
+            &lt;label&gt;Next&lt;/label&gt;
+          &lt;/labels&gt;
+          &lt;active-if&gt;
+            &lt;lessthan state="PList.Selection"&gt;
+              &lt;refvalue state="PList.Length" /&gt;
+            &lt;/lessthan&gt;
+          &lt;/active-if&gt;
+        &lt;/command&gt;
+      &lt;/group&gt;
+    &lt;/group&gt;
+    &lt;list-group name="PList"&gt;
+      &lt;state name="Title"&gt;
+        &lt;type&gt;
+          &lt;string /&gt;
+        &lt;/type&gt;
+        &lt;labels&gt;
+          &lt;label&gt;Title&lt;/label&gt;
+        &lt;/labels&gt;
+      &lt;/state&gt;
+      &lt;state name="Duration" is-a="time-duration"&gt;
+        &lt;type&gt;
+          &lt;integer /&gt;
+        &lt;/type&gt;
+        &lt;labels&gt;
+          &lt;label&gt;Duration&lt;/label&gt;
+        &lt;/labels&gt;
+      &lt;/state&gt;
+    &lt;/list-group&gt;
+  &lt;/groupings&gt;
+&lt;/spec&gt;
+		</spec>
+	</device-spec>
+</message>
+
+<?xml version="1.0" encoding="utf-8" ?> 
+<message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol">
+	<full-state-request />
+</message>
+
+<?xml version="1.0" encoding="utf-8" ?> 
+<message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol">
+	<state-change-notification>
+		<state>MediaPlayer.Controls.Mode</state>
+		<value>1</value>
+	</state-change-notification>
+</message>
+
+<?xml version="1.0" encoding="utf-8" ?> 
+<message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol">
+	<state-change-notification>
+		<data state="MediaPlayer.PList">
+			<el>
+				<value state="Title">Sweet Home Alabama</value>
+				<value state="Duration">190</value>
+			</el>
+			<el>
+				<value state="Title">Tower</value>
+				<value state="Duration">203</value>
+			</el>
+			<el>
+				<value state="Title">Jane</value>
+				<value state="Duration">243</value>
+			</el>
+		</data>
+	</state-change-notification>
+</message>
+
+<?xml version="1.0" encoding="utf-8" ?> 
+<message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol">
+	<state-change-request>
+		<state>MediaPlayer.Controls.Mode</state>
+		<value>2</value>
+	</state-change-request>
+</message>
+
+<?xml version="1.0" encoding="utf-8" ?> 
+<message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol">
+	<state-change-notification>
+		<state>MediaPlayer.Controls.Mode</state>
+		<value>2</value>
+	</state-change-notification>
+</message>
+
+<?xml version="1.0" encoding="utf-8" ?> 
+<message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol">
+	<state-change-notification>
+		<state>MediaPlayer.PList.Selection</state>
+		<value>1</value>
+	</state-change-notification>
+</message>
+
+<?xml version="1.0" encoding="utf-8" ?> 
+<message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol">
+	<command-invoke-request>
+		<command>MediaPlayer.Controls.TrackControls.NextTrack</command>
+	</command-invoke-request>
+</message>
+
+<?xml version="1.0" encoding="utf-8" ?> 
+<message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol">
+	<state-change-notification>
+		<state>MediaPlayer.PList.Selection</state>
+		<value>2</value>
+	</state-change-notification>
+</message>
+
+<?xml version="1.0" encoding="utf-8" ?>
+<message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol">
+	<state-change-notification>
+		<replace state="MediaPlayer.PList" begin="3" length="1">
+			<el>
+				<value state="Title">Gravity</value>
+				<value state="Duration">217</value>
+			</el>
+			<el>
+				<value state="Title">1000000 Dollars</value>
+				<value state="Duration">236</value>
+			</el>
+			<el>
+				<value state="Title">Jude</value>
+				<value state="Duration">209</value>
+			</el>
+		</replace>
+	</state-change-notification>
+</message>
+
+<?xml version="1.0" encoding="utf-8" ?>
+<message xmlns="http://www.cs.cmu.edu/~pebbles/puc/puc-protocol">
+	<state-change-notification>
+		<delete state="MediaPlayer.PList" begin="1" length="1" />
+	</state-change-notification>
+</message>

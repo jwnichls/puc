@@ -1,0 +1,343 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spec name="AxisCamera" version="PUC/2.1">
+  <labels>
+    <label>Axis UPnP Camera</label>
+  </labels>
+  <groupings>
+    <group name="Controls">
+      <group name="Sliders">
+        <labels>
+          <label>Controls</label>
+        </labels>
+        <state name="Pan">
+          <type>
+            <integer>
+              <min>
+                <static value="-100" />
+              </min>
+              <max>
+                <static value="100" />
+              </max>
+            </integer>
+          </type>
+          <labels>
+            <label>Pan</label>
+          </labels>
+        </state>
+        <state name="Tilt">
+          <type>
+            <integer>
+              <min>
+                <static value="-25" />
+              </min>
+              <max>
+                <static value="25" />
+              </max>
+            </integer>
+          </type>
+          <labels>
+            <label>Tilt</label>
+          </labels>
+        </state>
+        <state name="Zoom">
+          <type>
+            <integer>
+              <min>
+                <static value="1" />
+              </min>
+              <max>
+                <static value="9999" />
+              </max>
+            </integer>
+          </type>
+          <labels>
+            <label>Zoom</label>
+          </labels>
+        </state>
+      </group>
+      <command name="Home">
+        <labels>
+          <label>Home</label>
+        </labels>
+      </command>
+    </group>
+    <group name="Presets">
+      <state name="Presets">
+        <type name="PresetType">
+          <enumerated>
+            <item-count>10</item-count>
+          </enumerated>
+          <value-labels>
+            <map index="1">
+              <labels>
+                <refstring state="PresetName1" />
+              </labels>
+              <active-if>
+                <equals state="Preset1Avail">
+                  <static value="True" />
+                </equals>
+              </active-if>
+            </map>
+            <map index="2">
+              <labels>
+                <refstring state="PresetName2" />
+              </labels>
+              <active-if>
+                <equals state="Preset2Avail">
+                  <static value="True" />
+                </equals>
+              </active-if>
+            </map>
+            <map index="3">
+              <labels>
+                <refstring state="PresetName3" />
+              </labels>
+              <active-if>
+                <equals state="Preset3Avail">
+                  <static value="True" />
+                </equals>
+              </active-if>
+            </map>
+            <map index="4">
+              <labels>
+                <refstring state="PresetName4" />
+              </labels>
+              <active-if>
+                <equals state="Preset4Avail">
+                  <static value="True" />
+                </equals>
+              </active-if>
+            </map>
+            <map index="5">
+              <labels>
+                <refstring state="PresetName5" />
+              </labels>
+              <active-if>
+                <equals state="Preset5Avail">
+                  <static value="True" />
+                </equals>
+              </active-if>
+            </map>
+            <map index="6">
+              <labels>
+                <refstring state="PresetName6" />
+              </labels>
+              <active-if>
+                <equals state="Preset6Avail">
+                  <static value="True" />
+                </equals>
+              </active-if>
+            </map>
+            <map index="7">
+              <labels>
+                <refstring state="PresetName7" />
+              </labels>
+              <active-if>
+                <equals state="Preset7Avail">
+                  <static value="True" />
+                </equals>
+              </active-if>
+            </map>
+            <map index="8">
+              <labels>
+                <refstring state="PresetName8" />
+              </labels>
+              <active-if>
+                <equals state="Preset8Avail">
+                  <static value="True" />
+                </equals>
+              </active-if>
+            </map>
+            <map index="9">
+              <labels>
+                <refstring state="PresetName9" />
+              </labels>
+              <active-if>
+                <equals state="Preset9Avail">
+                  <static value="True" />
+                </equals>
+              </active-if>
+            </map>
+            <map index="10">
+              <labels>
+                <refstring state="PresetName10" />
+              </labels>
+              <active-if>
+                <equals state="Preset10Avail">
+                  <static value="True" />
+                </equals>
+              </active-if>
+            </map>
+          </value-labels>
+        </type>
+        <labels>
+          <label>Presets</label>
+        </labels>
+      </state>
+      <state name="PresetName1" access="read-only">
+        <type>
+          <string />
+        </type>
+        <labels>
+          <label>Preset #1</label>
+        </labels>
+      </state>
+      <state name="PresetName2" access="read-only">
+        <type>
+          <string />
+        </type>
+        <labels>
+          <label>Preset #2</label>
+        </labels>
+      </state>
+      <state name="PresetName3" access="read-only">
+        <type>
+          <string />
+        </type>
+        <labels>
+          <label>Preset #3</label>
+        </labels>
+      </state>
+      <state name="PresetName4" access="read-only">
+        <type>
+          <string />
+        </type>
+        <labels>
+          <label>Preset #4</label>
+        </labels>
+      </state>
+      <state name="PresetName5" access="read-only">
+        <type>
+          <string />
+        </type>
+        <labels>
+          <label>Preset #5</label>
+        </labels>
+      </state>
+      <state name="PresetName6" access="read-only">
+        <type>
+          <string />
+        </type>
+        <labels>
+          <label>Preset #6</label>
+        </labels>
+      </state>
+      <state name="PresetName7" access="read-only">
+        <type>
+          <string />
+        </type>
+        <labels>
+          <label>Preset #7</label>
+        </labels>
+      </state>
+      <state name="PresetName8" access="read-only">
+        <type>
+          <string />
+        </type>
+        <labels>
+          <label>Preset #8</label>
+        </labels>
+      </state>
+      <state name="PresetName9" access="read-only">
+        <type>
+          <string />
+        </type>
+        <labels>
+          <label>Preset #9</label>
+        </labels>
+      </state>
+      <state name="PresetName10" access="read-only">
+        <type>
+          <string />
+        </type>
+        <labels>
+          <label>Preset #10</label>
+        </labels>
+      </state>
+      <state name="Preset1Avail" access="read-only">
+        <type name="PresetAvailType">
+          <boolean />
+          <value-labels>
+            <map index="true">
+              <labels>
+                <label>Programmed</label>
+              </labels>
+            </map>
+            <map index="false">
+              <labels>
+                <label>Not Programmed</label>
+              </labels>
+            </map>
+          </value-labels>
+        </type>
+        <labels>
+          <label>Preset 1</label>
+          <label>1</label>
+        </labels>
+      </state>
+      <state name="Preset2Avail" access="read-only">
+        <apply-type name="PresetAvailType" />
+        <labels>
+          <label>Preset 2</label>
+          <label>2</label>
+        </labels>
+      </state>
+      <state name="Preset3Avail" access="read-only">
+        <apply-type name="PresetAvailType" />
+        <labels>
+          <label>Preset 3</label>
+          <label>3</label>
+        </labels>
+      </state>
+      <state name="Preset4Avail" access="read-only">
+        <apply-type name="PresetAvailType" />
+        <labels>
+          <label>Preset 4</label>
+          <label>4</label>
+        </labels>
+      </state>
+      <state name="Preset5Avail" access="read-only">
+        <apply-type name="PresetAvailType" />
+        <labels>
+          <label>Preset 5</label>
+          <label>5</label>
+        </labels>
+      </state>
+      <state name="Preset6Avail" access="read-only">
+        <apply-type name="PresetAvailType" />
+        <labels>
+          <label>Preset 6</label>
+          <label>6</label>
+        </labels>
+      </state>
+      <state name="Preset7Avail" access="read-only">
+        <apply-type name="PresetAvailType" />
+        <labels>
+          <label>Preset 7</label>
+          <label>7</label>
+        </labels>
+      </state>
+      <state name="Preset8Avail" access="read-only">
+        <apply-type name="PresetAvailType" />
+        <labels>
+          <label>Preset 8</label>
+          <label>8</label>
+        </labels>
+      </state>
+      <state name="Preset9Avail" access="read-only">
+        <apply-type name="PresetAvailType" />
+        <labels>
+          <label>Preset 9</label>
+          <label>9</label>
+        </labels>
+      </state>
+      <state name="Preset10Avail" access="read-only">
+        <apply-type name="PresetAvailType" />
+        <labels>
+          <label>Preset 10</label>
+          <label>10</label>
+        </labels>
+      </state>
+    </group>
+  </groupings>
+</spec>

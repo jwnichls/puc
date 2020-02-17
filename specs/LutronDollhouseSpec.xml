@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spec name="Lutron" version="PUC/2.1">
+  <labels>
+    <label>Lutron Radio RA Dollhouse</label>
+  </labels>
+  <groupings>
+    <group name="Zones">
+      <labels>
+        <label>Rooms</label>
+      </labels>
+      <group name="Foyer" is-a="dimmer">
+        <labels>
+          <label>Foyer</label>
+        </labels>
+        <command name="Off">
+          <labels>
+            <label>Off</label>
+          </labels>
+        </command>
+        <state name="Dim">
+          <type name="Dimmer">
+            <integer>
+              <min>
+                <static value="0" />
+              </min>
+              <max>
+                <static value="100" />
+              </max>
+              <incr>
+                <static value="10" />
+              </incr>
+            </integer>
+          </type>
+          <labels>
+            <label>Dim</label>
+          </labels>
+        </state>
+        <command name="On">
+          <labels>
+            <label>Full on</label>
+            <label>On</label>
+          </labels>
+        </command>
+      </group>
+      <group name="Kitchen" is-a="dimmer">
+        <labels>
+          <label>Kitchen</label>
+        </labels>
+        <command name="Off">
+          <labels>
+            <label>Off</label>
+          </labels>
+        </command>
+        <state name="Dim">
+          <apply-type name="Dimmer" />
+          <labels>
+            <label>Dim</label>
+          </labels>
+        </state>
+        <command name="On">
+          <labels>
+            <label>Full on</label>
+            <label>On</label>
+          </labels>
+        </command>
+      </group>
+      <group name="MediaRoom" is-a="dimmer">
+        <labels>
+          <label>Media Room</label>
+          <label>Media R</label>
+          <label>Media</label>
+        </labels>
+        <command name="Off">
+          <labels>
+            <label>Off</label>
+          </labels>
+        </command>
+        <state name="Dim">
+          <apply-type name="Dimmer" />
+          <labels>
+            <label>Dim</label>
+          </labels>
+        </state>
+        <command name="On">
+          <labels>
+            <label>Full on</label>
+            <label>On</label>
+          </labels>
+        </command>
+      </group>
+      <group name="MainBedroom" is-a="dimmer">
+        <labels>
+          <label>Main Bedroom</label>
+          <label>M Bedroom</label>
+          <label>M Bedrm</label>
+        </labels>
+        <command name="Off">
+          <labels>
+            <label>Off</label>
+          </labels>
+        </command>
+        <state name="Dim">
+          <apply-type name="Dimmer" />
+          <labels>
+            <label>Dim</label>
+          </labels>
+        </state>
+        <command name="On">
+          <labels>
+            <label>Full on</label>
+            <label>On</label>
+          </labels>
+        </command>
+      </group>
+      <group name="Floods">
+        <state name="Floods">
+          <type>
+            <boolean />
+            <value-labels>
+              <map index="false">
+                <labels>
+                  <label>Off</label>
+                </labels>
+              </map>
+              <map index="true">
+                <labels>
+                  <label>On</label>
+                </labels>
+              </map>
+            </value-labels>
+          </type>
+          <labels>
+            <label>Floods</label>
+          </labels>
+        </state>
+      </group>
+    </group>
+    <group name="Scenes">
+      <state name="Scene">
+        <type>
+          <enumerated>
+            <item-count>5</item-count>
+          </enumerated>
+          <value-labels>
+            <map index="1">
+              <labels>
+                <label>Welcome</label>
+              </labels>
+            </map>
+            <map index="2">
+              <labels>
+                <label>Away</label>
+              </labels>
+            </map>
+            <map index="3">
+              <labels>
+                <label>Pathway</label>
+              </labels>
+            </map>
+            <map index="4">
+              <labels>
+                <label>Morning</label>
+              </labels>
+            </map>
+            <map index="5">
+              <labels>
+                <label>Goodnite</label>
+              </labels>
+            </map>
+          </value-labels>
+        </type>
+        <labels>
+          <label>Scene</label>
+        </labels>
+      </state>
+      <group name="All">
+        <command name="On">
+          <labels>
+            <label>Turn on all</label>
+            <label>All on</label>
+          </labels>
+        </command>
+        <command name="Off">
+          <labels>
+            <label>Turn off all</label>
+            <label>All off</label>
+          </labels>
+        </command>
+      </group>
+    </group>
+  </groupings>
+</spec>

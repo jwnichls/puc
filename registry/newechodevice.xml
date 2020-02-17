@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This is a preliminary attempt to build a "widget repository" XML
+     file for specifying what widgets are available and when they
+     should be chosen by the interface generator. -->
+
+<widget-registry name="Preliminary PocketPC" default-package="edu.cmu.hcii.puc.cio">
+
+  <decision-library>
+    <type>edu.cmu.hcii.puc.registry.ObjectDecision</type>
+    <type>edu.cmu.hcii.puc.registry.ValueSpaceDecision</type>
+    <type>edu.cmu.hcii.puc.registry.ReadOnlyDecision</type>
+    <type>edu.cmu.hcii.puc.registry.ConstraintDecision</type>
+    <type>edu.cmu.hcii.puc.registry.InternalControlDecision</type>
+    <type>edu.cmu.hcii.puc.registry.AllLabelsDecision</type>
+  </decision-library>
+
+  <decision type="object">
+    <condition value="command">
+      <widget>ButtonLinkedCIO</widget>
+    </condition>
+    <condition value="explanation">
+      <widget>ExplanationCIO</widget>
+    </condition>
+    <condition value="state">
+      <decision type="valuespace">
+        <condition value="default">
+  	      <decision type="valuespace">
+                <condition value="boolean">
+		  <decision type="internalcontroller">
+		    <condition value="false">
+		      <decision type="alllabels">
+		        <condition value="false">
+		          <widget>CheckboxLinkedCIO</widget>
+		        </condition>
+		        <condition value="true">
+		          <widget>SelectionListLinkedCIO</widget>
+		        </condition>
+		      </decision>
+		    </condition>
+		    <condition value="true">
+		      <widget>ButtonLinkedCIO</widget>
+		    </condition>
+		  </decision>
+		</condition>
+	        <condition value="integer">
+	          <widget>TextFieldLinkedCIO</widget>
+	        </condition>
+	        <condition value="enumerated">
+	          <widget>SelectionListLinkedCIO</widget>
+	        </condition>
+	        <condition value="default">
+	          <widget>TextFieldLinkedCIO</widget>
+	        </condition>
+	      </decision>
+        </condition>
+      </decision>
+    </condition>
+  </decision>
+
+</widget-registry>
