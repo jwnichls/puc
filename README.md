@@ -10,4 +10,4 @@ I also built [the Huddle system](http://www.cs.cmu.edu/~jeffreyn/huddle/) for au
 
 # A Warning
 
-This code has sat unmaintained since late 2006. If you can find a version of Visual Studio .NET from that era, then you will likely be able to build the C# codebase. I suspect it is unlikely to run on my more modern systems.
+This code has sat unmaintained since late 2006. If you can find a version of Visual Studio .NET from that era, then you will likely be able to build the C# codebase. I suspect it is unlikely to run on any more modern systems.
